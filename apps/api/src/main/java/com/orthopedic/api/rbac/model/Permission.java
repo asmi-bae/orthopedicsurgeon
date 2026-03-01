@@ -1,0 +1,15 @@
+package com.orthopedic.api.rbac.model;
+
+public enum Permission {
+    MANAGE_USERS,
+    MANAGE_DOCTORS,
+    MANAGE_APPOINTMENTS_ALL,
+    MANAGE_APPOINTMENTS_OWN,
+    VIEW_REPORTS_ALL,
+    VIEW_REPORTS_OWN,
+    MANAGE_PAYMENTS,
+    UPLOAD_REPORTS,
+    VIEW_PRESCRIPTIONS,
+    SYSTEM_SETTINGS,
+    MANAGE_SERVICES
+}

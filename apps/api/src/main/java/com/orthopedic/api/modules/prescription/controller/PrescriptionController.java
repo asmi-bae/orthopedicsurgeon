@@ -1,0 +1,75 @@
+package com.orthopedic.api.modules.prescription.controller;
+
+import com.orthopedic.api.auth.entity.User;
+import com.orthopedic.api.modules.prescription.dto.request.CreatePrescriptionRequest;
+import com.orthopedic.api.modules.prescription.dto.response.PrescriptionResponse;
+import com.orthopedic.api.modules.prescription.service.PrescriptionService;
+import com.orthopedic.api.rbac.annotation.CurrentUser;
+import com.orthopedic.api.shared.base.BaseController;
+import com.orthopedic.api.shared.dto.ApiResponse;
+import com.orthopedic.api.shared.dto.PageResponse;
+import com.orthopedic.api.shared.util.PageableUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/v1/prescriptions")
+@RequiredArgsConstructor
+@Tag(name = "Prescription Management", description = "Endpoints for creating and viewing prescriptions")
+public class PrescriptionController extends BaseController {
+
+    private final PrescriptionService prescriptionService;
+
+    @PostMapping
+    @PreAuthorize("hasRole('DOCTOR')")
+    @Operation(summary = "Create a new prescription (Doctor only)")
+    public ResponseEntity<ApiResponse<PrescriptionResponse>> create(
+            @Valid @RequestBody CreatePrescriptionRequest request,
+            @CurrentUser User currentUser) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Prescription created successfully", 
+                        prescriptionService.createPrescription(request, currentUser)));
+    }
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get prescription by ID")
+    public ResponseEntity<ApiResponse<PrescriptionResponse>> getById(
+            @PathVariable UUID id,
+            @CurrentUser User currentUser) {
+        return ok(prescriptionService.getPrescriptionById(id, currentUser));
+    }
+
+    @GetMapping("/appointment/{appointmentId}")
+    @Operation(summary = "Get prescription for a specific appointment")
+    public ResponseEntity<ApiResponse<PrescriptionResponse>> getByAppointment(
+            @PathVariable UUID appointmentId,
+            @CurrentUser User currentUser) {
+        return ok(prescriptionService.getPrescriptionByAppointment(appointmentId, currentUser));
+    }
+
+    @GetMapping("/patient/{patientId}")
+    @Operation(summary = "Get all prescriptions for a patient")
+    public ResponseEntity<ApiResponse<PageResponse<PrescriptionResponse>>> getByPatient(
+            @PathVariable UUID patientId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "DESC") String direction,
+            @CurrentUser User currentUser) {
+        
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction, 
+                Arrays.asList("createdAt"));
+        
+        return ok(prescriptionService.getPatientPrescriptions(patientId, pageable, currentUser));
+    }
+}

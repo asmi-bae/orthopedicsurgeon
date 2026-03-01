@@ -1,0 +1,62 @@
+package com.orthopedic.api.auth.security;
+
+import com.orthopedic.api.auth.entity.User;
+import com.orthopedic.api.auth.repository.UserRepository;
+import com.orthopedic.api.config.JwtConfig;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+@Component
+@Slf4j
+@RequiredArgsConstructor
+public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+
+    private final JwtTokenProvider tokenProvider;
+    private final JwtConfig jwtConfig;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final UserRepository userRepository;
+
+    @Override
+    public void onAuthenticationSuccess(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        Authentication authentication) throws IOException {
+        
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userDetails.getUser();
+
+        String targetUrl;
+        
+        boolean isAdmin = user.getRoles().stream()
+            .anyMatch(r -> r.getName().equals("ROLE_ADMIN") || r.getName().equals("ROLE_SUPER_ADMIN"));
+
+        if (isAdmin && user.isUsing2fa()) {
+            String tempToken = UUID.randomUUID().toString();
+            redisTemplate.opsForValue().set("temp_auth:" + tempToken, user.getEmail(), 10, TimeUnit.MINUTES);
+            
+            targetUrl = UriComponentsBuilder.fromUriString("http://localhost:4201/auth/2fa")
+                .queryParam("tempToken", tempToken)
+                .build().toUriString();
+        } else {
+            String accessToken = tokenProvider.generateAccessToken(userDetails);
+            // Refresh token handling left for client side to fetch via /refresh or similar
+            // Or just append to URL for simple implementation
+            targetUrl = UriComponentsBuilder.fromUriString("http://localhost:4200/auth/callback")
+                .queryParam("token", accessToken)
+                .build().toUriString();
+        }
+
+        getRedirectStrategy().sendRedirect(request, response, targetUrl);
+    }
+}
