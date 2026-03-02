@@ -3,6 +3,7 @@ package com.orthopedic.api.modules.payment.service;
 import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.modules.appointment.entity.Appointment;
 import com.orthopedic.api.modules.appointment.repository.AppointmentRepository;
+import com.orthopedic.api.modules.patient.entity.Patient;
 import com.orthopedic.api.modules.patient.repository.PatientRepository;
 import com.orthopedic.api.modules.payment.dto.request.CreatePaymentRequest;
 import com.orthopedic.api.modules.payment.dto.response.PaymentResponse;
@@ -12,7 +13,6 @@ import com.orthopedic.api.modules.payment.repository.PaymentRepository;
 import com.orthopedic.api.shared.dto.PageResponse;
 import com.orthopedic.api.shared.exception.BusinessException;
 import com.orthopedic.api.shared.exception.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class PaymentServiceImpl implements PaymentService {
 
@@ -35,6 +34,18 @@ public class PaymentServiceImpl implements PaymentService {
     private final PatientRepository patientRepository;
     private final PaymentMapper paymentMapper;
     private final io.micrometer.core.instrument.Counter paymentSuccessCounter;
+
+    public PaymentServiceImpl(PaymentRepository paymentRepository,
+                             AppointmentRepository appointmentRepository,
+                             PatientRepository patientRepository,
+                             PaymentMapper paymentMapper,
+                             io.micrometer.core.instrument.Counter paymentSuccessCounter) {
+        this.paymentRepository = paymentRepository;
+        this.appointmentRepository = appointmentRepository;
+        this.patientRepository = patientRepository;
+        this.paymentMapper = paymentMapper;
+        this.paymentSuccessCounter = paymentSuccessCounter;
+    }
 
     @Override
     @com.orthopedic.api.modules.audit.annotation.LogMutation(action = "CREATE_PAYMENT", entityName = "Payment")

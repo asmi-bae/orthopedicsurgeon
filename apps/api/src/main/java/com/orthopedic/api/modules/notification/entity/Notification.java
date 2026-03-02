@@ -3,16 +3,12 @@ package com.orthopedic.api.modules.notification.entity;
 import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.shared.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "notifications", indexes = {
-    @Index(name = "idx_notifications_user_id", columnList = "user_id"),
-    @Index(name = "idx_notifications_status", columnList = "status"),
-    @Index(name = "idx_notifications_type", columnList = "type")
+        @Index(name = "idx_notifications_user_id", columnList = "user_id"),
+        @Index(name = "idx_notifications_status", columnList = "status"),
+        @Index(name = "idx_notifications_type", columnList = "type")
 })
 public class Notification extends BaseEntity {
 
@@ -37,6 +33,54 @@ public class Notification extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private NotificationStatus status = NotificationStatus.UNREAD;
+
+    public User getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public NotificationType getType() {
+        return type;
+    }
+
+    public void setType(NotificationType type) {
+        this.type = type;
+    }
+
+    public NotificationChannel getChannel() {
+        return channel;
+    }
+
+    public void setChannel(NotificationChannel channel) {
+        this.channel = channel;
+    }
+
+    public NotificationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(NotificationStatus status) {
+        this.status = status;
+    }
 
     public enum NotificationType {
         APPOINTMENT_BOOKED, APPOINTMENT_CANCELLED, APPOINTMENT_REMINDER,

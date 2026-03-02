@@ -38,18 +38,18 @@ class AuthControllerTest {
         request.setPassword("password");
 
         LoginResponse response = LoginResponse.builder()
-            .accessToken("access")
-            .refreshToken("refresh")
-            .requiresTwoFactor(false)
-            .build();
+                .accessToken("access")
+                .refreshToken("refresh")
+                .requiresTwoFactor(false)
+                .build();
 
         when(authService.login(any(), any(), any())).thenReturn(response);
 
         mockMvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.accessToken").value("access"))
-            .andExpect(jsonPath("$.requiresTwoFactor").value(false));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value("access"))
+                .andExpect(jsonPath("$.requiresTwoFactor").value(false));
     }
 }

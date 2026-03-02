@@ -6,19 +6,23 @@ import com.orthopedic.api.modules.audit.entity.AuditLog;
 import com.orthopedic.api.modules.audit.mapper.AuditMapper;
 import com.orthopedic.api.modules.audit.repository.AuditLogRepository;
 import com.orthopedic.api.shared.dto.PageResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@RequiredArgsConstructor
-public class AuditServiceImpl implements AuditService {
+import java.util.UUID;
 
+@Service
+public class AuditServiceImpl implements AuditService {
     private final AuditLogRepository auditLogRepository;
     private final AuditMapper auditMapper;
+
+    public AuditServiceImpl(AuditLogRepository auditLogRepository, AuditMapper auditMapper) {
+        this.auditLogRepository = auditLogRepository;
+        this.auditMapper = auditMapper;
+    }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -37,7 +41,8 @@ public class AuditServiceImpl implements AuditService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<AuditLogResponse> getLogsByEntity(String entityName, String entityId, Pageable pageable) {
-        Page<AuditLog> page = auditLogRepository.findAllByEntityNameAndEntityId(entityName, entityId, pageable);
+        Page<AuditLog> page = auditLogRepository.findAllByEntityNameAndEntityId(entityName, UUID.fromString(entityId),
+                pageable);
         return PageResponse.fromPage(page.map(auditMapper::toResponse));
     }
 }

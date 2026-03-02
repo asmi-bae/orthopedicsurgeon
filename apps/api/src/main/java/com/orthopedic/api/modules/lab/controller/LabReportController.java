@@ -13,7 +13,6 @@ import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +24,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/lab-reports")
-@RequiredArgsConstructor
 @Tag(name = "Lab Report Management", description = "Endpoints for managing diagnostic tests and reports")
 public class LabReportController extends BaseController {
 
     private final LabReportService labReportService;
+
+    public LabReportController(LabReportService labReportService) {
+        this.labReportService = labReportService;
+    }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'DOCTOR')")
@@ -65,10 +67,10 @@ public class LabReportController extends BaseController {
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "DESC") String direction,
             @CurrentUser User currentUser) {
-        
-        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction, 
+
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction,
                 Arrays.asList("createdAt", "reportDate"));
-        
+
         return ok(labReportService.getPatientReports(patientId, pageable, currentUser));
     }
 }

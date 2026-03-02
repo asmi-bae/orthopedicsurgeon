@@ -17,8 +17,6 @@ import dev.samstevens.totp.exceptions.QrGenerationException;
 import dev.samstevens.totp.qr.QrData;
 import dev.samstevens.totp.qr.QrGenerator;
 import dev.samstevens.totp.secret.SecretGenerator;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,8 +33,6 @@ import java.util.stream.Collectors;
 import static dev.samstevens.totp.util.Utils.getDataUriForImage;
 
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class TwoFactorServiceImpl implements TwoFactorService {
 
     private final UserRepository userRepository;
@@ -50,23 +46,46 @@ public class TwoFactorServiceImpl implements TwoFactorService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final PasswordEncoder passwordEncoder;
 
+    public TwoFactorServiceImpl(UserRepository userRepository,
+            TotpSecretRepository totpSecretRepository,
+            RefreshTokenRepository refreshTokenRepository,
+            JwtTokenProvider tokenProvider,
+            JwtConfig jwtConfig,
+            SecretGenerator secretGenerator,
+            QrGenerator qrGenerator,
+            CodeVerifier codeVerifier,
+            RedisTemplate<String, Object> redisTemplate,
+            PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.totpSecretRepository = totpSecretRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.tokenProvider = tokenProvider;
+        this.jwtConfig = jwtConfig;
+        this.secretGenerator = secretGenerator;
+        this.qrGenerator = qrGenerator;
+        this.codeVerifier = codeVerifier;
+        this.redisTemplate = redisTemplate;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @Override
     @Transactional
     public TwoFactorSetupResponse setupTotp(Long userId) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new AuthException("User not found"));
+                .orElseThrow(() -> new AuthException("User not found"));
 
         String secret = secretGenerator.generate();
         List<String> backupCodes = generateBackupCodes();
         String hashedBackupCodes = backupCodes.stream()
-            .map(passwordEncoder::encode)
-            .collect(Collectors.joining(","));
+                .map(passwordEncoder::encode)
+                .collect(Collectors.joining(","));
 
         TotpSecret totpSecret = totpSecretRepository.findByUser(user)
-            .orElse(new TotpSecret());
+                .orElse(new TotpSecret());
         totpSecret.setUser(user);
-        // 🔒 SECURITY: Encrypt secret before storage (simplification: using base64 for now, should use AES)
-        totpSecret.setSecret(secret); 
+        // 🔒 SECURITY: Encrypt secret before storage (simplification: using base64 for
+        // now, should use AES)
+        totpSecret.setSecret(secret);
         totpSecret.setVerified(false);
         // We'll add backup codes to the entity
         // totpSecret.setBackupCodes(hashedBackupCodes); // Need to update entity
@@ -74,21 +93,21 @@ public class TwoFactorServiceImpl implements TwoFactorService {
         totpSecretRepository.save(totpSecret);
 
         QrData data = new QrData.Builder()
-            .label(user.getEmail())
-            .secret(secret)
-            .issuer("OrthopedicPlatform")
-            .algorithm(HashingAlgorithm.SHA1)
-            .digits(6)
-            .period(30)
-            .build();
+                .label(user.getEmail())
+                .secret(secret)
+                .issuer("OrthopedicPlatform")
+                .algorithm(HashingAlgorithm.SHA1)
+                .digits(6)
+                .period(30)
+                .build();
 
         try {
             String qrCodeBase64 = getDataUriForImage(qrGenerator.generate(data), qrGenerator.getImageMimeType());
             return TwoFactorSetupResponse.builder()
-                .qrCodeUrl(qrCodeBase64)
-                .secretKey(secret)
-                .backupCodes(backupCodes)
-                .build();
+                    .qrCodeUrl(qrCodeBase64)
+                    .secretKey(secret)
+                    .backupCodes(backupCodes)
+                    .build();
         } catch (QrGenerationException e) {
             throw new AuthException("Failed to generate QR code");
         }
@@ -98,10 +117,10 @@ public class TwoFactorServiceImpl implements TwoFactorService {
     @Transactional
     public boolean verifyAndEnableTotp(Long userId, String code) {
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new AuthException("User not found"));
+                .orElseThrow(() -> new AuthException("User not found"));
 
         TotpSecret totpSecret = totpSecretRepository.findByUser(user)
-            .orElseThrow(() -> new AuthException("2FA not set up"));
+                .orElseThrow(() -> new AuthException("2FA not set up"));
 
         if (codeVerifier.isValidCode(totpSecret.getSecret(), code)) {
             totpSecret.setVerified(true);
@@ -122,27 +141,28 @@ public class TwoFactorServiceImpl implements TwoFactorService {
         }
 
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new AuthException("User not found"));
+                .orElseThrow(() -> new AuthException("User not found"));
 
         TotpSecret totpSecret = totpSecretRepository.findByUser(user)
-            .orElseThrow(() -> new AuthException("2FA not configured"));
+                .orElseThrow(() -> new AuthException("2FA not configured"));
 
-        // 🔒 SECURITY: Rate limiting on 2FA (handled by filter, but here we check code valid)
+        // 🔒 SECURITY: Rate limiting on 2FA (handled by filter, but here we check code
+        // valid)
         if (codeVerifier.isValidCode(totpSecret.getSecret(), code)) {
             redisTemplate.delete("temp_auth:" + tempToken);
-            
+
             UserDetails userDetails = new com.orthopedic.api.auth.security.CustomUserDetails(user);
             String accessToken = tokenProvider.generateAccessToken(userDetails);
             String refreshTokenString = generateAndSaveRefreshToken(user, userAgent);
 
             return TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshTokenString)
-                .tokenType("Bearer")
-                .expiresIn(jwtConfig.getAccessTokenExpiry())
-                .build();
+                    .accessToken(accessToken)
+                    .refreshToken(refreshTokenString)
+                    .tokenType("Bearer")
+                    .expiresIn(jwtConfig.getAccessTokenExpiry())
+                    .build();
         }
-        
+
         throw new AuthException("Invalid TOTP code");
     }
 

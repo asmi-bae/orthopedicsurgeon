@@ -4,6 +4,7 @@ import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.modules.appointment.dto.request.AppointmentFilterRequest;
 import com.orthopedic.api.modules.appointment.dto.request.BookAppointmentRequest;
 import com.orthopedic.api.modules.appointment.dto.response.AppointmentResponse;
+import com.orthopedic.api.modules.appointment.dto.response.AppointmentStatsResponse;
 import com.orthopedic.api.modules.appointment.dto.response.AppointmentSummaryResponse;
 import com.orthopedic.api.shared.dto.PageResponse;
 import org.springframework.data.domain.Pageable;

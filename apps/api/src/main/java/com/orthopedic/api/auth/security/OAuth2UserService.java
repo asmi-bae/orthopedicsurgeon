@@ -7,8 +7,6 @@ import com.orthopedic.api.auth.exception.AuthException;
 import com.orthopedic.api.auth.repository.OAuth2AccountRepository;
 import com.orthopedic.api.auth.repository.RoleRepository;
 import com.orthopedic.api.auth.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -20,14 +18,25 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
-@Slf4j
-@RequiredArgsConstructor
+@Transactional
 public class OAuth2UserService extends DefaultOAuth2UserService {
+    private static final Logger log = LoggerFactory.getLogger(OAuth2UserService.class);
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final OAuth2AccountRepository oauth2AccountRepository;
+
+    public OAuth2UserService(UserRepository userRepository,
+            RoleRepository roleRepository,
+            OAuth2AccountRepository oauth2AccountRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.oauth2AccountRepository = oauth2AccountRepository;
+    }
 
     @Override
     @Transactional
@@ -44,18 +53,19 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
     private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
         String provider = userRequest.getClientRegistration().getRegistrationId();
         Map<String, Object> attributes = oAuth2User.getAttributes();
-        
+
         String providerId = attributes.get("sub").toString(); // For Google
         String email = (String) attributes.get("email");
         String name = (String) attributes.get("name");
-        
+
         // 🔒 SECURITY: Verify email is confirmed by provider
         boolean emailVerified = Boolean.TRUE.equals(attributes.get("email_verified"));
         if (!emailVerified) {
             throw new AuthException("Email not verified by " + provider);
         }
 
-        Optional<OAuth2Account> accountOptional = oauth2AccountRepository.findByProviderAndProviderId(provider, providerId);
+        Optional<OAuth2Account> accountOptional = oauth2AccountRepository.findByProviderAndProviderId(provider,
+                providerId);
         User user;
 
         if (accountOptional.isPresent()) {
@@ -63,7 +73,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         } else {
             // Check if user exists with this email
             user = userRepository.findByEmail(email).orElseGet(() -> registerNewOAuth2User(email, name));
-            
+
             OAuth2Account newAccount = new OAuth2Account();
             newAccount.setUser(user);
             newAccount.setProvider(provider);
@@ -79,16 +89,16 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         User user = new User();
         user.setEmail(email);
         user.setPassword(""); // No password for OAuth users
-        
+
         String[] names = name.split(" ", 2);
         user.setFirstName(names[0]);
         user.setLastName(names.length > 1 ? names[1] : "");
         user.setEnabled(true);
-        
+
         Role role = roleRepository.findByName("ROLE_PATIENT")
-            .orElseThrow(() -> new AuthException("Default role not found"));
+                .orElseThrow(() -> new AuthException("Default role not found"));
         user.setRoles(Set.of(role));
-        
+
         return userRepository.save(user);
     }
 }

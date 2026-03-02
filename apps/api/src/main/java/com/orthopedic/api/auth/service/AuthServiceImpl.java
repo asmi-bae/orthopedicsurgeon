@@ -7,8 +7,6 @@ import com.orthopedic.api.auth.exception.InvalidCredentialsException;
 import com.orthopedic.api.auth.repository.*;
 import com.orthopedic.api.auth.security.JwtTokenProvider;
 import com.orthopedic.api.config.JwtConfig;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,8 +23,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
@@ -40,30 +36,51 @@ public class AuthServiceImpl implements AuthService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final TwoFactorService twoFactorService;
 
+    public AuthServiceImpl(UserRepository userRepository,
+            RoleRepository roleRepository,
+            RefreshTokenRepository refreshTokenRepository,
+            LoginAuditRepository loginAuditRepository,
+            PasswordEncoder passwordEncoder,
+            AuthenticationManager authenticationManager,
+            JwtTokenProvider tokenProvider,
+            JwtConfig jwtConfig,
+            RedisTemplate<String, Object> redisTemplate,
+            TwoFactorService twoFactorService) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.loginAuditRepository = loginAuditRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.tokenProvider = tokenProvider;
+        this.jwtConfig = jwtConfig;
+        this.redisTemplate = redisTemplate;
+        this.twoFactorService = twoFactorService;
+    }
+
     @Override
     @Transactional
     public LoginResponse login(LoginRequest request, String ipAddress, String userAgent) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-            );
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
             User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
+                    .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
 
             // 🔒 SECURITY: Check if 2FA is required for ADMIN roles
             boolean isAdmin = user.getRoles().stream()
-                .anyMatch(r -> r.getName().equals("ROLE_ADMIN") || r.getName().equals("ROLE_SUPER_ADMIN"));
+                    .anyMatch(r -> r.getName().equals("ROLE_ADMIN") || r.getName().equals("ROLE_SUPER_ADMIN"));
 
             if (isAdmin && user.isUsing2fa()) {
                 String tempToken = UUID.randomUUID().toString();
                 redisTemplate.opsForValue().set("temp_auth:" + tempToken, user.getEmail(), 10, TimeUnit.MINUTES);
-                
+
                 logAudit(user, ipAddress, userAgent, "2FA_PENDING");
                 return LoginResponse.builder()
-                    .requiresTwoFactor(true)
-                    .tempToken(tempToken)
-                    .build();
+                        .requiresTwoFactor(true)
+                        .tempToken(tempToken)
+                        .build();
             }
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -73,15 +90,16 @@ public class AuthServiceImpl implements AuthService {
             logAudit(user, ipAddress, userAgent, "SUCCESS");
 
             return LoginResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshTokenString)
-                .tokenType("Bearer")
-                .expiresIn(jwtConfig.getAccessTokenExpiry())
-                .requiresTwoFactor(false)
-                .build();
+                    .accessToken(accessToken)
+                    .refreshToken(refreshTokenString)
+                    .tokenType("Bearer")
+                    .expiresIn(jwtConfig.getAccessTokenExpiry())
+                    .requiresTwoFactor(false)
+                    .build();
 
         } catch (AuthenticationException e) {
-            userRepository.findByEmail(request.getEmail()).ifPresent(user -> logAudit(user, ipAddress, userAgent, "FAILURE"));
+            userRepository.findByEmail(request.getEmail())
+                    .ifPresent(user -> logAudit(user, ipAddress, userAgent, "FAILURE"));
             throw new InvalidCredentialsException("Invalid email or password");
         }
     }
@@ -104,16 +122,16 @@ public class AuthServiceImpl implements AuthService {
 
         String roleName = request.getRole() != null ? request.getRole() : "ROLE_PATIENT";
         Role role = roleRepository.findByName(roleName)
-            .orElseThrow(() -> new AuthException("Role not found: " + roleName));
+                .orElseThrow(() -> new AuthException("Role not found: " + roleName));
         user.setRoles(Set.of(role));
 
         User savedUser = userRepository.save(user);
 
         return RegisterResponse.builder()
-            .userId(savedUser.getId())
-            .email(savedUser.getEmail())
-            .message("User registered successfully. Please verify your email.")
-            .build();
+                .userId(savedUser.getId())
+                .email(savedUser.getEmail())
+                .message("User registered successfully. Please verify your email.")
+                .build();
     }
 
     @Override
@@ -121,7 +139,7 @@ public class AuthServiceImpl implements AuthService {
     public TokenResponse refreshToken(String refreshTokenString) {
         // 🔒 SECURITY: Refresh token rotation
         RefreshToken refreshToken = refreshTokenRepository.findByTokenHash(refreshTokenString)
-            .orElseThrow(() -> new AuthException("Invalid refresh token"));
+                .orElseThrow(() -> new AuthException("Invalid refresh token"));
 
         if (refreshToken.isRevoked() || refreshToken.getExpiryDate().isBefore(LocalDateTime.now())) {
             refreshTokenRepository.delete(refreshToken);
@@ -129,21 +147,21 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User user = refreshToken.getUser();
-        
+
         // Load UserDetails for access token generation
         UserDetails userDetails = new com.orthopedic.api.auth.security.CustomUserDetails(user);
         String newAccessToken = tokenProvider.generateAccessToken(userDetails);
-        
+
         // Rotate refresh token
         refreshTokenRepository.delete(refreshToken);
         String newRefreshTokenString = generateAndSaveRefreshToken(user, refreshToken.getDeviceInfo());
 
         return TokenResponse.builder()
-            .accessToken(newAccessToken)
-            .refreshToken(newRefreshTokenString)
-            .tokenType("Bearer")
-            .expiresIn(jwtConfig.getAccessTokenExpiry())
-            .build();
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshTokenString)
+                .tokenType("Bearer")
+                .expiresIn(jwtConfig.getAccessTokenExpiry())
+                .build();
     }
 
     @Override
@@ -151,13 +169,13 @@ public class AuthServiceImpl implements AuthService {
     public void logout(String accessToken, String refreshTokenString) {
         // Blacklist access token
         tokenProvider.blacklistToken(accessToken, jwtConfig.getAccessTokenExpiry());
-        
+
         // Revoke refresh token
         refreshTokenRepository.findByTokenHash(refreshTokenString)
-            .ifPresent(token -> {
-                token.setRevoked(true);
-                refreshTokenRepository.save(token);
-            });
+                .ifPresent(token -> {
+                    token.setRevoked(true);
+                    refreshTokenRepository.save(token);
+                });
     }
 
     @Override

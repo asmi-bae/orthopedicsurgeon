@@ -1,9 +1,7 @@
 package com.orthopedic.api.config;
 
 import com.orthopedic.api.auth.security.JwtTokenProvider;
-import com.orthopedic.api.auth.service.CustomUserDetailsService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import com.orthopedic.api.auth.security.CustomUserDetailsService;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -15,12 +13,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-@Slf4j
-@RequiredArgsConstructor
 public class WebSocketAuthInterceptor implements ChannelInterceptor {
 
     private final JwtTokenProvider tokenProvider;
     private final CustomUserDetailsService userDetailsService;
+
+    public WebSocketAuthInterceptor(JwtTokenProvider tokenProvider, CustomUserDetailsService userDetailsService) {
+        this.tokenProvider = tokenProvider;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {

@@ -13,7 +13,6 @@ import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +23,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/patients")
-@RequiredArgsConstructor
 @Tag(name = "Patient Management", description = "Endpoints for managing patient profiles and medical records")
 public class PatientController extends BaseController {
 
     private final PatientService patientService;
+
+    public PatientController(PatientService patientService) {
+        this.patientService = patientService;
+    }
 
     @GetMapping
     @Operation(summary = "List all patients with filters (Admin/Staff/Doctor only)")
@@ -38,10 +40,10 @@ public class PatientController extends BaseController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "DESC") String direction) {
-        
-        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction, 
+
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction,
                 Arrays.asList("dateOfBirth", "createdAt", "status"));
-        
+
         return ok(patientService.getAllPatients(filters, pageable));
     }
 
@@ -54,7 +56,8 @@ public class PatientController extends BaseController {
     @PostMapping
     @Operation(summary = "Create a new patient profile (Admin/Staff only)")
     public ResponseEntity<ApiResponse<PatientResponse>> create(@Valid @RequestBody CreatePatientRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(patientService.createPatient(request)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(patientService.createPatient(request)));
     }
 
     @GetMapping("/{id}/history")

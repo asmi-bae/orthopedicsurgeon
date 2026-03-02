@@ -10,7 +10,6 @@ import com.orthopedic.api.shared.dto.PageResponse;
 import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +19,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/notifications")
-@RequiredArgsConstructor
 @Tag(name = "Notification Management", description = "Endpoints for user alerts and notifications")
 public class NotificationController extends BaseController {
 
     private final NotificationService notificationService;
+
+    public NotificationController(NotificationService notificationService) {
+        this.notificationService = notificationService;
+    }
 
     @GetMapping
     @Operation(summary = "Get current user's notifications")
@@ -34,10 +36,10 @@ public class NotificationController extends BaseController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "DESC") String direction) {
-        
-        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction, 
+
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction,
                 Arrays.asList("createdAt", "status"));
-        
+
         return ok(notificationService.getMyNotifications(currentUser, pageable));
     }
 

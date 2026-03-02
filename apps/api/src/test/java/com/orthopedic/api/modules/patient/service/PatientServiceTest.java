@@ -7,7 +7,6 @@ import com.orthopedic.api.modules.patient.dto.response.PatientResponse;
 import com.orthopedic.api.modules.patient.entity.Patient;
 import com.orthopedic.api.modules.patient.mapper.PatientMapper;
 import com.orthopedic.api.modules.patient.repository.PatientRepository;
-import com.orthopedic.api.shared.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

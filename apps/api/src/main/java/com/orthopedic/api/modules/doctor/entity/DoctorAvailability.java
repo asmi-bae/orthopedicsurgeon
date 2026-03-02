@@ -2,17 +2,13 @@ package com.orthopedic.api.modules.doctor.entity;
 
 import com.orthopedic.api.shared.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "doctor_availability", indexes = {
-    @Index(name = "idx_doctor_availability_doctor_id", columnList = "doctor_id")
+        @Index(name = "idx_doctor_availability_doctor_id", columnList = "doctor_id")
 })
 public class DoctorAvailability extends BaseEntity {
 
@@ -35,4 +31,52 @@ public class DoctorAvailability extends BaseEntity {
 
     @Column(nullable = false)
     private Integer maxAppointmentsPerSlot = 1;
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public Boolean getIsAvailable() {
+        return isAvailable;
+    }
+
+    public void setIsAvailable(Boolean isAvailable) {
+        this.isAvailable = isAvailable;
+    }
+
+    public Integer getMaxAppointmentsPerSlot() {
+        return maxAppointmentsPerSlot;
+    }
+
+    public void setMaxAppointmentsPerSlot(Integer maxAppointmentsPerSlot) {
+        this.maxAppointmentsPerSlot = maxAppointmentsPerSlot;
+    }
 }

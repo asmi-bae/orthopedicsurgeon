@@ -8,6 +8,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import org.mapstruct.AfterMapping;
+import org.mapstruct.MappingTarget;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AppointmentMapper {
 
@@ -18,10 +21,10 @@ public interface AppointmentMapper {
     Appointment toEntity(BookAppointmentRequest request);
 
     @Mapping(target = "patient.id", source = "patient.id")
-    @Mapping(target = "patient.fullName", expression = "java(appointment.getPatient().getUser().getFirstName() + \" \" + appointment.getPatient().getUser().getLastName())")
+    @Mapping(target = "patient.fullName", ignore = true)
     @Mapping(target = "patient.phone", source = "patient.user.phone")
     @Mapping(target = "doctor.id", source = "doctor.id")
-    @Mapping(target = "doctor.fullName", expression = "java(appointment.getDoctor().getUser().getFirstName() + \" \" + appointment.getDoctor().getUser().getLastName())")
+    @Mapping(target = "doctor.fullName", ignore = true)
     @Mapping(target = "doctor.specialization", source = "doctor.specialization")
     @Mapping(target = "service.id", source = "service.id")
     @Mapping(target = "service.name", source = "service.name")
@@ -31,8 +34,28 @@ public interface AppointmentMapper {
     @Mapping(target = "hospital.city", source = "hospital.city")
     AppointmentResponse toResponse(Appointment appointment);
 
-    @Mapping(target = "doctorName", expression = "java(appointment.getDoctor().getUser().getFirstName() + \" \" + appointment.getDoctor().getUser().getLastName())")
-    @Mapping(target = "patientName", expression = "java(appointment.getPatient().getUser().getFirstName() + \" \" + appointment.getPatient().getUser().getLastName())")
+    @AfterMapping
+    default void finalizeResponse(@MappingTarget AppointmentResponse response, Appointment appointment) {
+        if (appointment.getPatient() != null && appointment.getPatient().getUser() != null) {
+            response.getPatient().setFullName(appointment.getPatient().getUser().getFirstName() + " " + appointment.getPatient().getUser().getLastName());
+        }
+        if (appointment.getDoctor() != null && appointment.getDoctor().getUser() != null) {
+            response.getDoctor().setFullName(appointment.getDoctor().getUser().getFirstName() + " " + appointment.getDoctor().getUser().getLastName());
+        }
+    }
+
+    @Mapping(target = "doctorName", ignore = true)
+    @Mapping(target = "patientName", ignore = true)
     @Mapping(target = "serviceName", source = "service.name")
     AppointmentSummaryResponse toSummaryResponse(Appointment appointment);
+
+    @AfterMapping
+    default void finalizeSummary(@MappingTarget AppointmentSummaryResponse response, Appointment appointment) {
+        if (appointment.getPatient() != null && appointment.getPatient().getUser() != null) {
+            response.setPatientName(appointment.getPatient().getUser().getFirstName() + " " + appointment.getPatient().getUser().getLastName());
+        }
+        if (appointment.getDoctor() != null && appointment.getDoctor().getUser() != null) {
+            response.setDoctorName(appointment.getDoctor().getUser().getFirstName() + " " + appointment.getDoctor().getUser().getLastName());
+        }
+    }
 }

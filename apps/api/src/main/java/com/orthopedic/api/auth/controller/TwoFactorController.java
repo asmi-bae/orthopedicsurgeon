@@ -10,18 +10,22 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 @RestController
 @RequestMapping("/api/v1/auth/2fa")
-@RequiredArgsConstructor
 @Tag(name = "Two Factor Authentication", description = "Endpoints for 2FA setup and verification")
 public class TwoFactorController {
 
     private final TwoFactorService twoFactorService;
+
+    public TwoFactorController(TwoFactorService twoFactorService) {
+        this.twoFactorService = twoFactorService;
+    }
 
     @PostMapping("/setup")
     @Operation(summary = "Initiate TOTP setup for admin/doctor")
@@ -44,8 +48,10 @@ public class TwoFactorController {
 
     @PostMapping("/verify")
     @Operation(summary = "Complete login with TOTP verification")
-    public ResponseEntity<TokenResponse> verify(@Valid @RequestBody TwoFactorRequest request, HttpServletRequest servletRequest) {
+    public ResponseEntity<TokenResponse> verify(@Valid @RequestBody TwoFactorRequest request,
+            HttpServletRequest servletRequest) {
         String userAgent = servletRequest.getHeader("User-Agent");
-        return ResponseEntity.ok(twoFactorService.verifyTotpLogin(request.getTempToken(), request.getTotpCode(), userAgent));
+        return ResponseEntity
+                .ok(twoFactorService.verifyTotpLogin(request.getTempToken(), request.getTotpCode(), userAgent));
     }
 }

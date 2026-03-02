@@ -4,8 +4,6 @@ import com.orthopedic.api.config.JwtConfig;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,13 +23,20 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
-@Slf4j
-@RequiredArgsConstructor
 public class JwtTokenProvider {
+    private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
 
     private final JwtConfig jwtConfig;
     private final RedisTemplate<String, Object> redisTemplate;
+
+    public JwtTokenProvider(JwtConfig jwtConfig, RedisTemplate<String, Object> redisTemplate) {
+        this.jwtConfig = jwtConfig;
+        this.redisTemplate = redisTemplate;
+    }
 
     private PrivateKey privateKey;
     private PublicKey publicKey;
@@ -53,33 +58,32 @@ public class JwtTokenProvider {
 
     public String generateAccessToken(UserDetails userDetails) {
         Map<String, Object> claims = Map.of(
-            "roles", userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList())
-        );
+                "roles", userDetails.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList()));
 
         return Jwts.builder()
-            .setClaims(claims)
-            .setSubject(userDetails.getUsername())
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getAccessTokenExpiry() * 1000))
-            .signWith(privateKey, SignatureAlgorithm.RS256)
-            .compact();
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getAccessTokenExpiry() * 1000))
+                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .compact();
     }
 
     public String generateRefreshToken(Long userId) {
         String refreshToken = Jwts.builder()
-            .setSubject(userId.toString())
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getRefreshTokenExpiry() * 1000))
-            .signWith(privateKey, SignatureAlgorithm.RS256)
-            .compact();
+                .setSubject(userId.toString())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getRefreshTokenExpiry() * 1000))
+                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .compact();
         return refreshToken;
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(publicKey).build().parseClaimsJws(token);
+            Jwts.parser().verifyWith(publicKey).build().parseSignedClaims(token);
             return !isTokenBlacklisted(token);
         } catch (JwtException | IllegalArgumentException e) {
             log.error("Invalid JWT token: {}", e.getMessage());
@@ -88,8 +92,8 @@ public class JwtTokenProvider {
     }
 
     public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(publicKey).build()
-            .parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().verifyWith(publicKey).build()
+                .parseSignedClaims(token).getPayload().getSubject();
     }
 
     public boolean isTokenBlacklisted(String token) {
@@ -103,9 +107,9 @@ public class JwtTokenProvider {
     private PrivateKey loadPrivateKey(String path) throws Exception {
         byte[] keyBytes = Files.readAllBytes(Paths.get(path));
         String privateKeyPEM = new String(keyBytes)
-            .replace("-----BEGIN PRIVATE KEY-----", "")
-            .replace("-----END PRIVATE KEY-----", "")
-            .replaceAll("\\s", "");
+                .replace("-----BEGIN PRIVATE KEY-----", "")
+                .replace("-----END PRIVATE KEY-----", "")
+                .replaceAll("\\s", "");
         byte[] decoded = Base64.getDecoder().decode(privateKeyPEM);
         PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
         KeyFactory kf = KeyFactory.getInstance("RSA");
@@ -115,9 +119,9 @@ public class JwtTokenProvider {
     private PublicKey loadPublicKey(String path) throws Exception {
         byte[] keyBytes = Files.readAllBytes(Paths.get(path));
         String publicKeyPEM = new String(keyBytes)
-            .replace("-----BEGIN PUBLIC KEY-----", "")
-            .replace("-----END PUBLIC KEY-----", "")
-            .replaceAll("\\s", "");
+                .replace("-----BEGIN PUBLIC KEY-----", "")
+                .replace("-----END PUBLIC KEY-----", "")
+                .replaceAll("\\s", "");
         byte[] decoded = Base64.getDecoder().decode(publicKeyPEM);
         X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
         KeyFactory kf = KeyFactory.getInstance("RSA");

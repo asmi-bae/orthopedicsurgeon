@@ -2,8 +2,8 @@ package com.orthopedic.api.shared.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,14 +17,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService {
+    private static final Logger log = LoggerFactory.getLogger(EmailServiceImpl.class);
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
 
-    @Value("${spring.mail.username}")
+    public EmailServiceImpl(JavaMailSender mailSender, TemplateEngine templateEngine) {
+        this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
+    }
+
+    @Value("${SMTP_FROM}")
     private String fromEmail;
 
     @Override
@@ -32,9 +36,9 @@ public class EmailServiceImpl implements EmailService {
     public void sendHtmlEmail(String to, String subject, String templateName, Map<String, Object> variables) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, 
-                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, 
-                StandardCharsets.UTF_8.name());
+            MimeMessageHelper helper = new MimeMessageHelper(message,
+                    MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                    StandardCharsets.UTF_8.name());
 
             Context context = new Context();
             context.setVariables(variables);

@@ -2,6 +2,7 @@ package com.orthopedic.api.modules.lab.service;
 
 import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.modules.appointment.repository.AppointmentRepository;
+import com.orthopedic.api.modules.doctor.entity.Doctor;
 import com.orthopedic.api.modules.doctor.repository.DoctorRepository;
 import com.orthopedic.api.modules.lab.dto.request.CreateLabReportRequest;
 import com.orthopedic.api.modules.lab.dto.request.UpdateLabReportResultRequest;
@@ -9,10 +10,10 @@ import com.orthopedic.api.modules.lab.dto.response.LabReportResponse;
 import com.orthopedic.api.modules.lab.entity.LabReport;
 import com.orthopedic.api.modules.lab.mapper.LabReportMapper;
 import com.orthopedic.api.modules.lab.repository.LabReportRepository;
+import com.orthopedic.api.modules.patient.entity.Patient;
 import com.orthopedic.api.modules.patient.repository.PatientRepository;
 import com.orthopedic.api.shared.dto.PageResponse;
 import com.orthopedic.api.shared.exception.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,7 +26,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class LabReportServiceImpl implements LabReportService {
 
@@ -34,6 +34,18 @@ public class LabReportServiceImpl implements LabReportService {
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
     private final LabReportMapper labReportMapper;
+
+    public LabReportServiceImpl(LabReportRepository labReportRepository,
+                               AppointmentRepository appointmentRepository,
+                               PatientRepository patientRepository,
+                               DoctorRepository doctorRepository,
+                               LabReportMapper labReportMapper) {
+        this.labReportRepository = labReportRepository;
+        this.appointmentRepository = appointmentRepository;
+        this.patientRepository = patientRepository;
+        this.doctorRepository = doctorRepository;
+        this.labReportMapper = labReportMapper;
+    }
 
     @Override
     @com.orthopedic.api.modules.audit.annotation.LogMutation(action = "CREATE_LAB_REQUEST", entityName = "LabReport")

@@ -3,12 +3,10 @@ package com.orthopedic.api.modules.payment.dto.request;
 import com.orthopedic.api.modules.payment.entity.Payment;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Data
 public class CreatePaymentRequest {
     private UUID appointmentId;
 
@@ -23,4 +21,44 @@ public class CreatePaymentRequest {
     private Payment.PaymentMethod paymentMethod;
 
     private String transactionId;
+
+    public UUID getAppointmentId() {
+        return appointmentId;
+    }
+
+    public void setAppointmentId(UUID appointmentId) {
+        this.appointmentId = appointmentId;
+    }
+
+    public UUID getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(UUID patientId) {
+        this.patientId = patientId;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public Payment.PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(Payment.PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
 }

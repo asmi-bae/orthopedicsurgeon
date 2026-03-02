@@ -29,10 +29,14 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class DoctorServiceTest {
 
-    @Mock private DoctorRepository doctorRepository;
-    @Mock private HospitalRepository hospitalRepository;
-    @Mock private UserRepository userRepository;
-    @Mock private DoctorMapper doctorMapper;
+    @Mock
+    private DoctorRepository doctorRepository;
+    @Mock
+    private HospitalRepository hospitalRepository;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private DoctorMapper doctorMapper;
 
     @InjectMocks
     private DoctorServiceImpl doctorService;
@@ -52,7 +56,7 @@ class DoctorServiceTest {
     void getDoctorById_Success() {
         when(doctorRepository.findById(doctorId)).thenReturn(Optional.of(doctor));
         when(doctorMapper.toResponse(doctor)).thenReturn(new DoctorResponse());
-        when(doctorRepository.countTotalAppointments(doctorId)).thenReturn(10L);
+        when(doctorRepository.countTotalAppointments(doctorId)).thenReturn(10);
 
         DoctorResponse response = doctorService.getDoctorById(doctorId);
 
@@ -73,7 +77,7 @@ class DoctorServiceTest {
         Page<Doctor> page = new PageImpl<>(Collections.singletonList(doctor));
 
         when(doctorRepository.findAvailableDoctors(any(), any(), any(), any(), any())).thenReturn(page);
-        
+
         doctorService.getAllDoctors(filters, pageable);
 
         verify(doctorRepository).findAvailableDoctors(any(), any(), any(), any(), any());

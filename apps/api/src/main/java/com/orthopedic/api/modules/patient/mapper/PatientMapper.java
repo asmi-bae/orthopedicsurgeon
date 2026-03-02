@@ -31,15 +31,16 @@ public interface PatientMapper {
     PatientSummaryResponse toSummaryResponse(Patient patient);
 
     PatientAllergy toAllergyEntity(CreatePatientRequest.AllergyRequest request);
-    
+
     PatientResponse.AllergyResponse toAllergyResponse(PatientAllergy allergy);
 
     PatientMedicalCondition toConditionEntity(CreatePatientRequest.ConditionRequest request);
-    
+
     PatientResponse.ConditionResponse toConditionResponse(PatientMedicalCondition condition);
 
     default int calculateAge(LocalDate dateOfBirth) {
-        if (dateOfBirth == null) return 0;
+        if (dateOfBirth == null)
+            return 0;
         return Period.between(dateOfBirth, LocalDate.now()).getYears();
     }
 }

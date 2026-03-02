@@ -12,7 +12,6 @@ import com.orthopedic.api.modules.prescription.repository.PrescriptionRepository
 import com.orthopedic.api.shared.dto.PageResponse;
 import com.orthopedic.api.shared.exception.BusinessException;
 import com.orthopedic.api.shared.exception.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -25,7 +24,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class PrescriptionServiceImpl implements PrescriptionService {
 
@@ -33,6 +31,16 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     private final AppointmentRepository appointmentRepository;
     private final com.orthopedic.api.modules.patient.repository.PatientRepository patientRepository;
     private final PrescriptionMapper prescriptionMapper;
+
+    public PrescriptionServiceImpl(PrescriptionRepository prescriptionRepository,
+            AppointmentRepository appointmentRepository,
+            com.orthopedic.api.modules.patient.repository.PatientRepository patientRepository,
+            PrescriptionMapper prescriptionMapper) {
+        this.prescriptionRepository = prescriptionRepository;
+        this.appointmentRepository = appointmentRepository;
+        this.patientRepository = patientRepository;
+        this.prescriptionMapper = prescriptionMapper;
+    }
 
     @Override
     @com.orthopedic.api.modules.audit.annotation.LogMutation(action = "CREATE_PRESCRIPTION", entityName = "Prescription")
@@ -74,9 +82,9 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public PrescriptionResponse getPrescriptionById(UUID id, User currentUser) {
         Prescription prescription = prescriptionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
-        
+
         validateOwnership(prescription, currentUser);
-        
+
         return prescriptionMapper.toResponse(prescription);
     }
 
@@ -85,15 +93,16 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     public PrescriptionResponse getPrescriptionByAppointment(UUID appointmentId, User currentUser) {
         Prescription prescription = prescriptionRepository.findByAppointmentId(appointmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Prescription not found for this appointment"));
-        
+
         validateOwnership(prescription, currentUser);
-        
+
         return prescriptionMapper.toResponse(prescription);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<PrescriptionResponse> getPatientPrescriptions(UUID patientId, Pageable pageable, User currentUser) {
+    public PageResponse<PrescriptionResponse> getPatientPrescriptions(UUID patientId, Pageable pageable,
+            User currentUser) {
         validatePatientAccess(patientId, currentUser);
         Page<Prescription> page = prescriptionRepository.findAllByPatientId(patientId, pageable);
         return PageResponse.fromPage(page.map(prescriptionMapper::toResponse));
@@ -118,7 +127,7 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         if (hasAnyRole(currentUser, "ROLE_ADMIN", "ROLE_STAFF", "ROLE_SUPER_ADMIN")) {
             return;
         }
-        
+
         if (hasRole(currentUser, "ROLE_PATIENT")) {
             if (!prescription.getPatient().getUser().getId().equals(currentUser.getId())) {
                 throw new AccessDeniedException("Access denied: Not your prescription");

@@ -5,7 +5,6 @@ import com.orthopedic.api.modules.hospital.dto.request.CreateServiceRequest;
 import com.orthopedic.api.modules.hospital.dto.request.UpdateHospitalRequest;
 import com.orthopedic.api.modules.hospital.dto.request.UpdateServiceRequest;
 import com.orthopedic.api.modules.hospital.dto.response.HospitalResponse;
-import com.orthopedic.api.modules.hospital.dto.response.HospitalSummaryResponse;
 import com.orthopedic.api.modules.hospital.dto.response.ServiceResponse;
 import com.orthopedic.api.modules.hospital.entity.Hospital;
 import org.springframework.data.domain.Page;

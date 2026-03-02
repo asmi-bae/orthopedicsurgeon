@@ -7,6 +7,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import org.mapstruct.AfterMapping;
+import org.mapstruct.MappingTarget;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface LabReportMapper {
 
@@ -17,9 +20,19 @@ public interface LabReportMapper {
 
     @Mapping(target = "appointmentId", source = "appointment.id")
     @Mapping(target = "patient.id", source = "patient.id")
-    @Mapping(target = "patient.fullName", expression = "java(report.getPatient().getUser().getFirstName() + \" \" + report.getPatient().getUser().getLastName())")
+    @Mapping(target = "patient.fullName", ignore = true)
     @Mapping(target = "doctor.id", source = "doctor.id")
-    @Mapping(target = "doctor.fullName", expression = "java(report.getDoctor() != null ? report.getDoctor().getUser().getFirstName() + \" \" + report.getDoctor().getUser().getLastName() : null)")
+    @Mapping(target = "doctor.fullName", ignore = true)
     @Mapping(target = "doctor.specialization", source = "doctor.specialization")
     LabReportResponse toResponse(LabReport report);
+
+    @AfterMapping
+    default void finalizeResponse(@MappingTarget LabReportResponse response, LabReport report) {
+        if (report.getPatient() != null && report.getPatient().getUser() != null) {
+            response.getPatient().setFullName(report.getPatient().getUser().getFirstName() + " " + report.getPatient().getUser().getLastName());
+        }
+        if (report.getDoctor() != null && report.getDoctor().getUser() != null) {
+            response.getDoctor().setFullName(report.getDoctor().getUser().getFirstName() + " " + report.getDoctor().getUser().getLastName());
+        }
+    }
 }

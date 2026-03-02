@@ -9,7 +9,6 @@ import com.orthopedic.api.modules.lab.mapper.LabReportMapper;
 import com.orthopedic.api.modules.lab.repository.LabReportRepository;
 import com.orthopedic.api.modules.patient.entity.Patient;
 import com.orthopedic.api.modules.patient.repository.PatientRepository;
-import com.orthopedic.api.shared.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,9 +28,12 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class LabReportServiceTest {
 
-    @Mock private LabReportRepository labReportRepository;
-    @Mock private LabReportMapper labReportMapper;
-    @Mock private PatientRepository patientRepository;
+    @Mock
+    private LabReportRepository labReportRepository;
+    @Mock
+    private LabReportMapper labReportMapper;
+    @Mock
+    private PatientRepository patientRepository;
 
     @InjectMocks
     private LabReportServiceImpl labReportService;
@@ -54,7 +56,7 @@ class LabReportServiceTest {
         report = new LabReport();
         report.setId(UUID.randomUUID());
         report.setPatient(patient);
-        report.setStatus(LabReport.ReportStatus.PENDING);
+        report.setStatus(LabReport.LabReportStatus.PENDING);
     }
 
     @Test
@@ -97,7 +99,7 @@ class LabReportServiceTest {
     @Test
     void updateReportResult_Success() {
         UpdateLabReportResultRequest request = new UpdateLabReportResultRequest();
-        request.setResultData("Normal");
+        request.setResultSummary("Normal");
 
         when(labReportRepository.findById(report.getId())).thenReturn(Optional.of(report));
         when(labReportRepository.save(any())).thenReturn(report);
@@ -106,6 +108,6 @@ class LabReportServiceTest {
         LabReportResponse response = labReportService.updateReportResult(report.getId(), request);
 
         assertNotNull(response);
-        assertEquals(LabReport.ReportStatus.COMPLETED, report.getStatus());
+        assertEquals(LabReport.LabReportStatus.COMPLETED, report.getStatus());
     }
 }

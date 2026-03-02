@@ -1,6 +1,6 @@
 package com.orthopedic.api.config;
 
-import lombok.RequiredArgsConstructor;
+import com.orthopedic.api.auth.security.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,20 +22,19 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private static final String[] PUBLIC_URLS = {
-        "/api/v1/auth/login",
-        "/api/v1/auth/register",
-        "/api/v1/auth/refresh",
-        "/api/v1/auth/verify-email/**",
-        "/api/v1/auth/forgot-password/**",
-        "/api/v1/auth/reset-password/**",
-        "/v3/api-docs/**",
-        "/swagger-ui/**",
-        "/oauth2/**",
-        "/ws/**"
+            "/api/v1/auth/login",
+            "/api/v1/auth/register",
+            "/api/v1/auth/refresh",
+            "/api/v1/auth/verify-email/**",
+            "/api/v1/auth/forgot-password/**",
+            "/api/v1/auth/reset-password/**",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/oauth2/**",
+            "/ws/**"
     };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -45,29 +44,43 @@ public class SecurityConfig {
     private final OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
 
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
+            SecurityHeadersFilter securityHeadersFilter,
+            RateLimitingFilter rateLimitingFilter,
+            OAuth2UserService oauth2UserService,
+            OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
+            OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.securityHeadersFilter = securityHeadersFilter;
+        this.rateLimitingFilter = rateLimitingFilter;
+        this.oauth2UserService = oauth2UserService;
+        this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
+        this.oauth2AuthenticationFailureHandler = oauth2AuthenticationFailureHandler;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // 🔒 SECURITY: disable CSRF as we use stateless JWT
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(PUBLIC_URLS).permitAll()
-                .requestMatchers("/actuator/health", "/actuator/info").permitAll()
-                .requestMatchers("/actuator/**").hasRole("SUPER_ADMIN")
-                .anyRequest().authenticated()
-            )
-            .oauth2Login(oauth2 -> oauth2
-                .userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService))
-                .successHandler(oauth2AuthenticationSuccessHandler)
-                .failureHandler(oauth2AuthenticationFailureHandler)
-            );
+                // 🔒 SECURITY: disable CSRF as we use stateless JWT
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(PUBLIC_URLS).permitAll()
+                        .requestMatchers("/actuator/health", "/actuator/info").permitAll()
+                        .requestMatchers("/actuator/**").hasRole("SUPER_ADMIN")
+                        .anyRequest().authenticated())
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService))
+                        .successHandler(oauth2AuthenticationSuccessHandler)
+                        .failureHandler(oauth2AuthenticationFailureHandler));
 
         // Add Filters
         http.addFilterBefore(securityHeadersFilter, org.springframework.security.web.header.HeaderWriterFilter.class);
-        http.addFilterBefore(rateLimitingFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(jwtAuthenticationFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(rateLimitingFilter,
+                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter,
+                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

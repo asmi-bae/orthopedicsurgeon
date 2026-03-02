@@ -14,7 +14,6 @@ import com.orthopedic.api.modules.patient.mapper.PatientMapper;
 import com.orthopedic.api.modules.patient.repository.PatientRepository;
 import com.orthopedic.api.shared.dto.PageResponse;
 import com.orthopedic.api.shared.exception.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,13 +26,20 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
     private final UserRepository userRepository;
     private final PatientMapper patientMapper;
+
+    public PatientServiceImpl(PatientRepository patientRepository,
+                              UserRepository userRepository,
+                              PatientMapper patientMapper) {
+        this.patientRepository = patientRepository;
+        this.userRepository = userRepository;
+        this.patientMapper = patientMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)

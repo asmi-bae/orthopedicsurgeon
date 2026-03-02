@@ -8,7 +8,6 @@ import com.orthopedic.api.shared.dto.PageResponse;
 import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,12 +17,15 @@ import java.util.Arrays;
 
 @RestController
 @RequestMapping("/api/v1/audit")
-@RequiredArgsConstructor
 @Tag(name = "Audit Management", description = "Endpoints for viewing system mutation logs (Super Admin only)")
 @PreAuthorize("hasRole('SUPER_ADMIN')")
 public class AuditController extends BaseController {
 
     private final AuditService auditService;
+
+    public AuditController(AuditService auditService) {
+        this.auditService = auditService;
+    }
 
     @GetMapping
     @Operation(summary = "Get all system audit logs")
@@ -32,10 +34,10 @@ public class AuditController extends BaseController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "DESC") String direction) {
-        
-        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction, 
+
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction,
                 Arrays.asList("createdAt", "performedBy", "entityName"));
-        
+
         return ok(auditService.getAllLogs(pageable));
     }
 
@@ -46,7 +48,7 @@ public class AuditController extends BaseController {
             @PathVariable String id,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        
+
         Pageable pageable = PageableUtils.createPageable(page, size, "createdAt", "DESC", null);
         return ok(auditService.getLogsByEntity(name, id, pageable));
     }

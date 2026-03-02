@@ -12,7 +12,6 @@ import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -27,11 +26,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/doctors")
-@RequiredArgsConstructor
 @Tag(name = "Doctor Management", description = "Endpoints for managing doctor profiles and availability")
 public class DoctorController extends BaseController {
 
     private final DoctorService doctorService;
+
+    public DoctorController(DoctorService doctorService) {
+        this.doctorService = doctorService;
+    }
 
     @GetMapping
     @Operation(summary = "List all active doctors with filters")
@@ -41,10 +43,10 @@ public class DoctorController extends BaseController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "DESC") String direction) {
-        
-        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction, 
+
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction,
                 Arrays.asList("specialization", "consultationFee", "experienceYears", "createdAt"));
-        
+
         return ok(doctorService.getAllDoctors(filters, pageable));
     }
 

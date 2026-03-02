@@ -14,7 +14,6 @@ import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +24,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/appointments")
-@RequiredArgsConstructor
 @Tag(name = "Appointment Management", description = "Endpoints for booking and managing appointments")
 public class AppointmentController extends BaseController {
 
     private final AppointmentService appointmentService;
+
+    public AppointmentController(AppointmentService appointmentService) {
+        this.appointmentService = appointmentService;
+    }
 
     @GetMapping
     @Operation(summary = "List appointments based on user role and filters")
@@ -40,17 +42,17 @@ public class AppointmentController extends BaseController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "DESC") String direction) {
-        
-        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction, 
+
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction,
                 Arrays.asList("appointmentDate", "startTime", "status", "createdAt"));
-        
+
         return ok(appointmentService.getAppointments(filters, pageable, currentUser));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get appointment detail by ID")
     public ResponseEntity<ApiResponse<AppointmentResponse>> getById(
-            @PathVariable UUID id, 
+            @PathVariable UUID id,
             @CurrentUser User currentUser) {
         return ok(appointmentService.getAppointmentById(id, currentUser));
     }
@@ -58,10 +60,10 @@ public class AppointmentController extends BaseController {
     @PostMapping
     @Operation(summary = "Book a new appointment")
     public ResponseEntity<ApiResponse<AppointmentResponse>> book(
-            @Valid @RequestBody BookAppointmentRequest request, 
+            @Valid @RequestBody BookAppointmentRequest request,
             @CurrentUser User currentUser) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Appointment booked successfully", 
+                .body(ApiResponse.success("Appointment booked successfully",
                         appointmentService.bookAppointment(request, currentUser)));
     }
 
@@ -86,8 +88,8 @@ public class AppointmentController extends BaseController {
     @PostMapping("/{id}/cancel")
     @Operation(summary = "Cancel an appointment with a reason")
     public ResponseEntity<ApiResponse<AppointmentResponse>> cancel(
-            @PathVariable UUID id, 
-            @RequestParam String reason, 
+            @PathVariable UUID id,
+            @RequestParam String reason,
             @CurrentUser User currentUser) {
         return ok("Appointment cancelled", appointmentService.cancelAppointment(id, reason, currentUser));
     }

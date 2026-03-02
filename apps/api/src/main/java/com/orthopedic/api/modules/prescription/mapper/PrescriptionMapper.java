@@ -8,6 +8,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import org.mapstruct.AfterMapping;
+import org.mapstruct.MappingTarget;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PrescriptionMapper {
 
@@ -19,13 +22,23 @@ public interface PrescriptionMapper {
 
     @Mapping(target = "appointmentId", source = "appointment.id")
     @Mapping(target = "patient.id", source = "patient.id")
-    @Mapping(target = "patient.fullName", expression = "java(prescription.getPatient().getUser().getFirstName() + \" \" + prescription.getPatient().getUser().getLastName())")
+    @Mapping(target = "patient.fullName", ignore = true)
     @Mapping(target = "patient.phone", source = "patient.user.phone")
     @Mapping(target = "doctor.id", source = "doctor.id")
-    @Mapping(target = "doctor.fullName", expression = "java(prescription.getDoctor().getUser().getFirstName() + \" \" + prescription.getDoctor().getUser().getLastName())")
+    @Mapping(target = "doctor.fullName", ignore = true)
     @Mapping(target = "doctor.specialization", source = "doctor.specialization")
     @Mapping(target = "doctor.hospitalName", source = "doctor.hospital.name")
     PrescriptionResponse toResponse(Prescription prescription);
+
+    @AfterMapping
+    default void finalizeResponse(@MappingTarget PrescriptionResponse response, Prescription prescription) {
+        if (prescription.getPatient() != null && prescription.getPatient().getUser() != null) {
+            response.getPatient().setFullName(prescription.getPatient().getUser().getFirstName() + " " + prescription.getPatient().getUser().getLastName());
+        }
+        if (prescription.getDoctor() != null && prescription.getDoctor().getUser() != null) {
+            response.getDoctor().setFullName(prescription.getDoctor().getUser().getFirstName() + " " + prescription.getDoctor().getUser().getLastName());
+        }
+    }
 
     PrescriptionMedicine toMedicineEntity(CreatePrescriptionRequest.MedicineRequest request);
     

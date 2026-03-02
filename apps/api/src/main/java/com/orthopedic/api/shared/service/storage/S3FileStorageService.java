@@ -1,7 +1,5 @@
 package com.orthopedic.api.shared.service.storage;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.InputStreamResource;
@@ -18,14 +16,21 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
-@Slf4j
 @Profile("prod")
-@RequiredArgsConstructor
 public class S3FileStorageService implements FileStorageService {
+    private static final Logger log = LoggerFactory.getLogger(S3FileStorageService.class);
 
     private final S3Client s3Client;
     private final S3Presigner s3Presigner;
+
+    public S3FileStorageService(S3Client s3Client, S3Presigner s3Presigner) {
+        this.s3Client = s3Client;
+        this.s3Presigner = s3Presigner;
+    }
 
     @Value("${aws.s3.bucket}")
     private String bucket;
@@ -33,7 +38,8 @@ public class S3FileStorageService implements FileStorageService {
     @Override
     public String uploadFile(MultipartFile file, String folder) {
         try {
-            return uploadFile(file.getInputStream(), file.getOriginalFilename(), file.getContentType(), file.getSize(), folder);
+            return uploadFile(file.getInputStream(), file.getOriginalFilename(), file.getContentType(), file.getSize(),
+                    folder);
         } catch (Exception e) {
             log.error("Failed to upload file to S3", e);
             throw new RuntimeException("File upload failed", e);
@@ -44,15 +50,15 @@ public class S3FileStorageService implements FileStorageService {
     public String uploadFile(InputStream inputStream, String filename, String contentType, long size, String folder) {
         try {
             String fileKey = folder + "/" + UUID.randomUUID() + "-" + filename;
-            
+
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-                .bucket(bucket)
-                .key(fileKey)
-                .contentType(contentType)
-                .build();
+                    .bucket(bucket)
+                    .key(fileKey)
+                    .contentType(contentType)
+                    .build();
 
             s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(inputStream, size));
-            
+
             return fileKey;
         } catch (Exception e) {
             log.error("Failed to upload stream to S3", e);
@@ -64,9 +70,9 @@ public class S3FileStorageService implements FileStorageService {
     public Resource downloadFile(String fileKey) {
         try {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(bucket)
-                .key(fileKey)
-                .build();
+                    .bucket(bucket)
+                    .key(fileKey)
+                    .build();
             return new InputStreamResource(s3Client.getObject(getObjectRequest));
         } catch (Exception e) {
             log.error("Failed to download file from S3", e);
@@ -78,9 +84,9 @@ public class S3FileStorageService implements FileStorageService {
     public void deleteFile(String fileKey) {
         try {
             DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                .bucket(bucket)
-                .key(fileKey)
-                .build();
+                    .bucket(bucket)
+                    .key(fileKey)
+                    .build();
             s3Client.deleteObject(deleteObjectRequest);
         } catch (Exception e) {
             log.error("Failed to delete file from S3", e);
@@ -91,14 +97,14 @@ public class S3FileStorageService implements FileStorageService {
     public String getFileUrl(String fileKey) {
         try {
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                .bucket(bucket)
-                .key(fileKey)
-                .build();
+                    .bucket(bucket)
+                    .key(fileKey)
+                    .build();
 
             GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofDays(7))
-                .getObjectRequest(getObjectRequest)
-                .build();
+                    .signatureDuration(Duration.ofDays(7))
+                    .getObjectRequest(getObjectRequest)
+                    .build();
 
             return s3Presigner.presignGetObject(presignRequest).url().toString();
         } catch (Exception e) {

@@ -15,7 +15,6 @@ import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +26,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/hospitals")
-@RequiredArgsConstructor
 @Tag(name = "Hospital Management", description = "Endpoints for managing hospitals and their services")
 public class HospitalController extends BaseController {
 
     private final HospitalService hospitalService;
+
+    public HospitalController(HospitalService hospitalService) {
+        this.hospitalService = hospitalService;
+    }
 
     @GetMapping
     @Operation(summary = "Get all hospitals with filtering and pagination")
@@ -42,10 +44,10 @@ public class HospitalController extends BaseController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "DESC") String direction) {
-        
-        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction, 
+
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction,
                 Arrays.asList("name", "city", "status", "createdAt"));
-        
+
         return ok(hospitalService.getAllHospitals(status, city, pageable));
     }
 
@@ -58,12 +60,14 @@ public class HospitalController extends BaseController {
     @PostMapping
     @Operation(summary = "Create a new hospital (Super Admin only)")
     public ResponseEntity<ApiResponse<HospitalResponse>> create(@Valid @RequestBody CreateHospitalRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(hospitalService.createHospital(request)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(hospitalService.createHospital(request)));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update hospital details")
-    public ResponseEntity<ApiResponse<HospitalResponse>> update(@PathVariable UUID id, @Valid @RequestBody UpdateHospitalRequest request) {
+    public ResponseEntity<ApiResponse<HospitalResponse>> update(@PathVariable UUID id,
+            @Valid @RequestBody UpdateHospitalRequest request) {
         return ok(hospitalService.updateHospital(id, request));
     }
 
@@ -82,16 +86,18 @@ public class HospitalController extends BaseController {
 
     @PostMapping("/{id}/services")
     @Operation(summary = "Add a service to a hospital")
-    public ResponseEntity<ApiResponse<ServiceResponse>> addService(@PathVariable UUID id, @Valid @RequestBody CreateServiceRequest request) {
+    public ResponseEntity<ApiResponse<ServiceResponse>> addService(@PathVariable UUID id,
+            @Valid @RequestBody CreateServiceRequest request) {
         request.setHospitalId(id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(hospitalService.createService(request)));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(hospitalService.createService(request)));
     }
 
     @PutMapping("/{id}/services/{serviceId}")
     @Operation(summary = "Update a hospital service")
     public ResponseEntity<ApiResponse<ServiceResponse>> updateService(
-            @PathVariable UUID id, 
-            @PathVariable UUID serviceId, 
+            @PathVariable UUID id,
+            @PathVariable UUID serviceId,
             @Valid @RequestBody UpdateServiceRequest request) {
         return ok(hospitalService.updateService(serviceId, request));
     }

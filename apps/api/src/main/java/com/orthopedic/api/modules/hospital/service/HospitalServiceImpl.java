@@ -13,7 +13,6 @@ import com.orthopedic.api.modules.hospital.repository.HospitalRepository;
 import com.orthopedic.api.modules.hospital.repository.ServiceRepository;
 import com.orthopedic.api.shared.exception.ResourceNotFoundException;
 import com.orthopedic.api.shared.exception.BusinessException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -27,13 +26,20 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
 public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalRepository hospitalRepository;
     private final ServiceRepository serviceRepository;
     private final HospitalMapper hospitalMapper;
+
+    public HospitalServiceImpl(HospitalRepository hospitalRepository,
+                               ServiceRepository serviceRepository,
+                               HospitalMapper hospitalMapper) {
+        this.hospitalRepository = hospitalRepository;
+        this.serviceRepository = serviceRepository;
+        this.hospitalMapper = hospitalMapper;
+    }
 
     @Override
     @Transactional(readOnly = true)

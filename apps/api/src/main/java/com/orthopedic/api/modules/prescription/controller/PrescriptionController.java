@@ -12,7 +12,6 @@ import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +23,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/prescriptions")
-@RequiredArgsConstructor
 @Tag(name = "Prescription Management", description = "Endpoints for creating and viewing prescriptions")
 public class PrescriptionController extends BaseController {
 
     private final PrescriptionService prescriptionService;
+
+    public PrescriptionController(PrescriptionService prescriptionService) {
+        this.prescriptionService = prescriptionService;
+    }
 
     @PostMapping
     @PreAuthorize("hasRole('DOCTOR')")
@@ -37,7 +39,7 @@ public class PrescriptionController extends BaseController {
             @Valid @RequestBody CreatePrescriptionRequest request,
             @CurrentUser User currentUser) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Prescription created successfully", 
+                .body(ApiResponse.success("Prescription created successfully",
                         prescriptionService.createPrescription(request, currentUser)));
     }
 
@@ -66,10 +68,10 @@ public class PrescriptionController extends BaseController {
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "DESC") String direction,
             @CurrentUser User currentUser) {
-        
-        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction, 
+
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction,
                 Arrays.asList("createdAt"));
-        
+
         return ok(prescriptionService.getPatientPrescriptions(patientId, pageable, currentUser));
     }
 }

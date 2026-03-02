@@ -1,12 +1,9 @@
 package com.orthopedic.api.modules.patient.dto.response;
 
 import com.orthopedic.api.modules.patient.entity.Patient;
-import lombok.Data;
-
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Data
 public class PatientSummaryResponse {
     private UUID id;
     private String fullName;
@@ -16,4 +13,68 @@ public class PatientSummaryResponse {
     private Patient.BloodGroup bloodGroup;
     private Patient.Gender gender;
     private Patient.PatientStatus status;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Patient.BloodGroup getBloodGroup() {
+        return bloodGroup;
+    }
+
+    public void setBloodGroup(Patient.BloodGroup bloodGroup) {
+        this.bloodGroup = bloodGroup;
+    }
+
+    public Patient.Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Patient.Gender gender) {
+        this.gender = gender;
+    }
+
+    public Patient.PatientStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(Patient.PatientStatus status) {
+        this.status = status;
+    }
 }

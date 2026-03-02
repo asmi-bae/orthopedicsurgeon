@@ -46,14 +46,40 @@ spring:
         queue-capacity: 100
         keep-alive: 60s
       thread-name-prefix: ortho-async-
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USER:admin@orthosync.com}
+    password: ${SMTP_PASS:password}
+    properties:
+      mail:
+        smtp:
+          auth: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+
+twilio:
+  account-sid: ${TWILIO_SID:your_sid}
+  auth-token: ${TWILIO_AUTH_TOKEN:your_token}
+  from-number: ${TWILIO_FROM:+1234567890}
+
+minio:
+  bucket: ${MINIO_BUCKET:orthopedic-bucket}
+
+aws:
+  s3:
+    bucket: ${S3_BUCKET:ortho-reports}
 
 logging:
   level:
     root: INFO
     com.orthopedic.api: DEBUG
     org.springframework.security: INFO
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
-  file:
-    name: logs/orthopedic-api.log

@@ -1,12 +1,9 @@
 package com.orthopedic.api.modules.doctor.dto.response;
 
 import com.orthopedic.api.modules.doctor.entity.Doctor;
-import lombok.Data;
-
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Data
 public class DoctorSummaryResponse {
     private UUID id;
     private String fullName;
@@ -15,4 +12,60 @@ public class DoctorSummaryResponse {
     private BigDecimal consultationFee;
     private Boolean availableForOnline;
     private Doctor.DoctorStatus status;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    public String getHospitalName() {
+        return hospitalName;
+    }
+
+    public void setHospitalName(String hospitalName) {
+        this.hospitalName = hospitalName;
+    }
+
+    public BigDecimal getConsultationFee() {
+        return consultationFee;
+    }
+
+    public void setConsultationFee(BigDecimal consultationFee) {
+        this.consultationFee = consultationFee;
+    }
+
+    public Boolean getAvailableForOnline() {
+        return availableForOnline;
+    }
+
+    public void setAvailableForOnline(Boolean availableForOnline) {
+        this.availableForOnline = availableForOnline;
+    }
+
+    public Doctor.DoctorStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(Doctor.DoctorStatus status) {
+        this.status = status;
+    }
 }

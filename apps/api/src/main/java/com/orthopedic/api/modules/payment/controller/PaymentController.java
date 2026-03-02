@@ -12,7 +12,6 @@ import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +23,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/payments")
-@RequiredArgsConstructor
 @Tag(name = "Payment Management", description = "Endpoints for managing billing and patient payments")
 public class PaymentController extends BaseController {
 
     private final PaymentService paymentService;
+
+    public PaymentController(PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
@@ -64,10 +66,10 @@ public class PaymentController extends BaseController {
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "DESC") String direction,
             @CurrentUser User currentUser) {
-        
-        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction, 
+
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction,
                 Arrays.asList("createdAt", "paymentDate", "amount"));
-        
+
         return ok(paymentService.getPatientPayments(patientId, pageable, currentUser));
     }
 }

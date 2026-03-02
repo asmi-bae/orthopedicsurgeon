@@ -5,19 +5,15 @@ import com.orthopedic.api.modules.doctor.entity.Doctor;
 import com.orthopedic.api.modules.patient.entity.Patient;
 import com.orthopedic.api.shared.base.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "prescriptions", indexes = {
-    @Index(name = "idx_prescriptions_patient_id", columnList = "patient_id"),
-    @Index(name = "idx_prescriptions_doctor_id", columnList = "doctor_id"),
-    @Index(name = "idx_prescriptions_appointment_id", columnList = "appointment_id")
+        @Index(name = "idx_prescriptions_patient_id", columnList = "patient_id"),
+        @Index(name = "idx_prescriptions_doctor_id", columnList = "doctor_id"),
+        @Index(name = "idx_prescriptions_appointment_id", columnList = "appointment_id")
 })
 public class Prescription extends BaseEntity {
 
@@ -54,6 +50,86 @@ public class Prescription extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PrescriptionStatus status = PrescriptionStatus.FINAL;
+
+    public Appointment getAppointment() {
+        return appointment;
+    }
+
+    public void setAppointment(Appointment appointment) {
+        this.appointment = appointment;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    public String getDiagnosis() {
+        return diagnosis;
+    }
+
+    public void setDiagnosis(String diagnosis) {
+        this.diagnosis = diagnosis;
+    }
+
+    public String getSymptoms() {
+        return symptoms;
+    }
+
+    public void setSymptoms(String symptoms) {
+        this.symptoms = symptoms;
+    }
+
+    public String getPhysicalExamination() {
+        return physicalExamination;
+    }
+
+    public void setPhysicalExamination(String physicalExamination) {
+        this.physicalExamination = physicalExamination;
+    }
+
+    public String getAdvice() {
+        return advice;
+    }
+
+    public void setAdvice(String advice) {
+        this.advice = advice;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public List<PrescriptionMedicine> getMedicines() {
+        return medicines;
+    }
+
+    public void setMedicines(List<PrescriptionMedicine> medicines) {
+        this.medicines = medicines;
+    }
+
+    public PrescriptionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PrescriptionStatus status) {
+        this.status = status;
+    }
 
     public enum PrescriptionStatus {
         DRAFT, FINAL, CANCELLED
