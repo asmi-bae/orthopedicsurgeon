@@ -220,6 +220,11 @@
 					<fork>true</fork>
 					<annotationProcessorPaths>
 						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${mapstruct.version}</version>
+						</path>
+						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
 							<version>1.18.30</version>
@@ -229,19 +234,12 @@
 							<artifactId>lombok-mapstruct-binding</artifactId>
 							<version>0.2.0</version>
 						</path>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${mapstruct.version}</version>
-						</path>
 					</annotationProcessorPaths>
-					<annotationProcessors>
-						<annotationProcessor>org.mapstruct.ap.MappingProcessor</annotationProcessor>
-					</annotationProcessors>
 					<compilerArgs>
 						<arg>-parameters</arg>
 						<arg>-Amapstruct.suppressGeneratorTimestamp=true</arg>
 						<arg>-Amapstruct.defaultComponentModel=spring</arg>
+						<arg>-Amapstruct.unmappedTargetPolicy=ignore</arg>
 					</compilerArgs>
 				</configuration>
 			</plugin>

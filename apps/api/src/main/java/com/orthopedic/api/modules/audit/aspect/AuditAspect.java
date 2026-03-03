@@ -32,9 +32,9 @@ public class AuditAspect {
             LogMutation annotation = method.getAnnotation(LogMutation.class);
 
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String username = (auth != null && auth.getPrincipal() instanceof User)
-                    ? ((User) auth.getPrincipal()).getUsername()
-                    : "anonymous";
+            Long userId = (auth != null && auth.getPrincipal() instanceof User)
+                    ? ((User) auth.getPrincipal()).getId()
+                    : null;
 
             String ip = "unknown";
             if (RequestContextHolder.getRequestAttributes() != null) {
@@ -44,9 +44,9 @@ public class AuditAspect {
 
             AuditEventRequest event = AuditEventRequest.builder()
                     .action(annotation.action())
-                    .performedBy(username)
+                    .userId(userId)
                     .ipAddress(ip)
-                    .entityName(annotation.entityName())
+                    .entityType(annotation.entityName())
                     // In a more complex scenario, we'd extract the ID from the result or arguments
                     .details("Action: " + annotation.action() + " performed on " + annotation.entityName())
                     .build();

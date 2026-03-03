@@ -34,8 +34,8 @@ public class HospitalServiceImpl implements HospitalService {
     private final HospitalMapper hospitalMapper;
 
     public HospitalServiceImpl(HospitalRepository hospitalRepository,
-                               ServiceRepository serviceRepository,
-                               HospitalMapper hospitalMapper) {
+            ServiceRepository serviceRepository,
+            HospitalMapper hospitalMapper) {
         this.hospitalRepository = hospitalRepository;
         this.serviceRepository = serviceRepository;
         this.hospitalMapper = hospitalMapper;

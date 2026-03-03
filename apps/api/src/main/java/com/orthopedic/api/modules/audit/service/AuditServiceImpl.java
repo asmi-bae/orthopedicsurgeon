@@ -40,8 +40,8 @@ public class AuditServiceImpl implements AuditService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<AuditLogResponse> getLogsByEntity(String entityName, String entityId, Pageable pageable) {
-        Page<AuditLog> page = auditLogRepository.findAllByEntityNameAndEntityId(entityName, UUID.fromString(entityId),
+    public PageResponse<AuditLogResponse> getLogsByEntity(String entityType, String entityId, Pageable pageable) {
+        Page<AuditLog> page = auditLogRepository.findAllByEntityTypeAndEntityId(entityType, UUID.fromString(entityId),
                 pageable);
         return PageResponse.fromPage(page.map(auditMapper::toResponse));
     }

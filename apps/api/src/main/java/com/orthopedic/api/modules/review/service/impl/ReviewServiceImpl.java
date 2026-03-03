@@ -56,8 +56,8 @@ public class ReviewServiceImpl {
 
         return ReviewResponse.builder()
                 .id(saved.getId())
-                .patientDisplayName(saved.getPatient().getFirstName() + " "
-                        + saved.getPatient().getLastName().substring(0, 1) + ".")
+                .patientDisplayName(saved.getPatient().getUser().getFirstName() + " "
+                        + saved.getPatient().getUser().getLastName().substring(0, 1) + ".")
                 .rating(saved.getRating())
                 .reviewText(saved.getReviewText())
                 .isVerified(saved.getIsVerified())
@@ -71,8 +71,8 @@ public class ReviewServiceImpl {
         return reviewRepository.findByDoctorIdAndIsPublishedTrue(doctorId, pageable)
                 .map(r -> ReviewResponse.builder()
                         .id(r.getId())
-                        .patientDisplayName(r.getPatient().getFirstName() + " "
-                                + r.getPatient().getLastName().substring(0, 1) + ".")
+                        .patientDisplayName(r.getPatient().getUser().getFirstName() + " "
+                                + r.getPatient().getUser().getLastName().substring(0, 1) + ".")
                         .rating(r.getRating())
                         .reviewText(r.getReviewText())
                         .isVerified(r.getIsVerified())

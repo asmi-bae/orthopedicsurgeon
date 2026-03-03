@@ -1,6 +1,6 @@
 package com.orthopedic.api.modules.website.entity;
 
-import com.orthopedic.api.modules.auth.entity.User;
+import com.orthopedic.api.auth.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;

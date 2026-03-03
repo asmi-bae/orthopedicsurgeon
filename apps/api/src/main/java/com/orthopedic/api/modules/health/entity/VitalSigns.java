@@ -1,7 +1,7 @@
 package com.orthopedic.api.modules.health.entity;
 
 import com.orthopedic.api.modules.appointment.entity.Appointment;
-import com.orthopedic.api.modules.auth.entity.User;
+import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.modules.patient.entity.Patient;
 import jakarta.persistence.*;
 import lombok.*;

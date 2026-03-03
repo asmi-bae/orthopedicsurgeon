@@ -1,45 +1,47 @@
 package com.orthopedic.api.modules.audit.dto.request;
 
 public class AuditEventRequest {
-    private String entityName;
-    private String entityId;
+    private String entityType;
+    private java.util.UUID entityId;
     private String action;
-    private String oldValue;
-    private String newValue;
-    private String performedBy;
+    private String oldValues;
+    private String newValues;
+    private Long userId;
     private String ipAddress;
     private String userAgent;
     private String metadata;
     private String details;
 
-    public AuditEventRequest() {}
+    public AuditEventRequest() {
+    }
 
-    public AuditEventRequest(String entityName, String entityId, String action, String oldValue, String newValue, String performedBy, String ipAddress, String userAgent, String metadata, String details) {
-        this.entityName = entityName;
+    public AuditEventRequest(String entityType, java.util.UUID entityId, String action, String oldValues,
+            String newValues, Long userId, String ipAddress, String userAgent, String metadata, String details) {
+        this.entityType = entityType;
         this.entityId = entityId;
         this.action = action;
-        this.oldValue = oldValue;
-        this.newValue = newValue;
-        this.performedBy = performedBy;
+        this.oldValues = oldValues;
+        this.newValues = newValues;
+        this.userId = userId;
         this.ipAddress = ipAddress;
         this.userAgent = userAgent;
         this.metadata = metadata;
         this.details = details;
     }
 
-    public String getEntityName() {
-        return entityName;
+    public String getEntityType() {
+        return entityType;
     }
 
-    public void setEntityName(String entityName) {
-        this.entityName = entityName;
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
-    public String getEntityId() {
+    public java.util.UUID getEntityId() {
         return entityId;
     }
 
-    public void setEntityId(String entityId) {
+    public void setEntityId(java.util.UUID entityId) {
         this.entityId = entityId;
     }
 
@@ -51,28 +53,28 @@ public class AuditEventRequest {
         this.action = action;
     }
 
-    public String getOldValue() {
-        return oldValue;
+    public String getOldValues() {
+        return oldValues;
     }
 
-    public void setOldValue(String oldValue) {
-        this.oldValue = oldValue;
+    public void setOldValues(String oldValues) {
+        this.oldValues = oldValues;
     }
 
-    public String getNewValue() {
-        return newValue;
+    public String getNewValues() {
+        return newValues;
     }
 
-    public void setNewValue(String newValue) {
-        this.newValue = newValue;
+    public void setNewValues(String newValues) {
+        this.newValues = newValues;
     }
 
-    public String getPerformedBy() {
-        return performedBy;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setPerformedBy(String performedBy) {
-        this.performedBy = performedBy;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getIpAddress() {
@@ -112,23 +114,23 @@ public class AuditEventRequest {
     }
 
     public static class AuditEventRequestBuilder {
-        private String entityName;
-        private String entityId;
+        private String entityType;
+        private java.util.UUID entityId;
         private String action;
-        private String oldValue;
-        private String newValue;
-        private String performedBy;
+        private String oldValues;
+        private String newValues;
+        private Long userId;
         private String ipAddress;
         private String userAgent;
         private String metadata;
         private String details;
 
-        public AuditEventRequestBuilder entityName(String entityName) {
-            this.entityName = entityName;
+        public AuditEventRequestBuilder entityType(String entityType) {
+            this.entityType = entityType;
             return this;
         }
 
-        public AuditEventRequestBuilder entityId(String entityId) {
+        public AuditEventRequestBuilder entityId(java.util.UUID entityId) {
             this.entityId = entityId;
             return this;
         }
@@ -138,18 +140,18 @@ public class AuditEventRequest {
             return this;
         }
 
-        public AuditEventRequestBuilder oldValue(String oldValue) {
-            this.oldValue = oldValue;
+        public AuditEventRequestBuilder oldValues(String oldValues) {
+            this.oldValues = oldValues;
             return this;
         }
 
-        public AuditEventRequestBuilder newValue(String newValue) {
-            this.newValue = newValue;
+        public AuditEventRequestBuilder newValues(String newValues) {
+            this.newValues = newValues;
             return this;
         }
 
-        public AuditEventRequestBuilder performedBy(String performedBy) {
-            this.performedBy = performedBy;
+        public AuditEventRequestBuilder userId(Long userId) {
+            this.userId = userId;
             return this;
         }
 
@@ -174,7 +176,8 @@ public class AuditEventRequest {
         }
 
         public AuditEventRequest build() {
-            return new AuditEventRequest(entityName, entityId, action, oldValue, newValue, performedBy, ipAddress, userAgent, metadata, details);
+            return new AuditEventRequest(entityType, entityId, action, oldValues, newValues, userId, ipAddress,
+                    userAgent, metadata, details);
         }
     }
 }

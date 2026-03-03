@@ -1,6 +1,6 @@
 package com.orthopedic.api.modules.analytics.entity;
 
-import com.orthopedic.api.modules.auth.entity.User;
+import com.orthopedic.api.auth.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;

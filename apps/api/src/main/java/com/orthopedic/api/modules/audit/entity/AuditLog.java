@@ -26,7 +26,7 @@ public class AuditLog {
     private UUID id;
 
     @Column(name = "user_id")
-    private UUID userId;
+    private Long userId;
 
     @Column(name = "action", nullable = false, length = 100)
     private String action;
@@ -34,8 +34,8 @@ public class AuditLog {
     @Column(name = "entity_type", length = 100)
     private String entityType;
 
-    @Column(name = "entity_id", length = 100)
-    private String entityId;
+    @Column(name = "entity_id")
+    private UUID entityId;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "old_values", columnDefinition = "jsonb")

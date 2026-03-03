@@ -1,7 +1,7 @@
 package com.orthopedic.api.modules.website.entity;
 
 import com.orthopedic.api.modules.doctor.entity.Doctor;
-import com.orthopedic.api.modules.hospital.entity.Service;
+import com.orthopedic.api.modules.hospital.entity.ServiceEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -41,7 +41,7 @@ public class Testimonial {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id")
-    private Service service;
+    private ServiceEntity service;
 
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified = false;

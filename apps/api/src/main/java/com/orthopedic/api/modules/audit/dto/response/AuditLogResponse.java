@@ -5,12 +5,12 @@ import java.util.UUID;
 
 public class AuditLogResponse {
     private UUID id;
-    private String entityName;
-    private String entityId;
+    private String entityType;
+    private UUID entityId;
     private String action;
-    private String oldValue;
-    private String newValue;
-    private String performedBy;
+    private String oldValues;
+    private String newValues;
+    private Long userId;
     private String ipAddress;
     private LocalDateTime createdAt;
 
@@ -22,19 +22,19 @@ public class AuditLogResponse {
         this.id = id;
     }
 
-    public String getEntityName() {
-        return entityName;
+    public String getEntityType() {
+        return entityType;
     }
 
-    public void setEntityName(String entityName) {
-        this.entityName = entityName;
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
     }
 
-    public String getEntityId() {
+    public UUID getEntityId() {
         return entityId;
     }
 
-    public void setEntityId(String entityId) {
+    public void setEntityId(UUID entityId) {
         this.entityId = entityId;
     }
 
@@ -46,28 +46,28 @@ public class AuditLogResponse {
         this.action = action;
     }
 
-    public String getOldValue() {
-        return oldValue;
+    public String getOldValues() {
+        return oldValues;
     }
 
-    public void setOldValue(String oldValue) {
-        this.oldValue = oldValue;
+    public void setOldValues(String oldValues) {
+        this.oldValues = oldValues;
     }
 
-    public String getNewValue() {
-        return newValue;
+    public String getNewValues() {
+        return newValues;
     }
 
-    public void setNewValue(String newValue) {
-        this.newValue = newValue;
+    public void setNewValues(String newValues) {
+        this.newValues = newValues;
     }
 
-    public String getPerformedBy() {
-        return performedBy;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setPerformedBy(String performedBy) {
-        this.performedBy = performedBy;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getIpAddress() {

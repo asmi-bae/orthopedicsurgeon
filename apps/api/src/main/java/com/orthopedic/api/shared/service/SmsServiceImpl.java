@@ -26,7 +26,15 @@ public class SmsServiceImpl implements SmsService {
 
     @PostConstruct
     public void init() {
-        Twilio.init(accountSid, authToken);
+        try {
+            if (accountSid != null && !accountSid.isEmpty() && !"your_sid".equals(accountSid)) {
+                Twilio.init(accountSid, authToken);
+            } else {
+                log.warn("Twilio credentials not provided or are placeholders. SMS service will not be available.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to initialize Twilio. SMS service will not be available.", e);
+        }
     }
 
     @Override

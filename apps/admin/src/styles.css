@@ -6,7 +6,24 @@
   body {
     @apply bg-secondary-900 text-secondary-50 antialiased font-inter;
   }
+
+  /* Force Pill Shape for all buttons and inputs globally */
+  button,
+  [type='button'],
+  [type='reset'],
+  [type='submit'],
+  .btn,
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  select {
+    @apply rounded-full !important;
+  }
 }
+
 
 @layer utilities {
   .glass {
