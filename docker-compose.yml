@@ -56,10 +56,10 @@ services:
     networks:
       - ortho-network
 
-  admin-dashboard:
+  admin:
     build:
       context: .
-      dockerfile: apps/admin-dashboard/Dockerfile
+      dockerfile: apps/admin/Dockerfile
     container_name: ortho-admin
     ports:
       - "4200:80"
@@ -68,10 +68,10 @@ services:
     networks:
       - ortho-network
 
-  public-site:
+  web:
     build:
       context: .
-      dockerfile: apps/public-site/Dockerfile
+      dockerfile: apps/web/Dockerfile
     container_name: ortho-public
     ports:
       - "4201:80"

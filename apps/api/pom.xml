@@ -169,6 +169,35 @@
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Slug generation -->
+		<dependency>
+		  <groupId>com.github.slugify</groupId>
+		  <artifactId>slugify</artifactId>
+		  <version>3.0.6</version>
+		</dependency>
+
+		<!-- HTML sanitization for blog content -->
+		<dependency>
+		  <groupId>org.jsoup</groupId>
+		  <artifactId>jsoup</artifactId>
+		  <version>1.17.2</version>
+		</dependency>
+
+		<!-- PDF generation for invoices -->
+		<dependency>
+		  <groupId>com.itextpdf</groupId>
+		  <artifactId>itext-core</artifactId>
+		  <version>8.0.4</version>
+		  <type>pom</type>
+		</dependency>
+
+		<!-- Image processing -->
+		<dependency>
+		  <groupId>net.coobird</groupId>
+		  <artifactId>thumbnailator</artifactId>
+		  <version>0.4.20</version>
+		</dependency>
 	</dependencies>
 
 	<build>

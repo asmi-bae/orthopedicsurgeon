@@ -1,45 +1,24 @@
 {
-    "$schema": "https://turbo.build/schema.json",
-    "globalDependencies": [
-        "**/.env.*local",
-        ".env",
-        "tsconfig.json"
-    ],
-    "tasks": {
+    "pipeline": {
         "build": {
             "dependsOn": [
                 "^build"
             ],
             "outputs": [
                 "dist/**",
-                ".next/**",
                 "target/**"
-            ],
-            "inputs": [
-                "src/**",
-                "public/**",
-                "angular.json",
-                "tsconfig.json",
-                "pom.xml"
             ]
-        },
-        "lint": {
-            "dependsOn": [
-                "^lint"
-            ],
-            "cache": true
         },
         "test": {
             "dependsOn": [
-                "^test"
+                "build"
             ],
-            "cache": true,
-            "inputs": [
-                "src/**",
-                "*.spec.ts",
-                "tsconfig.json",
-                "pom.xml"
+            "outputs": [
+                "coverage/**"
             ]
+        },
+        "lint": {
+            "outputs": []
         },
         "dev": {
             "cache": false,

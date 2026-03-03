@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ZrdSidebarComponent, ZrdNavItem, ZrdAvatarComponent, ZrdDropdownComponent, ZrdButtonComponent } from '@repo/ui';
+import { ZrdNavItem } from '@repo/ui';
 import { AuthService } from '@repo/auth';
 
 @Component({

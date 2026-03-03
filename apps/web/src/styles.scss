@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --color-primary: 37 99 235;
+        /* blue-600 */
+        --color-secondary: 71 85 105;
+        /* slate-600 */
+        --color-accent: 13 148 136;
+        /* teal-600 */
+    }
+}
+
+body {
+    @apply font-inter text-slate-800 bg-slate-50;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @apply font-poppins font-semibold text-slate-900;
+}

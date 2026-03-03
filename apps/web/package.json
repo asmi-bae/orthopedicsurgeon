@@ -32,11 +32,12 @@
     "@angular/cli": "latest",
     "@angular/compiler-cli": "latest",
     "@spartan-ng/cli": "0.0.1-alpha.644",
-    "@tailwindcss/vite": "^4.2.1",
+    "autoprefixer": "^10.4.27",
     "jsdom": "latest",
     "lucide-angular": "^0.576.0",
+    "postcss": "^8.5.6",
     "prettier": "latest",
-    "tailwindcss": "^4.2.1",
+    "tailwindcss": "^3.4.19",
     "typescript": "latest",
     "vitest": "latest"
   }

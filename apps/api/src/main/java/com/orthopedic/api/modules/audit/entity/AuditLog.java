@@ -1,106 +1,65 @@
 package com.orthopedic.api.modules.audit.entity;
 
-import com.orthopedic.api.shared.base.BaseEntity;
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "audit_logs")
-public class AuditLog extends BaseEntity {
+@Table(name = "audit_logs", indexes = {
+        @Index(name = "idx_audit_user_id", columnList = "user_id"),
+        @Index(name = "idx_audit_entity", columnList = "entity_type,entity_id"),
+        @Index(name = "idx_audit_created", columnList = "created_at")
+})
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuditLog {
 
-    @Column(name = "entity_type", nullable = false)
-    private String entityName;
-
-    @Column(name = "entity_id")
-    private UUID entityId;
-
-    @Column(nullable = false)
-    private String action; // CREATE, UPDATE, DELETE, LOGIN, LOGOUT
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
     @Column(name = "user_id")
-    private Long userId;
+    private UUID userId;
 
-    @Column(name = "old_values", columnDefinition = "TEXT")
-    private String oldValue;
+    @Column(name = "action", nullable = false, length = 100)
+    private String action;
 
-    @Column(name = "new_values", columnDefinition = "TEXT")
-    private String newValue;
+    @Column(name = "entity_type", length = 100)
+    private String entityType;
 
+    @Column(name = "entity_id", length = 100)
+    private String entityId;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "old_values", columnDefinition = "jsonb")
+    private String oldValues;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "new_values", columnDefinition = "jsonb")
+    private String newValues;
+
+    @Column(name = "ip_address", length = 45)
     private String ipAddress;
 
+    @Column(name = "user_agent", length = 500)
     private String userAgent;
 
+    @Column(name = "status", length = 20)
     private String status;
 
-    public String getEntityName() {
-        return entityName;
-    }
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    public void setEntityName(String entityName) {
-        this.entityName = entityName;
-    }
-
-    public UUID getEntityId() {
-        return entityId;
-    }
-
-    public void setEntityId(UUID entityId) {
-        this.entityId = entityId;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
-
-    public String getOldValue() {
-        return oldValue;
-    }
-
-    public void setOldValue(String oldValue) {
-        this.oldValue = oldValue;
-    }
-
-    public String getNewValue() {
-        return newValue;
-    }
-
-    public void setNewValue(String newValue) {
-        this.newValue = newValue;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
-
-    public String getUserAgent() {
-        return userAgent;
-    }
-
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null)
+            createdAt = LocalDateTime.now();
     }
 }

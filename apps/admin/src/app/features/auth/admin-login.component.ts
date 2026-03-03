@@ -16,7 +16,7 @@ import { AuthService } from '@repo/auth';
              <div class="w-12 h-12 rounded-2xl bg-primary-600 flex items-center justify-center shadow-xl shadow-primary-500/20">
                 <span class="text-white font-bold text-2xl">O</span>
              </div>
-             <h1 class="text-2xl font-black text-white tracking-tight text-center uppercase">Enterprise Admin</h1>
+             <h1 class="text-2xl font-black text-white tracking-tight text-center uppercase">Admin Console</h1>
           </div>
 
           <zrd-card class="bg-white/95 backdrop-blur-xl border-none shadow-2xl">

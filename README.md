@@ -1,37 +1,34 @@
-# Orthopedic Surgeon Enterprise Platform
+# Orthopedic Surgeon Platform
 
-A comprehensive, production-ready healthcare management system built with Spring Boot 3.4 and Angular 18.
+## Development
 
-## 🚀 Quick Start
 ```bash
-# Clone and setup
 pnpm install
-# Run full stack
-docker-compose up --build
+turbo run dev --filter=web     # http://localhost:4200
+turbo run dev --filter=admin   # http://localhost:4201
+turbo run dev --filter=api     # http://localhost:8080
 ```
 
-## 🏗️ Architecture
-- **Backend**: Spring Boot 3.4 (Java 21), PostgreSQL, Redis, Flyway.
-- **Frontend**: Angular 18, NGRX, ZardUI Component Library.
-- **Infrastructure**: Docker, GitHub Actions, Prometheus, Grafana, Loki.
-- **Security**: JWT + 2FA, AES-256 PII Encryption, RBAC, Rate Limiting.
+## Build
 
-## 📁 Modules
-- **Appointments**: Booking and slot management with Redis locks.
-- **Lab Reports**: Integrated report management with S3 storage.
-- **Payments**: Transaction processing and audit trails.
-- **Doctors/Patients**: Comprehensive profile and medical history management.
-- **Audit**: AOP-based mutation logging for compliance.
+```bash
+turbo run build --filter=web
+turbo run build --filter=admin
+turbo run build --filter=api
+```
 
-## 🛠️ Tools
-- **Swagger**: `http://localhost:8080/swagger-ui.html`
-- **Grafana**: `http://localhost:3000` (Metrics & Logs)
-- **MinIO**: `http://localhost:9001` (File storage console)
+## Test
 
-## 📄 Documentation
-- [Architecture Overview](docs/architecture.md)
-- [Environment Setup](docs/environment-setup.md)
-- [Deployment Guide](docs/deployment.md)
+```bash
+turbo run test --filter=web
+turbo run test --filter=admin
+```
 
----
-*Built for excellence in Orthopedic Healthcare.*
+## Docker
+
+```bash
+docker compose up -d
+# web   → http://localhost:4200
+# admin → http://localhost:4201
+# api   → http://localhost:8080
+```
