@@ -1,64 +1,133 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { ZrdButtonComponent, ZrdDropdownComponent, ZrdAvatarComponent } from '@repo/ui';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '@repo/auth';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterModule, ZrdButtonComponent, ZrdDropdownComponent, ZrdAvatarComponent],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    MatToolbarModule, 
+    MatButtonModule, 
+    MatIconModule, 
+    MatMenuModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
   template: `
-    <nav class="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-gray-100 font-sans">
-      <div class="max-w-7xl mx-auto px-6 sm:px-10 lg:px-12">
-        <div class="flex justify-between h-24 items-center">
-          <!-- Premium Logo -->
-          <div class="flex items-center gap-4 cursor-pointer group" routerLink="/">
-            <div class="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 transform group-hover:rotate-6 transition-transform duration-500">
-              <span class="text-white font-black text-2xl italic">O</span>
-            </div>
-            <div class="flex flex-col">
-              <span class="text-xl font-black text-foreground tracking-tighter leading-none italic uppercase">OrthoSync</span>
-              <span class="text-[9px] font-bold text-primary uppercase tracking-[0.3em] leading-none mt-1">Precision Care</span>
-            </div>
-          </div>
-
-          <!-- Futuristic Nav -->
-          <div class="hidden lg:flex items-center gap-10">
-            <a routerLink="/" routerLinkActive="text-primary font-black" [routerLinkActiveOptions]="{exact: true}" class="text-sm font-bold text-foreground/60 hover:text-primary transition-all uppercase tracking-widest">Home</a>
-            <a routerLink="/doctors" routerLinkActive="text-primary font-black" class="text-sm font-bold text-foreground/60 hover:text-primary transition-all uppercase tracking-widest">Specialists</a>
-            <a routerLink="/hospitals" routerLinkActive="text-primary font-black" class="text-sm font-bold text-foreground/60 hover:text-primary transition-all uppercase tracking-widest">Facilities</a>
-            <a routerLink="/portal" routerLinkActive="text-primary font-black" class="text-sm font-bold text-foreground/60 hover:text-primary transition-all uppercase tracking-widest">Patient Portal</a>
-          </div>
-
-          <!-- Glassmorphism Actions -->
-          <div class="flex items-center gap-6">
-            <ng-container *ngIf="auth.currentUser() as user; else guest">
-                <zrd-dropdown [items]="userMenuItems" position="bottom-right">
-                  <div trigger class="flex items-center gap-4 p-1.5 pr-4 rounded-full bg-gray-50 border border-gray-100 cursor-pointer hover:bg-white hover:shadow-premium transition-all">
-                    <zrd-avatar [name]="user.firstName + ' ' + user.lastName" size="sm"></zrd-avatar>
-                    <span class="text-xs font-black text-foreground italic uppercase">{{user.firstName}}</span>
-                  </div>
-                </zrd-dropdown>
-            </ng-container>
- 
-            <ng-template #guest>
-              <button routerLink="/auth/login" class="text-sm font-black text-foreground/40 hover:text-primary transition-all uppercase tracking-widest mr-4">Sign In</button>
-              <button zrdButton routerLink="/auth/register">Get Started</button>
-            </ng-template>
-          </div>
+    <!-- Emergency Top Bar -->
+    <div class="h-10 bg-secondary-900 border-b border-white/5 flex items-center justify-between px-6 sm:px-12 text-white">
+      <div class="flex items-center gap-6">
+        <div class="flex items-center gap-2">
+          <mat-icon class="text-primary text-sm scale-75">error</mat-icon>
+          <span class="text-[9px] font-black uppercase tracking-[0.2em]">Emergency Network:</span>
+          <span class="text-[9px] font-black uppercase tracking-[0.2em] text-primary underline underline-offset-4">+1 (800) 911-ORTHO</span>
+        </div>
+        <div class="hidden md:flex items-center gap-2 border-l border-white/10 pl-6">
+           <mat-icon class="text-white/40 text-sm scale-75">location_on</mat-icon>
+           <span class="text-[9px] font-bold uppercase tracking-widest text-white/40">Clinical Hub, Ortho City</span>
         </div>
       </div>
-    </nav>
-  `
+      <div class="flex items-center gap-4">
+        <button class="text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-primary transition-colors">EN</button>
+        <div class="w-[1px] h-3 bg-white/10"></div>
+        <button class="text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-primary transition-colors">ES</button>
+      </div>
+    </div>
+
+    <mat-toolbar class="h-24 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-6 sm:px-10 lg:px-12 transition-all">
+      <div class="flex items-center gap-4 cursor-pointer group" routerLink="/">
+        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 transform group-hover:rotate-6 transition-transform duration-500">
+          <span class="text-white font-black text-xl">O</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-lg font-black text-foreground tracking-tighter leading-none uppercase">OrthoSync</span>
+          <span class="text-[8px] font-bold text-primary uppercase tracking-[0.3em] leading-none mt-1">Precision Care</span>
+        </div>
+      </div>
+
+      <span class="flex-1"></span>
+
+      <!-- Desktop Links -->
+      <div class="hidden xl:flex items-center gap-2 mr-8">
+        <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" class="nav-btn">Home</a>
+        <a mat-button routerLink="/departments" routerLinkActive="active-link" class="nav-btn">Centres</a>
+        <a mat-button routerLink="/doctors" routerLinkActive="active-link" class="nav-btn">Specialists</a>
+        <a mat-button routerLink="/hospitals" routerLinkActive="active-link" class="nav-btn">Facilities</a>
+        <a mat-button routerLink="/about" routerLinkActive="active-link" class="nav-btn">About</a>
+        <a mat-button routerLink="/contact" routerLinkActive="active-link" class="nav-btn">Contact</a>
+        <a mat-tonal-button color="primary" (click)="navigateToPortal()" class="nav-btn">Portal</a>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <!-- Global Search Placeholder -->
+        <div class="hidden md:flex items-center bg-gray-50 border border-gray-100 rounded-xl px-4 h-11 group focus-within:border-primary/30 transition-all">
+          <mat-icon class="text-gray-300 scale-75">search</mat-icon>
+          <input type="text" placeholder="PRECISION SEARCH" class="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-secondary-900 focus:outline-none ml-2 w-32 placeholder:text-gray-300">
+        </div>
+
+        <ng-container *ngIf="auth.currentUser() as user; else guest">
+          <button mat-button [matMenuTriggerFor]="userMenu" class="h-11 px-2 rounded-full border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-premium transition-all">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs uppercase">
+                {{user.firstName[0]}}{{user.lastName[0]}}
+              </div>
+              <span class="text-[10px] font-black text-foreground uppercase tracking-widest hidden sm:inline">{{user.firstName}}</span>
+              <mat-icon class="text-foreground/20 text-sm">expand_more</mat-icon>
+            </div>
+          </button>
+
+          <mat-menu #userMenu="matMenu" class="premium-menu">
+            <div class="px-4 py-3 border-b border-gray-50">
+              <div class="text-[10px] font-black text-foreground uppercase tracking-widest">{{user.firstName}} {{user.lastName}}</div>
+              <div class="text-[9px] font-bold text-foreground/40 uppercase tracking-[0.2em] mt-1">Authorized Patient</div>
+            </div>
+            <button mat-menu-item (click)="navigateToPortal()">
+              <mat-icon>dashboard</mat-icon>
+              <span>My Dashboard</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="auth.logout()" class="text-red-500">
+              <mat-icon class="text-red-500">logout</mat-icon>
+              <span>Logout</span>
+            </button>
+          </mat-menu>
+        </ng-container>
+
+        <ng-template #guest>
+           <div class="flex items-center gap-3">
+             <a mat-tonal-button color="primary" routerLink="/auth/login" class="h-11 px-6 rounded-xl font-bold uppercase tracking-widest text-[10px]">
+               Sign In
+             </a>
+             <a mat-flat-button color="primary" routerLink="/auth/register" class="h-11 px-6 rounded-xl font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20">
+               Get Started
+             </a>
+           </div>
+        </ng-template>
+      </div>
+    </mat-toolbar>
+  `,
+  styles: [`
+    :host { display: block; position: sticky; top: 0; z-index: 1000; }
+    .nav-btn { font-size: 10px !important; font-weight: 900 !important; text-transform: uppercase !important; letter-spacing: 0.15em !important; height: 44px !important; opacity: 0.6; }
+    .active-link { color: var(--mat-sys-primary) !important; opacity: 1 !important; }
+    .premium-menu { border-radius: 16px !important; margin-top: 8px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.1) !important; }
+  `]
 })
 export class NavbarComponent {
   auth = inject(AuthService);
-  
-  userMenuItems = [
-    { label: 'My Dashboard', icon: 'pi pi-th-large', action: () => window.location.href = 'http://localhost:4200' },
-    { label: 'My Appointments', icon: 'pi pi-calendar', action: () => window.location.href = 'http://localhost:4200/appointments' },
-    { label: 'Profile Settings', icon: 'pi pi-user', action: () => window.location.href = 'http://localhost:4200/settings' },
-    { label: 'Logout', icon: 'pi pi-power-off', danger: true, action: () => this.auth.logout() }
-  ];
+
+  navigateToPortal() {
+    window.location.href = 'http://localhost:4200';
+  }
 }

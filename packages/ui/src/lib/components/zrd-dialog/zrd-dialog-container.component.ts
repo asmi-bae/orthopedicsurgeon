@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef, booleanAttribute } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DialogModule } from '@angular/cdk/dialog';
 
 export type ZrdDialogSize = 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
 

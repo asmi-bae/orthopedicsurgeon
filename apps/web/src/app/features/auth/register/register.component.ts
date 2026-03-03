@@ -2,50 +2,111 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ZrdInputComponent, ZrdButtonComponent, ZrdCheckboxComponent, ZrdSelectComponent } from '@repo/ui';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from '@repo/auth';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, ZrdInputComponent, ZrdButtonComponent, ZrdCheckboxComponent, ZrdSelectComponent],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    ReactiveFormsModule, 
+    MatInputModule, 
+    MatFormFieldModule, 
+    MatButtonModule, 
+    MatCheckboxModule, 
+    MatSelectModule,
+    MatIconModule
+  ],
   template: `
-    <div>
-      <h2 class="text-2xl font-black text-secondary-900 mb-2">Create an account</h2>
-      <p class="text-sm text-secondary-500 mb-8">Join the OrthoSync network for better bone health.</p>
+    <div class="animate-in fade-in slide-in-from-left duration-700 pb-10">
+      <h2 class="text-4xl font-black text-secondary-900 mb-2 uppercase tracking-tighter">Personnel Registry</h2>
+      <p class="text-sm text-secondary-500 mb-10 font-medium">Initialize your profile within the OrthoSync deployment grid.</p>
 
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-           <zrd-input label="First Name" formControlName="firstName" [required]="true"></zrd-input>
-           <zrd-input label="Last Name" formControlName="lastName" [required]="true"></zrd-input>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+           <mat-form-field appearance="outline">
+             <mat-label>First Name</mat-label>
+             <input matInput formControlName="firstName" placeholder="John">
+           </mat-form-field>
+           <mat-form-field appearance="outline">
+             <mat-label>Last Name</mat-label>
+             <input matInput formControlName="lastName" placeholder="Doe">
+           </mat-form-field>
         </div>
 
-        <zrd-input label="Email Address" type="email" formControlName="email" [required]="true"></zrd-input>
+        <mat-form-field appearance="outline">
+          <mat-label>Primary Email Address</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="john.doe@orthosync.med">
+          <mat-icon matSuffix>alternate_email</mat-icon>
+        </mat-form-field>
         
-        <div class="grid grid-cols-2 gap-4">
-           <zrd-select label="Gender" [options]="genderOptions" formControlName="gender"></zrd-select>
-           <zrd-input label="Phone" formControlName="phone" [required]="true"></zrd-input>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+           <mat-form-field appearance="outline">
+             <mat-label>Biological Cipher</mat-label>
+              <mat-select formControlName="gender">
+                @for (opt of genderOptions; track opt.value) {
+                  <mat-option [value]="opt.value">{{opt.label}}</mat-option>
+                }
+              </mat-select>
+           </mat-form-field>
+           <mat-form-field appearance="outline">
+             <mat-label>Contact Frequency</mat-label>
+             <input matInput formControlName="phone" placeholder="+880 1XXX-XXXXXX">
+             <mat-icon matSuffix>phone</mat-icon>
+           </mat-form-field>
         </div>
 
-        <zrd-input label="Password" type="password" formControlName="password" [required]="true"></zrd-input>
+        <mat-form-field appearance="outline">
+          <mat-label>Security Passphrase</mat-label>
+          <input matInput type="password" formControlName="password" placeholder="Min. 8 characters">
+          <mat-icon matSuffix>lock_outline</mat-icon>
+        </mat-form-field>
 
-        <zrd-checkbox label="I agree to the Terms and Privacy Policy" formControlName="terms"></zrd-checkbox>
+        <mat-checkbox formControlName="terms">
+          <span class="text-[10px] font-black text-secondary-400 uppercase tracking-widest leading-tight">Accept operational protocols & privacy encryption</span>
+        </mat-checkbox>
 
-        <div *ngIf="error()" class="p-3 bg-red-50 border border-red-100 rounded-lg text-xs text-red-600 animate-in fade-in duration-300">
-           {{ error() }}
-        </div>
+        @if (error()) {
+          <div class="p-4 bg-red-50 border border-red-100 rounded-2xl text-[10px] font-black text-red-600 uppercase tracking-widest animate-shake">
+             <mat-icon class="scale-75 align-middle mr-1">warning</mat-icon> {{ error() }}
+          </div>
+        }
 
-        <button zrdButton variant="primary" size="lg" class="w-full mt-4" [loading]="loading()">
-          Register Now
+        <button mat-flat-button color="primary" class="h-16 rounded-2xl text-lg font-bold uppercase shadow-2xl shadow-primary/30 mt-4" 
+                type="submit" [disabled]="loading()">
+          @if (!loading()) {
+            <span>Get Started</span>
+          } @else {
+            <span>Registering Profile...</span>
+          }
         </button>
       </form>
 
-      <p class="mt-8 text-sm text-secondary-500 text-center">
-        Already have an account? 
-        <a routerLink="/auth/login" class="font-bold text-primary-600 hover:text-primary-700">Login here</a>
-      </p>
+      <div class="mt-12 text-center text-balance">
+        <p class="text-[10px] font-black text-secondary-400 uppercase tracking-[0.2em] mb-4">Already deployed?</p>
+        <button mat-stroked-button color="primary" routerLink="/auth/login" class="h-14 px-10 rounded-xl font-bold uppercase border-2 w-full">
+          Access Secure Portal
+        </button>
+      </div>
     </div>
-  `
+  `,
+  styles: [`
+    :host { display: block; }
+    mat-form-field { width: 100%; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    .animate-shake { animation: shake 0.2s ease-in-out 0s 2; }
+  `]
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
@@ -74,7 +135,8 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.invalid) return;
     this.loading.set(true);
-    // Registration logic would go here
+    
+    // Simulations registration for now
     setTimeout(() => {
       this.loading.set(false);
       this.router.navigate(['/auth/login']);

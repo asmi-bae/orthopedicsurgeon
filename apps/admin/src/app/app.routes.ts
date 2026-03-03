@@ -44,6 +44,22 @@ export const routes: Routes = [
       { 
         path: 'hospitals', 
         loadComponent: () => import('@features/hospitals/hospital-management.component').then(m => m.HospitalManagementComponent) 
+      },
+      {
+        path: 'content/hero',
+        loadComponent: () => import('@features/content/hero/hero-management.component').then(m => m.HeroManagementComponent)
+      },
+      {
+        path: 'content/faq',
+        loadComponent: () => import('@features/content/faq/faq-management.component').then(m => m.FaqManagementComponent)
+      },
+      {
+        path: 'content/partners',
+        loadComponent: () => import('@features/content/partners/partner-management.component').then(m => m.PartnerManagementComponent)
+      },
+      {
+        path: 'blog',
+        loadComponent: () => import('@features/blog/blog-management.component').then(m => m.BlogManagementComponent)
       }
     ]
   },

@@ -61,4 +61,18 @@ public class AdminDoctorController extends BaseController {
     public ResponseEntity<ApiResponse<DoctorResponse>> getById(@PathVariable UUID id) {
         return ok(doctorService.getDoctorById(id));
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update doctor profile")
+    public ResponseEntity<ApiResponse<DoctorResponse>> update(@PathVariable UUID id,
+            @Valid @RequestBody CreateDoctorRequest request) {
+        return ok(doctorService.updateDoctor(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete doctor profile")
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
+        doctorService.deleteDoctor(id);
+        return ok(null);
+    }
 }

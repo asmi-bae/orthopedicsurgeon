@@ -15,7 +15,7 @@
         "allowImportingTsExtensions": true,
         "rewriteRelativeImportExtensions": true,
         "noEmit": true,
-        "module": "preserve",
+        "module": "ESNext",
         "moduleResolution": "bundler",
         "target": "ES2022",
         "skipLibCheck": true,

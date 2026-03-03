@@ -1,0 +1,17 @@
+# Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.project
+*.settings/
+
+# Temp
+tmp/

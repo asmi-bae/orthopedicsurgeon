@@ -12,6 +12,7 @@ import com.orthopedic.api.modules.blog.repository.BlogCategoryRepository;
 import com.orthopedic.api.modules.blog.repository.BlogCommentRepository;
 import com.orthopedic.api.modules.blog.repository.BlogPostRepository;
 import com.orthopedic.api.modules.blog.repository.BlogTagRepository;
+import com.orthopedic.api.shared.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Safelist;
@@ -142,6 +143,43 @@ public class BlogServiceImpl {
 
                 BlogPost saved = blogPostRepository.save(post);
                 return getPostBySlug(saved.getSlug());
+        }
+
+        @Transactional(readOnly = true)
+        public List<BlogPostResponse> getAllPostsForAdmin() {
+                return blogPostRepository.findAll().stream()
+                                .map(post -> {
+                                        long commentCount = blogCommentRepository
+                                                        .countByPostIdAndIsApprovedTrue(post.getId());
+                                        BlogPostResponse resp = BlogPostResponse.builder()
+                                                        .id(post.getId())
+                                                        .title(post.getTitle())
+                                                        .slug(post.getSlug())
+                                                        .excerpt(post.getExcerpt())
+                                                        .featuredImageUrl(post.getFeaturedImageUrl())
+                                                        .authorName(post.getAuthor().getFirstName() + " "
+                                                                        + post.getAuthor().getLastName())
+                                                        .categoryName(post.getCategory() != null
+                                                                        ? post.getCategory().getName()
+                                                                        : null)
+                                                        .status(post.getStatus())
+                                                        .isFeatured(post.getIsFeatured())
+                                                        .viewCount(post.getViewCount())
+                                                        .readTimeMinutes(post.getReadTimeMinutes())
+                                                        .commentsCount((int) commentCount)
+                                                        .publishedAt(post.getPublishedAt())
+                                                        .build();
+                                        return resp;
+                                })
+                                .toList();
+        }
+
+        @Transactional
+        public void deletePost(UUID id) {
+                if (!blogPostRepository.existsById(id)) {
+                        throw new ResourceNotFoundException("Blog post not found");
+                }
+                blogPostRepository.deleteById(id);
         }
 
         private String generateUniqueSlug(String title) {

@@ -12,10 +12,13 @@
   "private": true,
   "packageManager": "pnpm@9.1.4",
   "dependencies": {
+    "@angular/animations": "latest",
+    "@angular/cdk": "~21.2.0",
     "@angular/common": "latest",
     "@angular/compiler": "latest",
     "@angular/core": "latest",
     "@angular/forms": "latest",
+    "@angular/material": "~21.2.0",
     "@angular/platform-browser": "latest",
     "@angular/router": "latest",
     "@ngrx/effects": "latest",

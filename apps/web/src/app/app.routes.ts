@@ -25,6 +25,34 @@ export const routes: Routes = [
       {
         path: 'hospitals',
         loadComponent: () => import('@features/hospitals/hospital-list/hospital-list.component').then(m => m.HospitalListComponent)
+      },
+      {
+        path: 'about',
+        loadComponent: () => import('@features/about/about.component').then(m => m.AboutComponent)
+      },
+      {
+        path: 'contact',
+        loadComponent: () => import('@features/contact/contact.component').then(m => m.ContactComponent)
+      },
+      {
+        path: 'departments',
+        loadComponent: () => import('@features/departments/departments.component').then(m => m.DepartmentsComponent)
+      },
+      {
+        path: 'blog',
+        loadComponent: () => import('@features/blog/blog-list/blog-list.component').then(m => m.BlogListComponent)
+      },
+      {
+        path: 'blog/:slug',
+        loadComponent: () => import('@features/blog/blog-detail/blog-detail.component').then(m => m.BlogDetailComponent)
+      },
+      {
+        path: 'careers',
+        loadComponent: () => import('@features/careers/careers.component').then(m => m.CareersComponent)
+      },
+      {
+        path: 'gallery',
+        loadComponent: () => import('@features/gallery/gallery.component').then(m => m.GalleryComponent)
       }
     ]
   },

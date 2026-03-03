@@ -10,9 +10,12 @@
     "src/app/app.component.ts"
   ],
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "../../packages/*/src/**/*.ts"
   ],
   "exclude": [
-    "src/**/*.spec.ts"
+    "src/**/*.spec.ts",
+    "../../packages/*/src/**/*.spec.ts",
+    "../../packages/*/src/**/__tests__/**/*.ts"
   ]
 }

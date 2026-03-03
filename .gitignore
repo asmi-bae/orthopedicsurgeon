@@ -28,7 +28,7 @@ out/
 out-tsc/
 **/out-tsc/
 .angular/
-**/ .angular/
+**/.angular/
 .next/
 .serverless/
 .output/

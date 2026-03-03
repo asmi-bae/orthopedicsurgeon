@@ -38,9 +38,9 @@ public class DoctorServiceImpl implements DoctorService {
     private final DoctorMapper doctorMapper;
 
     public DoctorServiceImpl(DoctorRepository doctorRepository,
-                             HospitalRepository hospitalRepository,
-                             UserRepository userRepository,
-                             DoctorMapper doctorMapper) {
+            HospitalRepository hospitalRepository,
+            UserRepository userRepository,
+            DoctorMapper doctorMapper) {
         this.doctorRepository = doctorRepository;
         this.hospitalRepository = hospitalRepository;
         this.userRepository = userRepository;
@@ -56,8 +56,7 @@ public class DoctorServiceImpl implements DoctorService {
                 filters.getHospitalId(),
                 filters.getCity(),
                 filters.getAvailableForOnline(),
-                pageable
-        );
+                pageable);
         return PageResponse.fromPage(doctors.map(doctorMapper::toSummaryResponse));
     }
 
@@ -85,13 +84,13 @@ public class DoctorServiceImpl implements DoctorService {
         if (doctorRepository.existsByLicenseNumber(request.getLicenseNumber())) {
             throw new BusinessException("License number already exists");
         }
-        
+
         Doctor doctor = doctorMapper.toEntity(request);
         doctor.setUser(userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found")));
         doctor.setHospital(hospitalRepository.findById(request.getHospitalId())
                 .orElseThrow(() -> new ResourceNotFoundException("Hospital not found")));
-        
+
         if (request.getAvailabilities() != null) {
             List<DoctorAvailability> availabilities = request.getAvailabilities().stream()
                     .map(doctorMapper::toAvailabilityEntity)
@@ -109,7 +108,7 @@ public class DoctorServiceImpl implements DoctorService {
     public List<LocalTime> getAvailableSlots(UUID doctorId, LocalDate date) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
-        
+
         // Find availability for the day of week
         DoctorAvailability availability = doctor.getAvailabilities().stream()
                 .filter(a -> a.getDayOfWeek() == date.getDayOfWeek() && a.getIsAvailable())
@@ -128,14 +127,53 @@ public class DoctorServiceImpl implements DoctorService {
             current = current.plusMinutes(30);
         }
 
-        // Logic to subtract occupied slots will be implemented in Appointment module integration
+        // Logic to subtract occupied slots will be implemented in Appointment module
+        // integration
         return slots;
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @CacheEvict(value = "doctors", allEntries = true)
+    public DoctorResponse updateDoctor(UUID id, CreateDoctorRequest request) {
+        Doctor doctor = doctorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
+
+        doctor.setSpecialization(request.getSpecialization());
+        doctor.setExperienceYears(request.getExperienceYears());
+        doctor.setLicenseNumber(request.getLicenseNumber());
+        doctor.setBio(request.getBio());
+        doctor.setAvailableForOnline(request.getAvailableForOnline());
+
+        doctor.setHospital(hospitalRepository.findById(request.getHospitalId())
+                .orElseThrow(() -> new ResourceNotFoundException("Hospital not found")));
+
+        if (request.getAvailabilities() != null) {
+            // Simple replace strategy for availabilities
+            doctor.getAvailabilities().clear();
+            List<DoctorAvailability> availabilities = request.getAvailabilities().stream()
+                    .map(doctorMapper::toAvailabilityEntity)
+                    .peek(a -> a.setDoctor(doctor))
+                    .collect(Collectors.toList());
+            doctor.getAvailabilities().addAll(availabilities);
+        }
+
+        return mapToResponse(doctorRepository.save(doctor));
+    }
+
+    @Override
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @CacheEvict(value = "doctors", allEntries = true)
+    public void deleteDoctor(UUID id) {
+        if (!doctorRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Doctor not found");
+        }
+        doctorRepository.deleteById(id);
     }
 
     private DoctorResponse mapToResponse(Doctor doctor) {
         DoctorResponse response = doctorMapper.toResponse(doctor);
         response.setTotalAppointments(doctorRepository.countTotalAppointments(doctor.getId()));
-        // response.setAverageRating(...) 
         return response;
     }
 }
