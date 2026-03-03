@@ -1,0 +1,11 @@
+# Build artifacts
+dist/
+out-tsc/
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+
+# Temp
+tmp/

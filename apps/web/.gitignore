@@ -1,0 +1,11 @@
+# Angular build
+dist/
+.angular/
+out-tsc/
+
+# IDE
+.vscode/
+.idea/
+
+# Temp
+tmp/
