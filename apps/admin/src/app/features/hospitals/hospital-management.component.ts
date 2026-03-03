@@ -1,5 +1,6 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,6 +15,7 @@ import { Hospital } from '@repo/types';
   standalone: true,
   imports: [
     CommonModule, 
+    TranslateModule,
     MatTableModule, 
     MatCardModule, 
     MatButtonModule, 
@@ -22,103 +24,106 @@ import { Hospital } from '@repo/types';
     MatProgressBarModule
   ],
   template: `
-    <div class="space-y-10 animate-fade-in pb-24 px-2">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-white/5 pb-10">
-        <div class="flex items-center gap-6">
-          <div class="w-16 h-16 bg-indigo-600/20 rounded-2xl flex items-center justify-center border border-indigo-500/30 shadow-2xl shadow-indigo-500/10">
-            <mat-icon class="text-indigo-400 scale-[1.5]">apartment</mat-icon>
+    <div class="space-y-6 animate-fade-in pb-12">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-lg flex items-center justify-center border border-indigo-200 dark:border-indigo-800">
+            <mat-icon class="text-indigo-600 dark:text-indigo-400">apartment</mat-icon>
           </div>
           <div>
-            <h1 class="text-4xl font-black text-white tracking-tighter italic uppercase leading-tight">Infrastructure Management</h1>
-            <div class="flex items-center gap-3 mt-1.5">
-              <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
-              <p class="text-primary-500 font-black text-[10px] uppercase tracking-[0.4em]">Manage hospital network, clinics, and service categories</p>
-            </div>
+            <h1 class="text-2xl font-bold text-white">{{ 'HOSPITALS.TITLE' | translate }}</h1>
+            <p class="text-white/40 text-xs">{{ 'HOSPITALS.SUBTITLE' | translate }}</p>
           </div>
         </div>
-        <button mat-flat-button color="primary" class="rounded-2xl h-14 px-10 font-black uppercase tracking-tighter italic shadow-2xl shadow-primary-500/20 premium-border bg-primary-600 hover:bg-primary-500 transition-all shrink-0">
-           Initialize New Facility
+        <button mat-flat-button color="primary" class="h-12 px-6 font-bold uppercase tracking-tight">
+           {{ 'HOSPITALS.ADD_BUTTON' | translate }}
         </button>
       </div>
 
-      <mat-card class="bg-white/[0.01] border border-white/5 rounded-3xl glass overflow-hidden animate-slide-up">
-        <mat-progress-bar *ngIf="loading()" mode="query" color="primary" class="h-1"></mat-progress-bar>
+      <mat-card class="border rounded-xl overflow-hidden animate-slide-up">
+        @if (loading()) {
+          <mat-progress-bar mode="query" color="primary"></mat-progress-bar>
+        }
         
-        <div class="overflow-x-auto p-2">
-          <table mat-table [dataSource]="hospitals()" class="w-full bg-transparent">
+        <div class="overflow-x-auto">
+          <table mat-table [dataSource]="hospitals()" class="w-full">
+             <!-- Name Column -->
              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8 px-10">Facility Name</th>
-                <td mat-cell *matCellDef="let row" class="py-10 px-10 border-b border-white/[0.03]">
-                  <div class="flex items-center gap-5">
-                    <div class="w-12 h-12 rounded-2xl bg-secondary-900 border border-white/5 flex items-center justify-center text-primary-400 shadow-inner group-hover:border-primary-500/30 transition-all">
-                      <mat-icon class="scale-90">corporate_fare</mat-icon>
+                <th mat-header-cell *matHeaderCellDef class="px-6">{{ 'HOSPITALS.COLUMNS.NAME' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="px-6 py-4">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-primary-900 flex items-center justify-center text-primary-400 border border-white/5">
+                      <mat-icon class="scale-75">corporate_fare</mat-icon>
                     </div>
                     <div class="flex flex-col">
-                      <span class="text-lg font-black text-white tracking-tight uppercase italic group-hover:text-primary-400 transition-colors">{{row.name}}</span>
-                      <span class="text-[8px] font-bold text-white/20 uppercase tracking-[0.2em] mt-1 italic">License: {{row.licenseNumber}}</span>
+                      <span class="text-sm font-bold text-white">{{row.name}}</span>
+                      <span class="text-[10px] text-white/20 uppercase tracking-wider">License: {{row.licenseNumber}}</span>
                     </div>
                   </div>
                 </td>
              </ng-container>
 
+             <!-- City Column -->
              <ng-container matColumnDef="city">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8">Sector Localization</th>
-                <td mat-cell *matCellDef="let row" class="py-10 border-b border-white/[0.03]">
+                <th mat-header-cell *matHeaderCellDef>{{ 'HOSPITALS.COLUMNS.CITY' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="py-4">
                   <div class="flex items-center gap-2">
-                    <span class="w-1 h-1 rounded-full bg-primary-500"></span>
-                    <span class="text-xs font-black text-white/50 uppercase italic tracking-tight">{{row.city}} Sector Matrix</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
+                    <span class="text-xs text-white/60">{{row.city}}</span>
                   </div>
                 </td>
              </ng-container>
 
+             <!-- Phone Column -->
              <ng-container matColumnDef="phone">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8">Comm Frequency</th>
-                <td mat-cell *matCellDef="let row" class="py-10 border-b border-white/[0.03]">
-                  <span class="text-[9px] font-black text-white/40 bg-white/5 px-4 py-2 rounded-xl border border-white/5 backdrop-blur-sm">
-                    {{row.phone}}
-                  </span>
+                <th mat-header-cell *matHeaderCellDef>{{ 'HOSPITALS.COLUMNS.PHONE' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="py-4">
+                  <span class="text-xs text-white/40">{{row.phone}}</span>
                 </td>
              </ng-container>
 
+             <!-- Status Column -->
              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8">Status</th>
-                <td mat-cell *matCellDef="let row" class="py-10 border-b border-white/[0.03]">
+                <th mat-header-cell *matHeaderCellDef>{{ 'HOSPITALS.COLUMNS.STATUS' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="py-4">
                   <span [class]="row.status === 'ACTIVE' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-white/5 text-white/30 border-white/10'" 
-                        class="px-4 py-2 rounded-xl text-[8px] font-black uppercase tracking-[0.2em] border backdrop-blur-sm">
+                        class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border">
                     {{row.status}}
                   </span>
                 </td>
              </ng-container>
 
+             <!-- Actions Column -->
              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8 px-10 text-right">Directives</th>
-                <td mat-cell *matCellDef="let row" class="py-10 px-10 border-b border-white/[0.03] text-right">
-                   <div class="flex justify-end gap-3 opacity-20 group-hover:opacity-100 transition-opacity">
-                      <button mat-icon-button class="w-10 h-10 bg-white/5 text-white/40 hover:text-primary-400 hover:bg-primary-500/10 rounded-xl transition-all border border-white/5">
-                        <mat-icon class="scale-75">settings_applications</mat-icon>
+                <th mat-header-cell *matHeaderCellDef class="px-6 text-right">{{ 'HOSPITALS.COLUMNS.ACTIONS' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="px-6 py-4 text-right">
+                   <div class="flex justify-end gap-1">
+                      <button mat-icon-button class="text-white/40 hover:text-primary-400 transition-all">
+                        <mat-icon class="scale-90">settings_applications</mat-icon>
                       </button>
-                      <button mat-icon-button class="w-10 h-10 bg-white/5 text-white/40 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all border border-white/5">
-                        <mat-icon class="scale-75">power_settings_new</mat-icon>
+                      <button mat-icon-button class="text-white/40 hover:text-red-500 transition-all">
+                        <mat-icon class="scale-90">power_settings_new</mat-icon>
                       </button>
                    </div>
                 </td>
              </ng-container>
 
-             <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-white/[0.02]"></tr>
-             <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-white/[0.02] transition-all cursor-pointer group"></tr>
+             <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-white/5"></tr>
+             <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-white/[0.02] transition-colors cursor-pointer"></tr>
           </table>
           
-          <div *ngIf="hospitals().length === 0 && !loading()" class="py-32 text-center bg-white/[0.01]">
-             <mat-icon class="text-white/5 scale-[4] mb-12 animate-pulse">domain_disabled</mat-icon>
-             <p class="text-white/20 font-black uppercase tracking-[0.5em] text-[10px]">No operational facilities detected in matrix</p>
-          </div>
+          @if (hospitals().length === 0 && !loading()) {
+            <div class="py-24 text-center">
+               <mat-icon class="text-white/5 scale-[3] mb-8">domain_disabled</mat-icon>
+               <p class="text-white/20 font-bold uppercase tracking-widest text-xs">{{ 'HOSPITALS.NO_DATA' | translate }}</p>
+            </div>
+          }
         </div>
       </mat-card>
     </div>
   `,
   styles: [`
     :host { display: block; }
-    .glass { backdrop-filter: blur(40px); }
     ::ng-deep .mat-mdc-table { background: transparent !important; }
   `]
 })

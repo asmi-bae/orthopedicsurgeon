@@ -2,45 +2,15 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatChipsModule } from '@angular/material/chips';
+import { LogoComponent } from '@core/components/logo/logo.component';
 
 @Component({
   selector: 'app-auth-layout',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatChipsModule],
+  imports: [CommonModule, RouterModule, MatChipsModule, LogoComponent],
   template: `
     <div class="min-h-screen flex flex-col lg:flex-row bg-white overflow-hidden">
-      <!-- Left: Form Container (50%) -->
-      <div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-24 bg-white relative z-10">
-        <div class="w-full max-w-md">
-           <!-- Logo -->
-           <div class="flex items-center gap-4 mb-16 cursor-pointer group" routerLink="/">
-              <div class="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-2xl shadow-primary/20 transform group-hover:rotate-6 transition-transform">
-                <span class="text-white font-black text-2xl">O</span>
-              </div>
-              <div class="flex flex-col">
-                <span class="text-2xl font-black text-secondary-900 tracking-tighter uppercase">OrthoSync</span>
-                <span class="text-[9px] font-bold text-primary uppercase tracking-[0.3em] leading-none mt-1">Strategic Hub</span>
-              </div>
-           </div>
-           
-           <div class="animate-in fade-in slide-in-from-bottom-8 duration-700">
-             <router-outlet></router-outlet>
-           </div>
-
-           <!-- Footer -->
-           <div class="mt-20 pt-8 border-t border-gray-100 flex items-center justify-between">
-              <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none">
-                © 2026 OrthoSync Precision
-              </p>
-              <div class="flex gap-4">
-                 <a href="#" class="text-[9px] font-black text-gray-400 hover:text-primary uppercase tracking-widest transition-colors">Privacy</a>
-                 <a href="#" class="text-[9px] font-black text-gray-400 hover:text-primary uppercase tracking-widest transition-colors">Terms</a>
-              </div>
-           </div>
-        </div>
-      </div>
-
-      <!-- Right: Content/Image (50%) -->
+      <!-- Left: Content/Image (50%) -->
       <div class="hidden lg:block w-1/2 relative bg-secondary-900 overflow-hidden">
         <img class="absolute inset-0 h-full w-full object-cover grayscale opacity-40 mix-blend-luminosity scale-110 hover:scale-100 transition-transform duration-[30s] ease-linear" 
              src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=1600" alt="Clinical Engineering">
@@ -74,6 +44,31 @@ import { MatChipsModule } from '@angular/material/chips';
         <!-- Decorative Grid -->
         <div class="absolute inset-0 opacity-10 pointer-events-none" 
              style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+      </div>
+
+      <!-- Right: Form Container (50%) -->
+      <div class="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-16 bg-white relative z-10">
+        <div class="w-full max-w-md">
+           <!-- Logo -->
+           <div class="mb-12">
+             <app-logo [height]="48" routerLink="/"></app-logo>
+           </div>
+           
+           <div class="animate-in fade-in slide-in-from-bottom-8 duration-700">
+             <router-outlet></router-outlet>
+           </div>
+
+           <!-- Footer -->
+           <div class="mt-12 pt-8 border-t border-gray-100 flex items-center justify-between">
+              <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none">
+                © 2026 OrthoSync Precision
+              </p>
+              <div class="flex gap-4">
+                 <a href="#" class="text-[9px] font-black text-gray-400 hover:text-primary uppercase tracking-widest transition-colors">Privacy</a>
+                 <a href="#" class="text-[9px] font-black text-gray-400 hover:text-primary uppercase tracking-widest transition-colors">Terms</a>
+              </div>
+           </div>
+        </div>
       </div>
     </div>
   `,

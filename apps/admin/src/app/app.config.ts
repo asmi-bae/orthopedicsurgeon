@@ -1,9 +1,16 @@
-import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZonelessChangeDetection, importProvidersFrom } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withViewTransitions } from '@angular/router';
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors, HttpClient } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { jwtInterceptor } from '@repo/auth';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  // Using any cast to bypass possible incorrect type definition in older loader versions
+  return new (TranslateHttpLoader as any)(http, './assets/i18n/', '.json');
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +20,16 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([jwtInterceptor])
     ),
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    importProvidersFrom(
+      TranslateModule.forRoot({
+        defaultLanguage: 'en',
+        loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+        }
+      })
+    )
   ]
 };

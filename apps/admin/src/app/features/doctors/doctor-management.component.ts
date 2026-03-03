@@ -1,5 +1,6 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,6 +17,7 @@ import { DoctorSummary } from '@repo/types';
   standalone: true,
   imports: [
     CommonModule, 
+    TranslateModule,
     MatTableModule, 
     MatCardModule, 
     MatFormFieldModule, 
@@ -26,111 +28,117 @@ import { DoctorSummary } from '@repo/types';
     MatProgressBarModule
   ],
   template: `
-    <div class="space-y-10 animate-fade-in pb-24 px-2">
-      <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-8 border-b border-white/5 pb-10">
-        <div class="flex items-center gap-6">
-          <div class="w-16 h-16 bg-blue-600/20 rounded-2xl flex items-center justify-center border border-blue-500/30 shadow-2xl shadow-blue-500/10">
-            <mat-icon class="text-blue-400 scale-[1.5]">medical_services</mat-icon>
+    <div class="space-y-6 animate-fade-in pb-12">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-primary-100 dark:bg-primary-900 rounded-lg flex items-center justify-center border border-primary-200 dark:border-primary-800">
+            <mat-icon class="text-primary-600 dark:text-primary-400">medical_services</mat-icon>
           </div>
           <div>
-            <h1 class="text-4xl font-black text-white tracking-tighter italic uppercase leading-tight">Medical Staff Registry</h1>
-            <div class="flex items-center gap-3 mt-1.5">
-              <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-              <p class="text-primary-500 font-black text-[10px] uppercase tracking-[0.4em]">Initialize and monitor specialist nodes across the facility matrix</p>
-            </div>
+            <h1 class="text-2xl font-bold text-white">{{ 'DOCTORS.TITLE' | translate }}</h1>
+            <p class="text-white/40 text-xs">{{ 'DOCTORS.SUBTITLE' | translate }}</p>
           </div>
         </div>
-        <div class="flex items-center gap-5">
-          <div class="flex items-center bg-white/[0.03] px-6 py-3 rounded-2xl border border-white/5 w-full max-w-sm group focus-within:border-primary-500/50 focus-within:bg-white/[0.05] transition-all">
-             <mat-icon class="text-white/20 mr-4 group-focus-within:text-primary-400 transition-colors">search</mat-icon>
-             <input type="text" placeholder="Filter specialist index..." (keyup)="applyFilter($event)" class="bg-transparent border-none text-xs outline-none w-full text-white placeholder-white/10 font-bold tracking-wide" />
-          </div>
-          <button mat-flat-button color="primary" class="rounded-2xl h-14 px-10 font-black uppercase tracking-tighter italic shadow-2xl shadow-primary-500/20 premium-border bg-primary-600 hover:bg-primary-500 transition-all shrink-0">
-             Enlist Specialist
+        <div class="flex items-center gap-3">
+          <mat-form-field appearance="outline" class="w-full md:w-64 dense-form-field">
+            <mat-icon matPrefix class="mr-2">search</mat-icon>
+            <input matInput (keyup)="applyFilter($event)" [placeholder]="'DOCTORS.FILTER_PLACEHOLDER' | translate">
+          </mat-form-field>
+          <button mat-flat-button color="primary" class="h-12 px-6 font-bold uppercase tracking-tight">
+             {{ 'DOCTORS.ENLIST_BUTTON' | translate }}
           </button>
         </div>
       </div>
 
-      <mat-card class="bg-white/[0.01] border border-white/5 rounded-3xl glass overflow-hidden animate-slide-up">
-        <mat-progress-bar *ngIf="loading()" mode="query" color="primary" class="h-1"></mat-progress-bar>
+      <mat-card class="border rounded-xl overflow-hidden animate-slide-up">
+        @if (loading()) {
+          <mat-progress-bar mode="query" color="primary"></mat-progress-bar>
+        }
         
-        <div class="overflow-x-auto p-2">
-          <table mat-table [dataSource]="doctors()" class="w-full bg-transparent">
+        <div class="overflow-x-auto">
+          <table mat-table [dataSource]="doctors()" class="w-full">
+             <!-- Name Column -->
              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8 px-10">Operational Personnel</th>
-                <td mat-cell *matCellDef="let row" class="py-10 px-10 border-b border-white/[0.03]">
-                  <div class="flex items-center gap-5">
-                    <div class="w-12 h-12 rounded-2xl bg-secondary-900 border border-white/5 flex items-center justify-center text-primary-400 font-black italic shadow-inner relative group-hover:border-primary-500/30 transition-all">
+                <th mat-header-cell *matHeaderCellDef class="px-6">{{ 'DOCTORS.COLUMNS.NAME' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-primary-900 flex items-center justify-center text-primary-400 font-bold border border-white/10">
                       {{row.firstName[0]}}
-                      <div class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-secondary-950 shadow-lg"></div>
                     </div>
                     <div class="flex flex-col">
-                      <span class="text-lg font-black text-white tracking-tight uppercase italic group-hover:text-primary-400 transition-colors">{{row.firstName}} {{row.lastName}}</span>
-                      <span class="text-[8px] font-bold text-white/20 uppercase tracking-[0.2em] mt-1 italic">Node Trace: {{row.id.split('-')[0]}}</span>
+                      <span class="text-sm font-bold text-white">{{row.firstName}} {{row.lastName}}</span>
+                      <span class="text-[10px] text-white/20 uppercase tracking-wider">ID: {{row.id.split('-')[0]}}</span>
                     </div>
                   </div>
                 </td>
              </ng-container>
 
+             <!-- Specialization Column -->
              <ng-container matColumnDef="specialization">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8">Domain Expertise</th>
-                <td mat-cell *matCellDef="let row" class="py-10 border-b border-white/[0.03]">
-                  <span class="text-[9px] font-black text-primary-400 bg-primary-500/10 px-5 py-2.5 rounded-xl border border-primary-500/20 uppercase tracking-[0.2em] backdrop-blur-sm shadow-xl">
-                    {{row.specialization}}
-                  </span>
+                <th mat-header-cell *matHeaderCellDef>{{ 'DOCTORS.COLUMNS.SPECIALIZATION' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="py-4">
+                  <mat-chip-set>
+                    <mat-chip class="text-[10px] font-bold uppercase">{{row.specialization}}</mat-chip>
+                  </mat-chip-set>
                 </td>
              </ng-container>
 
+             <!-- Hospital Column -->
              <ng-container matColumnDef="hospital">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8">Matrix Allocation</th>
-                <td mat-cell *matCellDef="let row" class="py-10 border-b border-white/[0.03]">
-                  <div class="flex items-center gap-3">
-                    <mat-icon class="text-white/10 scale-75">corporate_fare</mat-icon>
-                    <span class="text-xs font-black text-white/40 uppercase tracking-tighter group-hover:text-white/60 transition-colors italic leading-none">{{row.hospitalName || 'NOT_ALLOCATED'}}</span>
+                <th mat-header-cell *matHeaderCellDef>{{ 'DOCTORS.COLUMNS.HOSPITAL' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="py-4">
+                  <div class="flex items-center gap-2">
+                    <mat-icon class="text-white/20 scale-75">corporate_fare</mat-icon>
+                    <span class="text-xs text-white/60">{{row.hospitalName || 'N/A'}}</span>
                   </div>
                 </td>
              </ng-container>
 
+             <!-- Status Column -->
              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8">Status Vector</th>
-                <td mat-cell *matCellDef="let row" class="py-10 border-b border-white/[0.03]">
+                <th mat-header-cell *matHeaderCellDef>{{ 'DOCTORS.COLUMNS.STATUS' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="py-4">
                   <span [class]="row.status === 'ACTIVE' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-white/5 text-white/30 border-white/10'" 
-                        class="px-4 py-2Rounded-xl text-[8px] font-black uppercase tracking-[0.2em] border backdrop-blur-sm">
+                        class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border">
                     {{row.status}}
                   </span>
                 </td>
              </ng-container>
 
+             <!-- Actions Column -->
              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8 px-10 text-right">Directives</th>
-                <td mat-cell *matCellDef="let row" class="py-10 px-10 border-b border-white/[0.03] text-right">
-                   <div class="flex justify-end gap-3 opacity-20 group-hover:opacity-100 transition-opacity">
-                      <button mat-icon-button class="w-10 h-10 bg-white/5 text-white/40 hover:text-primary-400 hover:bg-primary-500/10 rounded-xl transition-all border border-white/5">
-                        <mat-icon class="scale-75">edit_square</mat-icon>
+                <th mat-header-cell *matHeaderCellDef class="px-6 text-right">{{ 'DOCTORS.COLUMNS.ACTIONS' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="px-6 py-4 text-right">
+                   <div class="flex justify-end gap-1">
+                      <button mat-icon-button class="text-white/40 hover:text-primary-400 transition-all">
+                        <mat-icon class="scale-90">edit</mat-icon>
                       </button>
-                      <button mat-icon-button class="w-10 h-10 bg-white/5 text-white/40 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all border border-white/5">
-                        <mat-icon class="scale-75">delete</mat-icon>
+                      <button mat-icon-button class="text-white/40 hover:text-red-500 transition-all">
+                        <mat-icon class="scale-90">delete</mat-icon>
                       </button>
                    </div>
                 </td>
              </ng-container>
 
-             <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-white/[0.02]"></tr>
-             <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-white/[0.02] transition-all cursor-pointer group"></tr>
+             <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-white/5"></tr>
+             <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-white/[0.02] transition-colors cursor-pointer"></tr>
           </table>
 
-          <div *ngIf="doctors().length === 0 && !loading()" class="py-32 text-center bg-white/[0.01]">
-             <mat-icon class="text-white/5 scale-[4] mb-12 animate-pulse">person_off</mat-icon>
-             <p class="text-white/20 font-black uppercase tracking-[0.5em] text-[10px]">No operational nodes detected in current sector</p>
-          </div>
+          @if (doctors().length === 0 && !loading()) {
+            <div class="py-24 text-center">
+               <mat-icon class="text-white/5 scale-[3] mb-8">person_off</mat-icon>
+               <p class="text-white/20 font-bold uppercase tracking-widest text-xs">{{ 'DOCTORS.NO_DATA' | translate }}</p>
+            </div>
+          }
         </div>
       </mat-card>
     </div>
   `,
   styles: [`
     :host { display: block; }
-    .glass { backdrop-filter: blur(40px); }
     ::ng-deep .mat-mdc-table { background: transparent !important; }
+    ::ng-deep .dense-form-field .mat-mdc-form-field-subscript-wrapper { display: none; }
+    ::ng-deep .dense-form-field .mat-mdc-text-field-wrapper { height: 48px !important; padding-top: 0 !important; padding-bottom: 0 !important; }
   `]
 })
 export class DoctorManagementComponent implements OnInit {

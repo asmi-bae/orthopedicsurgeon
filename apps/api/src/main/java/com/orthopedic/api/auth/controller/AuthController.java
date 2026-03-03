@@ -44,6 +44,40 @@ public class AuthController {
         return ResponseEntity.ok(authService.register(request));
     }
 
+    @PostMapping("/login/google")
+    @Operation(summary = "Login or Register with Google")
+    public ResponseEntity<LoginResponse> googleLogin(@Valid @RequestBody GoogleLoginRequest request,
+            HttpServletRequest servletRequest,
+            HttpServletResponse servletResponse) {
+        String ip = servletRequest.getRemoteAddr();
+        String userAgent = servletRequest.getHeader("User-Agent");
+        LoginResponse response = authService.googleLogin(request, ip, userAgent);
+
+        if (response.getRefreshToken() != null) {
+            addRefreshTokenCookie(servletResponse, response.getRefreshToken());
+            response.setRefreshToken(null);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Request a password reset link")
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "Reset password using a token")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request,
+            HttpServletRequest servletRequest) {
+        String ip = servletRequest.getRemoteAddr();
+        String userAgent = servletRequest.getHeader("User-Agent");
+        authService.resetPassword(request, ip, userAgent);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/refresh")
     @Operation(summary = "Refresh access token using refresh token")
     public ResponseEntity<TokenResponse> refresh(@CookieValue(name = "refreshToken") String refreshToken,

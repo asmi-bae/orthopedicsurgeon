@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   standalone: true,
   imports: [
     CommonModule, 
+    TranslateModule,
     MatTableModule, 
     MatCardModule, 
     MatButtonModule, 
@@ -20,104 +22,105 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatTooltipModule
   ],
   template: `
-    <div class="space-y-10 animate-fade-in pb-24 px-2">
-      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-white/5 pb-10">
-        <div class="flex items-center gap-6">
-          <div class="w-16 h-16 bg-emerald-600/20 rounded-2xl flex items-center justify-center border border-emerald-500/30 shadow-2xl shadow-emerald-500/10">
-            <mat-icon class="text-emerald-400 scale-[1.5]">event_available</mat-icon>
+    <div class="space-y-6 animate-fade-in pb-12">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-emerald-100 dark:bg-emerald-900 rounded-lg flex items-center justify-center border border-emerald-200 dark:border-emerald-800">
+            <mat-icon class="text-emerald-600 dark:text-emerald-400">event_available</mat-icon>
           </div>
           <div>
-            <h1 class="text-4xl font-black text-white tracking-tighter italic uppercase leading-tight">Timeline Synchronization</h1>
-            <div class="flex items-center gap-3 mt-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <p class="text-primary-500 font-black text-[10px] uppercase tracking-[0.4em]">Oversee system-wide scheduling and doctor availability matrix</p>
-            </div>
+            <h1 class="text-2xl font-bold text-white">{{ 'APPOINTMENTS.TITLE' | translate }}</h1>
+            <p class="text-white/40 text-xs">{{ 'APPOINTMENTS.SUBTITLE' | translate }}</p>
           </div>
         </div>
-        <button mat-flat-button color="primary" class="rounded-2xl h-14 px-10 font-black uppercase tracking-tighter italic shadow-2xl shadow-primary-500/20 premium-border bg-primary-600 hover:bg-primary-500 transition-all shrink-0">
-           Initialize New Session
+        <button mat-flat-button color="primary" class="h-12 px-6 font-bold uppercase tracking-tight">
+           {{ 'APPOINTMENTS.NEW_SESSION' | translate }}
         </button>
       </div>
 
-      <mat-card class="bg-white/[0.01] border border-white/5 rounded-[40px] glass overflow-hidden animate-slide-up shadow-2xl">
-        <div class="overflow-x-auto p-4">
-          <table mat-table [dataSource]="appointments()" class="w-full bg-transparent">
+      <mat-card class="border rounded-xl overflow-hidden animate-slide-up shadow-lg">
+        <div class="overflow-x-auto">
+          <table mat-table [dataSource]="appointments()" class="w-full">
+             <!-- Patient Column -->
              <ng-container matColumnDef="patient">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8 px-10">Subject Node</th>
-                <td mat-cell *matCellDef="let row" class="py-10 px-10 border-b border-white/[0.03]">
-                  <div class="flex items-center gap-5">
-                    <div class="w-12 h-12 rounded-xl bg-secondary-900 flex items-center justify-center border border-white/5 group-hover:border-primary-500/30 transition-all font-black text-white/40 text-sm shadow-inner">
+                <th mat-header-cell *matHeaderCellDef class="px-6">{{ 'APPOINTMENTS.COLUMNS.PATIENT' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="px-6 py-4">
+                  <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-lg bg-primary-900 flex items-center justify-center border border-white/5 font-bold text-white/40 text-sm">
                       {{row.patient.charAt(0)}}
                     </div>
                     <div class="flex flex-col">
-                      <span class="text-base font-black text-white tracking-tight uppercase italic group-hover:text-primary-400 transition-colors">{{row.patient}}</span>
-                      <span class="text-[8px] font-bold text-white/20 uppercase tracking-[0.2em] mt-1 italic leading-none">Status: Nominal</span>
+                      <span class="text-sm font-bold text-white uppercase">{{row.patient}}</span>
+                      <span class="text-[10px] text-white/20 uppercase tracking-wider">Status: Nominal</span>
                     </div>
                   </div>
                 </td>
              </ng-container>
 
+             <!-- Doctor Column -->
              <ng-container matColumnDef="doctor">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8">Medical Authority</th>
-                <td mat-cell *matCellDef="let row" class="py-10 border-b border-white/[0.03]">
-                  <div class="flex items-center gap-4">
-                    <div class="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center border border-primary-500/20">
-                       <mat-icon class="text-primary-400 scale-75">medical_services</mat-icon>
-                    </div>
-                    <span class="text-sm font-black text-white uppercase italic tracking-tighter">{{row.doctor}}</span>
+                <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.COLUMNS.DOCTOR' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="py-4">
+                  <div class="flex items-center gap-2">
+                    <mat-icon class="text-primary-400 scale-75">medical_services</mat-icon>
+                    <span class="text-sm text-white/60 font-medium">{{row.doctor}}</span>
                   </div>
                 </td>
              </ng-container>
 
+             <!-- Time Column -->
              <ng-container matColumnDef="timestamp">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8">Temporal Coordinate</th>
-                <td mat-cell *matCellDef="let row" class="py-10 border-b border-white/[0.03]">
+                <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.COLUMNS.TIMESTAMP' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="py-4">
                   <div class="flex flex-col">
-                    <span class="text-xs font-black text-white italic tracking-tighter uppercase">{{row.date}}</span>
-                    <span class="text-[9px] font-black text-primary-400 mt-1.5 bg-primary-500/10 px-3 py-1 rounded-lg border border-primary-500/20 w-fit tracking-widest">{{row.time}}</span>
+                    <span class="text-xs font-bold text-white">{{row.date}}</span>
+                    <span class="text-[10px] text-primary-400 font-bold">{{row.time}}</span>
                   </div>
                 </td>
              </ng-container>
 
+             <!-- Status Column -->
              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8">Sync Status</th>
-                <td mat-cell *matCellDef="let row" class="py-10 border-b border-white/[0.03]">
+                <th mat-header-cell *matHeaderCellDef>{{ 'APPOINTMENTS.COLUMNS.STATUS' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="py-4">
                    <span [class]="row.status === 'CONFIRMED' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20'" 
-                         class="px-4 py-2 rounded-xl text-[8px] font-black uppercase tracking-[0.2em] border backdrop-blur-sm">
-                    {{row.status === 'CONFIRMED' ? 'SYNCED' : 'AWAITING_SYNC'}}
+                         class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border">
+                    {{row.status}}
                   </span>
                 </td>
              </ng-container>
 
+             <!-- Actions Column -->
              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef class="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] py-8 px-10 text-right">Orchestration</th>
-                <td mat-cell *matCellDef="let row" class="py-10 px-10 border-b border-white/[0.03] text-right">
-                   <div class="flex justify-end gap-3 opacity-20 group-hover:opacity-100 transition-opacity">
-                      <button mat-icon-button matTooltip="Modify Session" class="w-10 h-10 bg-white/5 text-white/40 hover:text-primary-400 hover:bg-primary-500/10 rounded-xl transition-all border border-white/5">
-                        <mat-icon class="scale-75">edit_calendar</mat-icon>
+                <th mat-header-cell *matHeaderCellDef class="px-6 text-right">{{ 'APPOINTMENTS.COLUMNS.ACTIONS' | translate }}</th>
+                <td mat-cell *matCellDef="let row" class="px-6 py-4 text-right">
+                   <div class="flex justify-end gap-1">
+                      <button mat-icon-button [matTooltip]="'Edit'" class="text-white/40 hover:text-primary-400 transition-all">
+                        <mat-icon class="scale-90">edit_calendar</mat-icon>
                       </button>
-                      <button mat-icon-button matTooltip="Terminate Session" class="w-10 h-10 bg-white/5 text-white/40 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all border border-white/5">
-                        <mat-icon class="scale-75">cancel_schedule_send</mat-icon>
+                      <button mat-icon-button [matTooltip]="'Cancel'" class="text-white/40 hover:text-red-500 transition-all">
+                        <mat-icon class="scale-90">cancel</mat-icon>
                       </button>
                    </div>
                 </td>
              </ng-container>
 
-             <tr mat-header-row *matHeaderRowDef="columns" class="bg-white/[0.02]"></tr>
-             <tr mat-row *matRowDef="let row; columns: columns;" class="group hover:bg-white/[0.02] transition-all cursor-pointer border-white/5"></tr>
+             <tr mat-header-row *matHeaderRowDef="columns" class="bg-white/5"></tr>
+             <tr mat-row *matRowDef="let row; columns: columns;" class="hover:bg-white/[0.02] transition-colors cursor-pointer"></tr>
           </table>
           
-          <div *ngIf="appointments().length === 0" class="py-48 text-center bg-white/[0.01]">
-             <mat-icon class="text-white/5 scale-[5] mb-14 animate-pulse">event_busy</mat-icon>
-             <p class="text-white/20 font-black uppercase tracking-[0.6em] text-[10px]">No active sessions in timeline</p>
-          </div>
+          @if (appointments().length === 0) {
+            <div class="py-24 text-center">
+               <mat-icon class="text-white/5 scale-[3] mb-8">event_busy</mat-icon>
+               <p class="text-white/20 font-bold uppercase tracking-widest text-xs">No active sessions</p>
+            </div>
+          }
         </div>
       </mat-card>
     </div>
   `,
   styles: [`
     :host { display: block; }
-    .glass { backdrop-filter: blur(40px); }
     ::ng-deep .mat-mdc-table { background: transparent !important; }
   `]
 })

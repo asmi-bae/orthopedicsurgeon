@@ -25,12 +25,12 @@ import { AuthService } from '@repo/auth';
     MatIconModule
   ],
   template: `
-    <div class="animate-in fade-in slide-in-from-left duration-700 pb-10">
-      <h2 class="text-4xl font-black text-secondary-900 mb-2 uppercase tracking-tighter">Personnel Registry</h2>
-      <p class="text-sm text-secondary-500 mb-10 font-medium">Initialize your profile within the OrthoSync deployment grid.</p>
+    <div class="animate-in fade-in slide-in-from-right duration-700 pb-4">
+      <h2 class="text-2xl font-black text-secondary-900 mb-2 tracking-tighter">Personnel Registry</h2>
+      <p class="text-sm text-secondary-500 mb-6 font-medium">Initialize your profile within the OrthoSync deployment grid.</p>
 
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
            <mat-form-field appearance="outline">
              <mat-label>First Name</mat-label>
              <input matInput formControlName="firstName" placeholder="John">
@@ -44,10 +44,9 @@ import { AuthService } from '@repo/auth';
         <mat-form-field appearance="outline">
           <mat-label>Primary Email Address</mat-label>
           <input matInput type="email" formControlName="email" placeholder="john.doe@orthosync.med">
-          <mat-icon matSuffix>alternate_email</mat-icon>
         </mat-form-field>
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
            <mat-form-field appearance="outline">
              <mat-label>Biological Cipher</mat-label>
               <mat-select formControlName="gender">
@@ -59,27 +58,25 @@ import { AuthService } from '@repo/auth';
            <mat-form-field appearance="outline">
              <mat-label>Contact Frequency</mat-label>
              <input matInput formControlName="phone" placeholder="+880 1XXX-XXXXXX">
-             <mat-icon matSuffix>phone</mat-icon>
            </mat-form-field>
         </div>
 
         <mat-form-field appearance="outline">
           <mat-label>Security Passphrase</mat-label>
           <input matInput type="password" formControlName="password" placeholder="Min. 8 characters">
-          <mat-icon matSuffix>lock_outline</mat-icon>
         </mat-form-field>
 
         <mat-checkbox formControlName="terms">
-          <span class="text-[10px] font-black text-secondary-400 uppercase tracking-widest leading-tight">Accept operational protocols & privacy encryption</span>
+          <span class="text-[10px] font-bold text-secondary-400 tracking-tight leading-tight">Accept operational protocols & privacy encryption</span>
         </mat-checkbox>
 
         @if (error()) {
-          <div class="p-4 bg-red-50 border border-red-100 rounded-2xl text-[10px] font-black text-red-600 uppercase tracking-widest animate-shake">
+          <div class="p-4 bg-red-50 border border-red-100 rounded-2xl text-[10px] font-bold text-red-600 tracking-tight animate-shake">
              <mat-icon class="scale-75 align-middle mr-1">warning</mat-icon> {{ error() }}
           </div>
         }
 
-        <button mat-flat-button color="primary" class="h-16 rounded-2xl text-lg font-bold uppercase shadow-2xl shadow-primary/30 mt-4" 
+        <button mat-flat-button color="primary" class="h-12 rounded-xl text-base font-bold shadow-lg shadow-primary/20 mt-2" 
                 type="submit" [disabled]="loading()">
           @if (!loading()) {
             <span>Get Started</span>
@@ -89,9 +86,9 @@ import { AuthService } from '@repo/auth';
         </button>
       </form>
 
-      <div class="mt-12 text-center text-balance">
-        <p class="text-[10px] font-black text-secondary-400 uppercase tracking-[0.2em] mb-4">Already deployed?</p>
-        <button mat-stroked-button color="primary" routerLink="/auth/login" class="h-14 px-10 rounded-xl font-bold uppercase border-2 w-full">
+      <div class="mt-8 text-center text-balance">
+        <p class="text-[10px] font-bold text-secondary-400 tracking-tight mb-4">Already deployed?</p>
+        <button mat-stroked-button color="primary" routerLink="/auth/login" class="h-10 px-8 rounded-lg font-bold border-2 w-full">
           Access Secure Portal
         </button>
       </div>

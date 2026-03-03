@@ -1,0 +1,116 @@
+{
+    "COMMON": {
+        "SEARCH": "অনুসন্ধান...",
+        "LOGOUT": "লগআউট",
+        "SETTINGS": "সেটিংস",
+        "DASHBOARD": "ড্যাশবোর্ড",
+        "NAV": {
+            "OVERVIEW": "ওভারভিউ",
+            "ORGANIZATION": "সংস্থা",
+            "MEDICAL_STAFF": "চিকিৎসা কর্মী",
+            "PATIENTS": "রোগী",
+            "APPOINTMENTS": "অ্যাপয়েন্টমেন্ট",
+            "RECORDS": "রেকর্ড",
+            "FINANCE": "ফাইন্যান্স",
+            "CONTENT": {
+                "HERO": "হিরো ব্যানার",
+                "FAQ": "এফএকিউ",
+                "PARTNERS": "অংশীদার",
+                "BLOG": "ব্লগ"
+            },
+            "SETTINGS": "সেটিংস"
+        }
+    },
+    "DASHBOARD": {
+        "TITLE": "অপারেশনাল নেক্সাস",
+        "SUBTITLE": "সিস্টেম ওভারভিউ",
+        "STATS": {
+            "REVENUE": "রাজস্ব",
+            "SPECIALISTS": "সক্রিয় বিশেষজ্ঞ",
+            "PATIENTS": "রোগীর সংখ্যা",
+            "SECURITY": "নিরাপত্তা"
+        },
+        "LIVE_FEED": {
+            "TITLE": "অপারেশনাল ফিড",
+            "SUBTITLE": "রিয়েল-টাইম সিঙ্ক্রোনাইজেশন সক্রিয়",
+            "COLUMNS": {
+                "PATIENT": "রোগী",
+                "DOCTOR": "ডাক্তার",
+                "TIME": "সময়",
+                "STATUS": "স্ট্যাটাস"
+            }
+        },
+        "LOGISTICS": {
+            "TITLE": "সেক্টর লজিস্টিকস",
+            "REPORT_BUTTON": "রিপোর্ট তৈরী করুন"
+        }
+    },
+    "DOCTORS": {
+        "TITLE": "চিকিৎসা কর্মী রেজিস্ট্রি",
+        "SUBTITLE": "বিশেষজ্ঞদের পরিচালনা এবং তদারকি করুন",
+        "FILTER_PLACEHOLDER": "বিশেষজ্ঞদের ফিল্টার করুন...",
+        "ENLIST_BUTTON": "বিশেষজ্ঞ তালিকাভুক্ত করুন",
+        "COLUMNS": {
+            "NAME": "নাম",
+            "SPECIALIZATION": "বিশেষজ্ঞতা",
+            "HOSPITAL": "হাসপাতাল",
+            "STATUS": "স্ট্যাটাস",
+            "ACTIONS": "অ্যাকশন"
+        },
+        "NO_DATA": "কোন ডাক্তার পাওয়া যায়নি"
+    },
+    "HOSPITALS": {
+        "TITLE": "ইনফ্রাস্ট্রাকচার ম্যানেজমেন্ট",
+        "SUBTITLE": "হাসপাতাল নেটওয়ার্ক পরিচালনা করুন",
+        "ADD_BUTTON": "সুবিধা যোগ করুন",
+        "COLUMNS": {
+            "NAME": "সুবিধার নাম",
+            "CITY": "শহর",
+            "PHONE": "ফোন",
+            "STATUS": "স্ট্যাটাস",
+            "ACTIONS": "অ্যাকশন"
+        },
+        "NO_DATA": "কোন সুবিধা পাওয়া যায়নি"
+    },
+    "PATIENTS": {
+        "TITLE": "রোগী রেজিস্ট্রি",
+        "SUBTITLE": "রোগীর ইতিহাস পরিচালনা করুন",
+        "REGISTER_BUTTON": "রোগী নিবন্ধন করুন",
+        "COLUMNS": {
+            "NAME": "রোগীর নাম",
+            "BIOMETRICS": "বায়োমেট্রিক্স",
+            "LAST_VISIT": "শেষ ভিজিট",
+            "STATUS": "স্ট্যাটাস",
+            "ACTIONS": "অ্যাকশন"
+        }
+    },
+    "APPOINTMENTS": {
+        "TITLE": "অ্যাপয়েন্টমেন্ট শিডিয়ুলার",
+        "SUBTITLE": "সিস্টেম-ব্যাপী শিডিউলিং পরিচালনা করুন",
+        "NEW_SESSION": "নতুন সেশন",
+        "COLUMNS": {
+            "PATIENT": "রোগী",
+            "DOCTOR": "ডাক্তার",
+            "TIMESTAMP": "সময়",
+            "STATUS": "স্ট্যাটাস",
+            "ACTIONS": "অ্যাকশন"
+        }
+    },
+    "BLOG": {
+        "TITLE": "ব্লগ ম্যানেজমেন্ট",
+        "SUBTITLE": "স্বাস্থ্য তথ্য প্রচার করুন",
+        "ADD_BUTTON": "নতুন নিবন্ধ",
+        "COLUMNS": {
+            "TITLE": "শিরোনাম",
+            "CATEGORY": "বিভাগ",
+            "STATS": "পরিসংখ্যান",
+            "STATUS": "স্ট্যাটাস",
+            "ACTIONS": "অ্যাকশন"
+        },
+        "STATUS": {
+            "PUBLISHED": "প্রকাশিত",
+            "DRAFT": "খসড়া"
+        },
+        "NO_DATA": "কোন নিবন্ধ পাওয়া যায়নি"
+    }
+}

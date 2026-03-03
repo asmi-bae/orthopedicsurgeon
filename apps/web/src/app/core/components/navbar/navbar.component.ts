@@ -9,6 +9,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '@repo/auth';
+import { LogoComponent } from '@core/components/logo/logo.component';
 
 @Component({
   selector: 'app-navbar',
@@ -22,12 +23,14 @@ import { AuthService } from '@repo/auth';
     MatMenuModule,
     MatDividerModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    LogoComponent
   ],
   template: `
     <!-- Emergency Top Bar -->
     <div class="h-10 bg-secondary-900 border-b border-white/5 flex items-center justify-between px-6 sm:px-12 text-white">
-      <div class="flex items-center gap-6">
+     <!-- Top Bar -->
+    <div class="flex items-center gap-4">
         <div class="flex items-center gap-2">
           <mat-icon class="text-primary text-sm scale-75">error</mat-icon>
           <span class="text-[9px] font-black uppercase tracking-[0.2em]">Emergency Network:</span>
@@ -41,20 +44,12 @@ import { AuthService } from '@repo/auth';
       <div class="flex items-center gap-4">
         <button class="text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-primary transition-colors">EN</button>
         <div class="w-[1px] h-3 bg-white/10"></div>
-        <button class="text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-primary transition-colors">ES</button>
+        <button class="text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-primary transition-colors">BN</button>
       </div>
     </div>
 
     <mat-toolbar class="h-24 bg-white/80 backdrop-blur-xl border-b border-gray-100 px-6 sm:px-10 lg:px-12 transition-all">
-      <div class="flex items-center gap-4 cursor-pointer group" routerLink="/">
-        <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 transform group-hover:rotate-6 transition-transform duration-500">
-          <span class="text-white font-black text-xl">O</span>
-        </div>
-        <div class="flex flex-col">
-          <span class="text-lg font-black text-foreground tracking-tighter leading-none uppercase">OrthoSync</span>
-          <span class="text-[8px] font-bold text-primary uppercase tracking-[0.3em] leading-none mt-1">Precision Care</span>
-        </div>
-      </div>
+      <app-logo [height]="44" routerLink="/"></app-logo>
 
       <span class="flex-1"></span>
 
@@ -71,13 +66,13 @@ import { AuthService } from '@repo/auth';
 
       <div class="flex items-center gap-4">
         <!-- Global Search Placeholder -->
-        <div class="hidden md:flex items-center bg-gray-50 border border-gray-100 rounded-xl px-4 h-11 group focus-within:border-primary/30 transition-all">
+        <div class="hidden md:flex items-center bg-gray-50 border border-gray-100 rounded-xl px-4 py-2 group focus-within:border-primary/30 transition-all">
           <mat-icon class="text-gray-300 scale-75">search</mat-icon>
           <input type="text" placeholder="PRECISION SEARCH" class="bg-transparent border-none text-[9px] font-black uppercase tracking-widest text-secondary-900 focus:outline-none ml-2 w-32 placeholder:text-gray-300">
         </div>
 
         <ng-container *ngIf="auth.currentUser() as user; else guest">
-          <button mat-button [matMenuTriggerFor]="userMenu" class="h-11 px-2 rounded-full border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-premium transition-all">
+          <button mat-button [matMenuTriggerFor]="userMenu" class="rounded-full border border-gray-100 bg-gray-50/50 hover:bg-white hover:shadow-premium transition-all">
             <div class="flex items-center gap-3">
               <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs uppercase">
                 {{user.firstName[0]}}{{user.lastName[0]}}
@@ -106,10 +101,10 @@ import { AuthService } from '@repo/auth';
 
         <ng-template #guest>
            <div class="flex items-center gap-3">
-             <a mat-tonal-button color="primary" routerLink="/auth/login" class="h-11 px-6 rounded-xl font-bold uppercase tracking-widest text-[10px]">
+             <a mat-tonal-button color="primary" matButton="tonal" routerLink="/auth/login" class="font-bold uppercase tracking-widest text-[10px]">
                Sign In
              </a>
-             <a mat-flat-button color="primary" routerLink="/auth/register" class="h-11 px-6 rounded-xl font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20">
+             <a mat-flat-button color="primary" routerLink="/auth/register" class="font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-primary/20">
                Get Started
              </a>
            </div>
@@ -119,7 +114,7 @@ import { AuthService } from '@repo/auth';
   `,
   styles: [`
     :host { display: block; position: sticky; top: 0; z-index: 1000; }
-    .nav-btn { font-size: 10px !important; font-weight: 900 !important; text-transform: uppercase !important; letter-spacing: 0.15em !important; height: 44px !important; opacity: 0.6; }
+    .nav-btn { font-size: 10px !important; font-weight: 900 !important; text-transform: uppercase !important; letter-spacing: 0.15em !important; opacity: 0.6; }
     .active-link { color: var(--mat-sys-primary) !important; opacity: 1 !important; }
     .premium-menu { border-radius: 16px !important; margin-top: 8px; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 20px 50px rgba(0,0,0,0.1) !important; }
   `]

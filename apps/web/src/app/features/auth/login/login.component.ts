@@ -23,39 +23,37 @@ import { AuthService } from '@repo/auth';
     MatIconModule
   ],
   template: `
-    <div class="animate-in fade-in slide-in-from-left duration-700">
-      <h2 class="text-4xl font-black text-secondary-900 mb-2 uppercase tracking-tighter">Precision Login</h2>
-      <p class="text-sm text-secondary-500 mb-12 font-medium">Verify your synchronization credentials.</p>
+    <div class="animate-in fade-in slide-in-from-right duration-700">
+      <h2 class="text-2xl font-black text-secondary-900 mb-2 tracking-tighter">Login</h2>
+      <p class="text-sm text-secondary-500 mb-8 font-medium">Please enter your credentials to login.</p>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Email Address</mat-label>
           <input matInput type="email" formControlName="email" placeholder="name@orthosync.med">
-          <mat-icon matPrefix>alternate_email</mat-icon>
         </mat-form-field>
 
         <div class="space-y-2">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Password</mat-label>
             <input matInput type="password" formControlName="password" placeholder="••••••••">
-            <mat-icon matPrefix>lock_outline</mat-icon>
           </mat-form-field>
           <div class="flex justify-end">
-            <a routerLink="/auth/forgot-password" class="text-[10px] font-black uppercase tracking-widest text-primary hover:underline underline-offset-4">Reset Credentials</a>
+            <a routerLink="/auth/forgot-password" class="text-[10px] font-bold text-primary hover:underline underline-offset-4 tracking-tight">Forgot your password?</a>
           </div>
         </div>
 
         <mat-checkbox formControlName="rememberMe">
-          <span class="text-[10px] font-black text-secondary-400 uppercase tracking-widest">Maintain session link</span>
+          <span class="text-[10px] font-bold text-secondary-400 tracking-tight">Remember me for 30 days</span>
         </mat-checkbox>
 
         @if (error()) {
-          <div class="p-4 bg-red-50 border border-red-100 rounded-2xl text-[10px] font-black text-red-600 uppercase tracking-widest animate-shake">
+          <div class="p-4 bg-red-50 border border-red-100 rounded-2xl text-[10px] font-bold text-red-600 tracking-tight animate-shake">
              <mat-icon class="scale-75 align-middle mr-1">report_problem</mat-icon> {{ error() }}
           </div>
         }
 
-        <button mat-tonal-button color="primary" class="h-16 rounded-2xl text-lg font-bold uppercase shadow-2xl shadow-primary/30" 
+        <button mat-flat-button color="primary" class="h-12 rounded-xl text-base font-bold shadow-lg shadow-primary/20" 
                 type="submit" [disabled]="loading()">
           @if (!loading()) {
             <span>Sign In</span>
@@ -65,10 +63,10 @@ import { AuthService } from '@repo/auth';
         </button>
       </form>
 
-      <div class="mt-12 text-center">
-        <p class="text-[10px] font-black text-secondary-400 uppercase tracking-[0.2em] mb-4">New Personnel?</p>
-        <button mat-stroked-button color="primary" routerLink="/auth/register" class="h-14 px-10 rounded-xl font-bold uppercase border-2 w-full">
-          Create Authorized Account
+      <div class="mt-8 text-center">
+        <p class="text-[10px] font-bold text-secondary-400 tracking-tight mb-4">Don't have an account?</p>
+        <button mat-stroked-button color="primary" routerLink="/auth/register" class="h-10 px-8 rounded-lg font-bold border-2 w-full">
+          Create Account
         </button>
       </div>
     </div>

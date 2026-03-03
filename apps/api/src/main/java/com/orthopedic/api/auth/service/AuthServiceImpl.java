@@ -1,21 +1,30 @@
 package com.orthopedic.api.auth.service;
 
 import com.orthopedic.api.auth.dto.*;
+import com.orthopedic.api.auth.entity.PasswordResetToken;
 import com.orthopedic.api.auth.entity.Role;
 import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.auth.exception.AuthException;
 import com.orthopedic.api.auth.exception.InvalidCredentialsException;
+import com.orthopedic.api.auth.repository.PasswordResetTokenRepository;
 import com.orthopedic.api.auth.repository.RoleRepository;
 import com.orthopedic.api.auth.repository.UserRepository;
 import com.orthopedic.api.auth.security.CustomUserDetailsService;
 import com.orthopedic.api.auth.security.JwtTokenProvider;
 import com.orthopedic.api.config.JwtConfig;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -33,6 +42,10 @@ public class AuthServiceImpl implements AuthService {
     private final AuditService auditService;
     private final CustomUserDetailsService userDetailsService;
     private final TokenService tokenService;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-id:}")
+    private String googleClientId;
 
     public AuthServiceImpl(UserRepository userRepository,
             RoleRepository roleRepository,
@@ -43,7 +56,8 @@ public class AuthServiceImpl implements AuthService {
             TwoFactorService twoFactorService,
             AuditService auditService,
             CustomUserDetailsService userDetailsService,
-            TokenService tokenService) {
+            TokenService tokenService,
+            PasswordResetTokenRepository passwordResetTokenRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
@@ -54,6 +68,7 @@ public class AuthServiceImpl implements AuthService {
         this.auditService = auditService;
         this.userDetailsService = userDetailsService;
         this.tokenService = tokenService;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
     }
 
     @Override
@@ -100,11 +115,9 @@ public class AuthServiceImpl implements AuthService {
         redisTemplate.delete(attemptKey);
         updateLoginMetadataAsync(user);
 
-        // 🔒 SECURITY: Check if 2FA is required for ADMIN roles
-        boolean isAdmin = user.getRoles().stream()
-                .anyMatch(r -> r.getName().equals("ROLE_ADMIN") || r.getName().equals("ROLE_SUPER_ADMIN"));
-
-        if (isAdmin && user.isUsing2fa()) {
+        // 🔒 SECURITY: Check if 2FA is required for any user that has it enabled, not
+        // just admins
+        if (user.isUsing2fa()) {
             String tempToken = UUID.randomUUID().toString();
             redisTemplate.opsForValue().set("temp_auth:" + tempToken, user.getEmail(), 10, TimeUnit.MINUTES);
 
@@ -211,4 +224,139 @@ public class AuthServiceImpl implements AuthService {
         return twoFactorService.verifyTotpLogin(request.getTempToken(), request.getTotpCode(), userAgent);
     }
 
+    @Override
+    @Transactional
+    public LoginResponse googleLogin(GoogleLoginRequest request, String ipAddress, String userAgent) {
+        if (googleClientId == null || googleClientId.isEmpty()) {
+            throw new AuthException("Google authentication is not configured on the server");
+        }
+
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+                .setAudience(Collections.singletonList(googleClientId))
+                .build();
+
+        GoogleIdToken idToken;
+        try {
+            idToken = verifier.verify(request.getIdToken());
+        } catch (Exception e) {
+            throw new InvalidCredentialsException("Invalid Google ID token");
+        }
+
+        if (idToken == null) {
+            throw new InvalidCredentialsException("Invalid Google ID token");
+        }
+
+        GoogleIdToken.Payload payload = idToken.getPayload();
+        String email = payload.getEmail();
+
+        if (!payload.getEmailVerified()) {
+            throw new AuthException("Google email is not verified");
+        }
+
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if (user == null) {
+            // Auto-register the user if they don't exist
+            user = new User();
+            user.setEmail(email);
+            user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString())); // Random password
+            user.setFirstName((String) payload.get("given_name"));
+            user.setLastName((String) payload.get("family_name"));
+            user.setEnabled(true);
+
+            Role patientRole = roleRepository.findByName("ROLE_PATIENT")
+                    .orElseThrow(() -> new AuthException("Default role not found"));
+            user.setRoles(Set.of(patientRole));
+
+            user = userRepository.save(user);
+            auditService.logAudit(user, ipAddress, userAgent, "GOOGLE_REGISTERED");
+        } else {
+            if (user.isLocked()) {
+                auditService.logAudit(user, ipAddress, userAgent, "GOOGLE_LOGIN_LOCKED_OUT");
+                throw new AuthException("Account is temporarily locked. Please try again later.");
+            }
+            if (!user.isEnabled()) {
+                throw new AuthException("Account is disabled. Please contact support.");
+            }
+        }
+
+        updateLoginMetadataAsync(user);
+
+        if (user.isUsing2fa()) {
+            String tempToken = UUID.randomUUID().toString();
+            redisTemplate.opsForValue().set("temp_auth:" + tempToken, user.getEmail(), 10, TimeUnit.MINUTES);
+            auditService.logAudit(user, ipAddress, userAgent, "2FA_PENDING_GOOGLE");
+            return LoginResponse.builder()
+                    .requiresTwoFactor(true)
+                    .tempToken(tempToken)
+                    .build();
+        }
+
+        UserDetails userDetails = new com.orthopedic.api.auth.security.CustomUserDetails(user);
+        String accessToken = tokenProvider.generateAccessToken(userDetails);
+        String refreshTokenString = tokenService.generateAndSaveRefreshToken(user, userAgent);
+
+        auditService.logAudit(user, ipAddress, userAgent, "GOOGLE_SUCCESS");
+
+        return LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshTokenString)
+                .tokenType("Bearer")
+                .expiresIn(jwtConfig.getAccessTokenExpiry())
+                .requiresTwoFactor(false)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public void forgotPassword(ForgotPasswordRequest request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+        if (user == null) {
+            // Silently return to prevent email enumeration
+            return;
+        }
+
+        // Remove old tokens
+        passwordResetTokenRepository.deleteByUser(user);
+
+        // Ensure changes are flushed before creating the new token, to avoid constraint
+        // violations
+        passwordResetTokenRepository.flush();
+
+        String token = UUID.randomUUID().toString();
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setToken(token);
+        resetToken.setUser(user);
+        resetToken.setExpiryDate(LocalDateTime.now().plusHours(1)); // Valid for 1 hour
+
+        passwordResetTokenRepository.save(resetToken);
+
+        // TODO: In a real system, send this via email using a MailService
+        // example: mailService.sendPasswordResetEmail(user.getEmail(), token);
+        System.out.println("Password reset token for " + user.getEmail() + ": " + token);
+    }
+
+    @Override
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request, String ipAddress, String userAgent) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(request.getToken())
+                .orElseThrow(() -> new AuthException("Invalid or expired password reset token"));
+
+        if (resetToken.isExpired()) {
+            passwordResetTokenRepository.delete(resetToken);
+            throw new AuthException("Password reset token has expired");
+        }
+
+        User user = resetToken.getUser();
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setPasswordChangedAt(LocalDateTime.now());
+
+        // Also unlock the user in case they were locked out due to too many failed
+        // attempts
+        user.resetFailedAttempts();
+        userRepository.save(user);
+
+        passwordResetTokenRepository.delete(resetToken);
+        auditService.logAudit(user, ipAddress, userAgent, "PASSWORD_RESET_SUCCESS");
+    }
 }
