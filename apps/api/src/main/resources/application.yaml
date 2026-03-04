@@ -65,9 +65,9 @@ spring:
   mail:
     host: ${SMTP_HOST:smtp.gmail.com}
     port: ${SMTP_PORT:587}
-    username: ${SMTP_USER:admin@orthosync.com}
+    username: ${SMTP_USER:admin@orthopedicsurgeon.com}
     password: ${SMTP_PASS:password}
-    from: ${SMTP_FROM:admin@orthosync.com}
+    from: ${SMTP_FROM:admin@orthopedicsurgeon.com}
     properties:
       mail:
         smtp:

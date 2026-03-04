@@ -147,6 +147,17 @@ public class JwtTokenProvider {
         }
     }
 
+    public io.jsonwebtoken.Claims getClaimsFromToken(String token) {
+        JwtParserBuilder parserBuilder = Jwts.parser();
+        if (useRsa) {
+            parserBuilder.verifyWith((PublicKey) publicKey);
+        } else {
+            parserBuilder.verifyWith((javax.crypto.SecretKey) signingKey);
+        }
+        return parserBuilder.build()
+                .parseSignedClaims(token).getPayload();
+    }
+
     public boolean isTokenBlacklisted(String jti) {
         if (jti == null)
             return false;

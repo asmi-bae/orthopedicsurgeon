@@ -9,6 +9,6 @@ import lombok.Data;
 public class ResendVerificationRequest {
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    @Schema(description = "User's email address", example = "shoaib@orthosync.com")
+    @Schema(description = "User's email address", example = "shoaib@orthopedicsurgeon.com")
     private String email;
 }

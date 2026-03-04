@@ -6,6 +6,7 @@ import com.orthopedic.api.auth.exception.InvalidCredentialsException;
 import com.orthopedic.api.auth.repository.*;
 import com.orthopedic.api.auth.security.JwtTokenProvider;
 import com.orthopedic.api.config.JwtConfig;
+import com.orthopedic.api.security.service.AuditService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

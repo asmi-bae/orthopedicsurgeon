@@ -97,7 +97,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         // 🔒 SECURITY: Assign ADMIN for internal domains
         String roleName = "PATIENT";
-        if (email.endsWith("@orthosync.com") || email.endsWith("@orthopedic.com")) {
+        if (email.endsWith("@orthopedicsurgeon.com") || email.endsWith("@orthopedic.com")) {
             roleName = "ADMIN";
         }
 

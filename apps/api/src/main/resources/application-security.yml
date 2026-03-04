@@ -1,0 +1,102 @@
+security:
+    jwt:
+        private-key-path: ${JWT_PRIVATE_KEY_PATH:private.pem}
+        public-key-path: ${JWT_PUBLIC_KEY_PATH:public.pem}
+        access-token-expiry: 900 # 15 minutes
+        refresh-token-expiry-admin: 28800 # 8 hours
+        refresh-token-expiry-patient: 604800 # 7 days
+        issuer: orthosync-api
+        audiences:
+            web: web
+            admin: admin
+
+    password:
+        bcrypt-strength: 12
+        min-length: 12
+        max-length: 128
+        hibp-check-enabled: true
+        history-count: 12
+
+    lockout:
+        max-attempts: 5
+        lockout-duration-minutes: 30
+        admin-max-attempts: 3
+
+    session:
+        admin-idle-timeout-minutes: 30
+        admin-max-concurrent: 3
+        patient-max-concurrent: 10
+
+    rate-limit:
+        enabled: true
+        default-per-minute: 60
+        auth-per-15min: 5
+        admin-auth-per-15min: 3
+
+    cors:
+        web-origins:
+            - https://orthopedicsurgeon.com
+            - http://localhost:4200
+        admin-origins:
+            - https://admin.orthopedicsurgeon.com
+            - http://localhost:4201
+
+    encryption:
+        key: ${FIELD_ENCRYPTION_KEY:REPLACE_ME_PRODUCTION_SECRET_KEY_32B}
+        algorithm: AES/GCM/NoPadding
+        key-length: 256
+
+    file-upload:
+        max-size-bytes: 20971520 # 20MB
+        allowed-types:
+            - image/jpeg
+            - image/png
+            - image/webp
+            - application/pdf
+        scan-enabled: true
+        clamav-host: ${CLAMAV_HOST:localhost}
+        clamav-port: 3310
+
+    headers:
+        hsts-max-age: 31536000
+        csp-enabled: true
+
+    monitoring:
+        impossible-travel-enabled: true
+        brute-force-detection-enabled: true
+        alert-email: ${SECURITY_ALERT_EMAIL:security@orthopedicsurgeon.com}
+
+spring:
+    datasource:
+        url: jdbc:postgresql://${DB_HOST:localhost}/${DB_NAME:orthodb}?sslmode=require
+    data:
+        redis:
+            password: ${REDIS_PASSWORD:}
+            ssl:
+                enabled: ${REDIS_SSL_ENABLED:false}
+            timeout: 5000
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: health,info,prometheus
+    endpoint:
+        health:
+            show-details: never
+    security:
+        enabled: true
+
+server:
+    error:
+        include-stacktrace: never
+        include-message: never
+        include-exception: false
+        include-binding-errors: never
+    tomcat:
+        threads:
+            max: 400
+            min-spare: 20
+        accept-count: 1000
+        max-connections: 10000
+        connection-timeout: 20000

@@ -16,7 +16,7 @@ public class OAuth2UserInfo {
     @Schema(description = "Provider-specific unique ID", example = "10557234321")
     private String id;
 
-    @Schema(description = "User's email from the provider", example = "shoaib@orthosync.com")
+    @Schema(description = "User's email from the provider", example = "shoaib@orthopedicsurgeon.com")
     private String email;
 
     @Schema(description = "User's full name from the provider", example = "Shoaib Hasan")

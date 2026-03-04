@@ -41,7 +41,7 @@ public class DataInitializer implements CommandLineRunner {
         getOrCreateRole("SUPER_ADMIN'");
 
         // 2. Seed Admin User if not exists
-        String adminEmail = "admin@orthosync.com";
+        String adminEmail = "admin@orthopedicsurgeon.com";
         if (!userRepository.existsByEmail(adminEmail)) {
             User admin = User.builder()
                     .email(adminEmail)

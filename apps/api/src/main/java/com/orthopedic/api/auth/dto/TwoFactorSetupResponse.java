@@ -15,7 +15,7 @@ import java.util.List;
 @Schema(description = "Response object for 2FA setup process")
 public class TwoFactorSetupResponse {
 
-    @Schema(description = "URL for the QR code image", example = "otpauth://totp/OrthopedicSurgeon:shoaib@orthosync.com?secret=JBSWY3DPEHPK3PXP&issuer=OrthopedicSurgeon")
+    @Schema(description = "URL for the QR code image", example = "otpauth://totp/OrthopedicSurgeon:shoaib@orthopedicsurgeon.com?secret=JBSWY3DPEHPK3PXP&issuer=OrthopedicSurgeon")
     private String qrCodeUrl;
 
     @Schema(description = "Base32 encoded secret key", example = "JBSWY3DPEHPK3PXP")

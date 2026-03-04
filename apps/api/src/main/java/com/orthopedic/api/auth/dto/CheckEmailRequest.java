@@ -9,6 +9,6 @@ import lombok.Data;
 public class CheckEmailRequest {
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    @Schema(description = "Email address to check", example = "shoaib@orthosync.com")
+    @Schema(description = "Email address to check", example = "shoaib@orthopedicsurgeon.com")
     private String email;
 }

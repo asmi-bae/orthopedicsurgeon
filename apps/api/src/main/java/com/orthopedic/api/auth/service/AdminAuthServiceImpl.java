@@ -12,6 +12,7 @@ import com.orthopedic.api.auth.repository.UserRepository;
 import com.orthopedic.api.auth.security.CustomUserDetails;
 import com.orthopedic.api.auth.security.JwtTokenProvider;
 import com.orthopedic.api.config.JwtConfig;
+import com.orthopedic.api.security.service.AuditService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

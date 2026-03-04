@@ -17,7 +17,7 @@ public class LoginRequest {
 
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
-    @Schema(description = "User's primary email address", example = "shoaib@orthosync.com", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "User's primary email address", example = "shoaib@orthopedicsurgeon.com", requiredMode = Schema.RequiredMode.REQUIRED)
     private String email;
 
     @NotBlank(message = "Password is required")

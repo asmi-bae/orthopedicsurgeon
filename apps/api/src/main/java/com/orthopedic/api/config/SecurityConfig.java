@@ -1,6 +1,9 @@
 package com.orthopedic.api.config;
 
 import com.orthopedic.api.auth.security.*;
+import com.orthopedic.api.security.filter.JwtAuthenticationFilter;
+import com.orthopedic.api.security.filter.RateLimitFilter;
+import com.orthopedic.api.security.filter.SecurityHeadersFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -16,10 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import java.util.List;
 
 @Configuration
@@ -43,23 +43,26 @@ public class SecurityConfig {
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
         private final SecurityHeadersFilter securityHeadersFilter;
-        private final RateLimitingFilter rateLimitingFilter;
+        private final RateLimitFilter rateLimitingFilter;
         private final OAuth2UserService oauth2UserService;
         private final OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
         private final OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
+        private final CorsConfigurationSource corsConfigurationSource;
 
         public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                         SecurityHeadersFilter securityHeadersFilter,
-                        RateLimitingFilter rateLimitingFilter,
+                        RateLimitFilter rateLimitingFilter,
                         OAuth2UserService oauth2UserService,
                         OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
-                        OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler) {
+                        OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler,
+                        CorsConfigurationSource corsConfigurationSource) {
                 this.jwtAuthenticationFilter = jwtAuthenticationFilter;
                 this.securityHeadersFilter = securityHeadersFilter;
                 this.rateLimitingFilter = rateLimitingFilter;
                 this.oauth2UserService = oauth2UserService;
                 this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
                 this.oauth2AuthenticationFailureHandler = oauth2AuthenticationFailureHandler;
+                this.corsConfigurationSource = corsConfigurationSource;
         }
 
         @Bean
@@ -67,7 +70,7 @@ public class SecurityConfig {
                 http
                                 // 🔒 SECURITY: disable CSRF as we use stateless JWT
                                 .csrf(AbstractHttpConfigurer::disable)
-                                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authorizeHttpRequests(auth -> auth
@@ -97,21 +100,6 @@ public class SecurityConfig {
                                 org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
-        }
-
-        @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
-                CorsConfiguration configuration = new CorsConfiguration();
-                // 🔒 SECURITY: strict CORS configuration
-                configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:4201"));
-                configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-                configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept"));
-                configuration.setAllowCredentials(true);
-                configuration.setExposedHeaders(List.of("Authorization"));
-
-                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                source.registerCorsConfiguration("/**", configuration);
-                return source;
         }
 
         @Bean

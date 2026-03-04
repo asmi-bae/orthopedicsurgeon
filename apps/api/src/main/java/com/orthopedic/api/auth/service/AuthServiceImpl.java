@@ -13,6 +13,7 @@ import com.orthopedic.api.auth.security.CustomUserDetails;
 import com.orthopedic.api.auth.security.JwtTokenProvider;
 import com.orthopedic.api.config.JwtConfig;
 import com.orthopedic.api.shared.service.EmailService;
+import com.orthopedic.api.security.service.AuditService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;

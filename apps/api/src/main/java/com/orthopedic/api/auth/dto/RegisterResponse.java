@@ -17,7 +17,7 @@ public class RegisterResponse {
     @Schema(description = "Newly created user ID", example = "101")
     private UUID userId;
 
-    @Schema(description = "Registered email address", example = "shoaib@orthosync.com")
+    @Schema(description = "Registered email address", example = "shoaib@orthopedicsurgeon.com")
     private String email;
 
     @Schema(description = "Success message", example = "User registered successfully")

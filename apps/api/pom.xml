@@ -20,6 +20,17 @@
 		<jjwt.version>0.12.3</jjwt.version>
 	</properties>
 
+	<repositories>
+		<repository>
+			<id>shibboleth</id>
+			<name>Shibboleth Releases</name>
+			<url>https://build.shibboleth.net/nexus/content/repositories/releases/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<!-- Web & Security -->
 		<dependency>
@@ -33,6 +44,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-saml2-service-provider</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -111,7 +126,28 @@
 		<dependency>
 			<groupId>com.bucket4j</groupId>
 			<artifactId>bucket4j-core</artifactId>
-			<version>8.3.0</version>
+			<version>8.10.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.bucket4j</groupId>
+			<artifactId>bucket4j-redis</artifactId>
+			<version>8.10.1</version>
+		</dependency>
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+		</dependency>
+
+		<!-- Security Scanners -->
+		<dependency>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+		<dependency>
+			<groupId>xyz.capybara</groupId>
+			<artifactId>clamav-client</artifactId>
+			<version>2.1.2</version>
 		</dependency>
 
 		<!-- Auth Utilities -->
