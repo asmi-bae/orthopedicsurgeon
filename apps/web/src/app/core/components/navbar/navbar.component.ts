@@ -10,6 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '@repo/auth';
 import { LogoComponent } from '@core/components/logo/logo.component';
+import { UserMenuComponent } from '../user-menu/user-menu.component';
 
 @Component({
   selector: 'app-navbar',
@@ -24,7 +25,8 @@ import { LogoComponent } from '@core/components/logo/logo.component';
     MatDividerModule,
     MatFormFieldModule,
     MatInputModule,
-    LogoComponent
+    LogoComponent,
+    UserMenuComponent
   ],
   template: `
     <!-- Emergency Top Bar -->
@@ -67,24 +69,10 @@ import { LogoComponent } from '@core/components/logo/logo.component';
           <a mat-button (click)="navigateToPortal()">Portal</a>
         </div>
 
-      <div class="flex items-center gap-2 ml-4">
-        <ng-container *ngIf="auth.currentUser() as user; else guest">
-          <button mat-icon-button [matMenuTriggerFor]="userMenu">
-            <mat-icon>account_circle</mat-icon>
-          </button>
-
-          <mat-menu #userMenu="matMenu">
-            <button mat-menu-item (click)="navigateToPortal()">
-              <mat-icon>dashboard</mat-icon>
-              <span>My Dashboard</span>
-            </button>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="auth.logout()">
-              <mat-icon>logout</mat-icon>
-              <span>Logout</span>
-            </button>
-          </mat-menu>
-        </ng-container>
+        <div class="flex items-center gap-2 ml-4">
+          <ng-container *ngIf="auth.currentUser(); else guest">
+            <app-user-menu></app-user-menu>
+          </ng-container>
 
         <ng-template #guest>
           <div class="hidden md:flex items-center gap-2">

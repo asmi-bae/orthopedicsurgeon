@@ -50,5 +50,6 @@ export interface User {
   permissions: Permission[];
   status: UserStatus;
   isTwoFactorEnabled: boolean;
+  imageUrl?: string;
   createdAt: string;
 }

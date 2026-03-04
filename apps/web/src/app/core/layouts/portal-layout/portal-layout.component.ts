@@ -8,6 +8,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '@repo/auth';
+import { LogoComponent } from '@core/components/logo/logo.component';
+import { UserMenuComponent } from '../../components/user-menu/user-menu.component';
 
 @Component({
   selector: 'app-portal-layout',
@@ -20,19 +22,16 @@ import { AuthService } from '@repo/auth';
     MatIconModule, 
     MatMenuModule, 
     MatListModule,
-    MatDividerModule
+    MatDividerModule,
+    LogoComponent,
+    UserMenuComponent
   ],
   template: `
     <div class="min-h-screen bg-gray-50 flex flex-col">
       <!-- Header -->
       <mat-toolbar class="h-16 bg-white border-b border-gray-200 flex justify-between px-6 shrink-0 z-10">
         <div class="flex items-center gap-8">
-          <div class="flex items-center gap-2 cursor-pointer" routerLink="/">
-            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <span class="text-white font-black text-sm">O</span>
-            </div>
-            <span class="text-sm font-black text-foreground tracking-tighter uppercase">OrthoSync</span>
-          </div>
+          <app-logo [height]="32" routerLink="/"></app-logo>
 
           <!-- Desktop Navigation -->
           <nav class="hidden md:flex items-center gap-1">
@@ -52,36 +51,8 @@ import { AuthService } from '@repo/auth';
             <mat-icon>notifications</mat-icon>
           </button>
 
-          <ng-container *ngIf="auth.currentUser() as user">
-            <button mat-button [matMenuTriggerFor]="portalUserMenu" class="h-10 px-2 rounded-lg hover:bg-gray-50 transition-all">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs">
-                  {{user.firstName[0]}}{{user.lastName[0]}}
-                </div>
-                <span class="text-[11px] font-bold text-gray-700 hidden sm:inline">{{user.firstName}}</span>
-                <mat-icon class="text-gray-300 text-sm">expand_more</mat-icon>
-              </div>
-            </button>
-
-            <mat-menu #portalUserMenu="matMenu" class="portal-menu">
-              <div class="px-4 py-3 border-b border-gray-50">
-                <div class="text-[11px] font-bold text-gray-900">{{user.firstName}} {{user.lastName}}</div>
-                <div class="text-[9px] font-medium text-gray-400 uppercase tracking-widest mt-0.5">Verified Patient</div>
-              </div>
-              <button mat-menu-item routerLink="/">
-                <mat-icon>open_in_new</mat-icon>
-                <span>Back to Site</span>
-              </button>
-              <button mat-menu-item routerLink="/portal/settings">
-                <mat-icon>settings</mat-icon>
-                <span>Profile Settings</span>
-              </button>
-              <mat-divider></mat-divider>
-              <button mat-menu-item (click)="auth.logout()" class="text-red-600">
-                <mat-icon class="text-red-600">logout</mat-icon>
-                <span>Logout</span>
-              </button>
-            </mat-menu>
+          <ng-container *ngIf="auth.currentUser()">
+            <app-user-menu></app-user-menu>
           </ng-container>
         </div>
       </mat-toolbar>
