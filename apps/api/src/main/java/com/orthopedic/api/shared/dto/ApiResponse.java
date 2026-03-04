@@ -6,28 +6,59 @@ public class ApiResponse<T> {
     private boolean success;
     private String message;
     private T data;
+    private Object error;
     private LocalDateTime timestamp = LocalDateTime.now();
 
-    public ApiResponse() {}
+    public ApiResponse() {
+    }
 
-    public ApiResponse(boolean success, String message, T data, LocalDateTime timestamp) {
+    public ApiResponse(boolean success, String message, T data, Object error, LocalDateTime timestamp) {
         this.success = success;
         this.message = message;
         this.data = data;
+        this.error = error;
         this.timestamp = timestamp != null ? timestamp : LocalDateTime.now();
     }
 
-    public boolean isSuccess() { return success; }
-    public void setSuccess(boolean success) { this.success = success; }
+    public boolean isSuccess() {
+        return success;
+    }
 
-    public String getMessage() { return message; }
-    public void setMessage(String message) { this.message = message; }
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 
-    public T getData() { return data; }
-    public void setData(T data) { this.data = data; }
+    public String getMessage() {
+        return message;
+    }
 
-    public LocalDateTime getTimestamp() { return timestamp; }
-    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public Object getError() {
+        return error;
+    }
+
+    public void setError(Object error) {
+        this.error = error;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public static <T> ApiResponseBuilder<T> builder() {
         return new ApiResponseBuilder<>();
@@ -37,6 +68,7 @@ public class ApiResponse<T> {
         return ApiResponse.<T>builder()
                 .success(true)
                 .data(data)
+                .error(null)
                 .build();
     }
 
@@ -45,6 +77,15 @@ public class ApiResponse<T> {
                 .success(true)
                 .message(message)
                 .data(data)
+                .error(null)
+                .build();
+    }
+
+    public static <T> ApiResponse<T> error(String message, Object error) {
+        return ApiResponse.<T>builder()
+                .success(false)
+                .message(message)
+                .error(error)
                 .build();
     }
 
@@ -52,6 +93,7 @@ public class ApiResponse<T> {
         private boolean success;
         private String message;
         private T data;
+        private Object error;
         private LocalDateTime timestamp = LocalDateTime.now();
 
         public ApiResponseBuilder<T> success(boolean success) {
@@ -69,13 +111,18 @@ public class ApiResponse<T> {
             return this;
         }
 
+        public ApiResponseBuilder<T> error(Object error) {
+            this.error = error;
+            return this;
+        }
+
         public ApiResponseBuilder<T> timestamp(LocalDateTime timestamp) {
             this.timestamp = timestamp;
             return this;
         }
 
         public ApiResponse<T> build() {
-            return new ApiResponse<>(success, message, data, timestamp);
+            return new ApiResponse<>(success, message, data, error, timestamp);
         }
     }
 }

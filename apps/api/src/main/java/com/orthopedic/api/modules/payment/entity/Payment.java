@@ -1,6 +1,7 @@
 package com.orthopedic.api.modules.payment.entity;
 
 import com.orthopedic.api.modules.appointment.entity.Appointment;
+import com.orthopedic.api.modules.billing.entity.Invoice;
 import com.orthopedic.api.modules.patient.entity.Patient;
 import com.orthopedic.api.shared.base.BaseEntity;
 import jakarta.persistence.*;
@@ -24,6 +25,10 @@ public class Payment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "invoice_id")
+    private Invoice invoice;
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
@@ -117,6 +122,14 @@ public class Payment extends BaseEntity {
 
     public void setPaymentDate(LocalDateTime paymentDate) {
         this.paymentDate = paymentDate;
+    }
+
+    public Invoice getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(Invoice invoice) {
+        this.invoice = invoice;
     }
 
     public enum PaymentMethod {

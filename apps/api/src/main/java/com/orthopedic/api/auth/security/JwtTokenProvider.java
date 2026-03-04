@@ -39,21 +39,26 @@ public class JwtTokenProvider {
         this.redisTemplate = redisTemplate;
     }
 
-    private PrivateKey privateKey;
-    private PublicKey publicKey;
+    private java.security.Key signingKey;
+    private java.security.PublicKey publicKey;
+    private boolean useRsa = false;
 
     @PostConstruct
     public void init() throws Exception {
-        // 🔒 SECURITY: Use RS256 with RSA keys for production-grade security
         if (jwtConfig.getPrivateKeyPath() != null && jwtConfig.getPublicKeyPath() != null) {
-            this.privateKey = loadPrivateKey(jwtConfig.getPrivateKeyPath());
+            this.signingKey = loadPrivateKey(jwtConfig.getPrivateKeyPath());
             this.publicKey = loadPublicKey(jwtConfig.getPublicKeyPath());
+            this.useRsa = true;
+        } else if (jwtConfig.getSecret() != null && !jwtConfig.getSecret().isEmpty()) {
+            log.info("Using HMAC with provided secret for JWT");
+            this.signingKey = Keys.hmacShaKeyFor(jwtConfig.getSecret().getBytes());
+            this.useRsa = false;
         } else {
-            // Generating temporary keys for development if not provided
-            log.warn("JWT keys not provided, generating temporary RSA keys for development");
+            log.warn("JWT keys/secret not provided, generating temporary RSA keys for development");
             var keyPair = Keys.keyPairFor(SignatureAlgorithm.RS256);
-            this.privateKey = keyPair.getPrivate();
+            this.signingKey = keyPair.getPrivate();
             this.publicKey = keyPair.getPublic();
+            this.useRsa = true;
         }
     }
 
@@ -68,7 +73,7 @@ public class JwtTokenProvider {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getAccessTokenExpiry() * 1000))
-                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .signWith(signingKey, useRsa ? SignatureAlgorithm.RS256 : SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -77,14 +82,20 @@ public class JwtTokenProvider {
                 .setSubject(userId.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getRefreshTokenExpiry() * 1000))
-                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .signWith(signingKey, useRsa ? SignatureAlgorithm.RS256 : SignatureAlgorithm.HS256)
                 .compact();
         return refreshToken;
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().verifyWith(publicKey).build().parseSignedClaims(token);
+            JwtParserBuilder parserBuilder = Jwts.parser();
+            if (useRsa) {
+                parserBuilder.verifyWith((PublicKey) publicKey);
+            } else {
+                parserBuilder.verifyWith((javax.crypto.SecretKey) signingKey);
+            }
+            parserBuilder.build().parseSignedClaims(token);
             return !isTokenBlacklisted(token);
         } catch (JwtException | IllegalArgumentException e) {
             log.warn("Invalid JWT token: {}", e.getMessage());
@@ -93,7 +104,13 @@ public class JwtTokenProvider {
     }
 
     public String getUsernameFromToken(String token) {
-        return Jwts.parser().verifyWith(publicKey).build()
+        JwtParserBuilder parserBuilder = Jwts.parser();
+        if (useRsa) {
+            parserBuilder.verifyWith((PublicKey) publicKey);
+        } else {
+            parserBuilder.verifyWith((javax.crypto.SecretKey) signingKey);
+        }
+        return parserBuilder.build()
                 .parseSignedClaims(token).getPayload().getSubject();
     }
 

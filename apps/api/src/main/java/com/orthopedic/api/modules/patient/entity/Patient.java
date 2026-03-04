@@ -9,9 +9,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "patients", indexes = {
-    @Index(name = "idx_patients_user_id", columnList = "user_id"),
-    @Index(name = "idx_patients_status", columnList = "status"),
-    @Index(name = "idx_patients_blood_group", columnList = "blood_group")
+        @Index(name = "idx_patients_user_id", columnList = "user_id"),
+        @Index(name = "idx_patients_status", columnList = "status"),
+        @Index(name = "idx_patients_blood_group", columnList = "blood_group")
 })
 public class Patient extends BaseEntity {
 
@@ -32,13 +32,13 @@ public class Patient extends BaseEntity {
     private String emergencyContactName;
     @Convert(converter = com.orthopedic.api.shared.converter.PiiEncryptionConverter.class)
     private String emergencyContactPhone;
-    
+
     @Convert(converter = com.orthopedic.api.shared.converter.PiiEncryptionConverter.class)
     private String address;
-    
+
     private String city;
     private String insuranceProvider;
-    
+
     @Convert(converter = com.orthopedic.api.shared.converter.PiiEncryptionConverter.class)
     private String insuranceNumber;
 

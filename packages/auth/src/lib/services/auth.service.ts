@@ -1,7 +1,7 @@
 import { Injectable, signal, inject, InjectionToken } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, of, map, finalize } from 'rxjs';
+import { Observable, tap, catchError, of, map, finalize, switchMap } from 'rxjs';
 import { User, Role } from '@repo/types';
 
 export const AUTH_API_URL = new InjectionToken<string>('AUTH_API_URL', {
@@ -31,7 +31,7 @@ export class AuthService {
     this.loading.set(true);
     this.error.set(null);
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
-      tap((res: AuthResponse) => this.handleSuccess(res)),
+      switchMap((res: AuthResponse) => this.handleSuccess(res)),
       catchError(err => {
         this.error.set(err.error?.message || 'Login failed. Please check your credentials.');
         throw err;
@@ -44,7 +44,7 @@ export class AuthService {
     this.loading.set(true);
     this.error.set(null);
     return this.http.post<AuthResponse>(`${this.apiUrl}/login/google`, { idToken }).pipe(
-      tap((res: AuthResponse) => this.handleSuccess(res)),
+      switchMap((res: AuthResponse) => this.handleSuccess(res)),
       catchError(err => {
         this.error.set(err.error?.message || 'Google login failed.');
         throw err;
@@ -63,10 +63,11 @@ export class AuthService {
   verify2fa(data: { tempToken: string; totpCode: string }): Observable<AuthResponse> {
     this.loading.set(true);
     return this.http.post<AuthResponse>(`${this.apiUrl}/verify-2fa`, data).pipe(
-      tap((res: AuthResponse) => {
+      switchMap((res: AuthResponse) => {
         if (res.accessToken) {
-          this.handleSuccess(res);
+          return this.handleSuccess(res);
         }
+        return of(res);
       }),
       finalize(() => this.loading.set(false))
     );
@@ -114,9 +115,24 @@ export class AuthService {
     );
   }
 
-  private handleSuccess(res: AuthResponse) {
+  private handleSuccess(res: AuthResponse): Observable<AuthResponse> {
     if (res.accessToken) localStorage.setItem('token', res.accessToken);
     if (res.refreshToken) localStorage.setItem('refreshToken', res.refreshToken);
-    if (res.user) this.currentUser.set(res.user);
+    
+    if (res.user) {
+      this.currentUser.set(res.user);
+      return of(res);
+    } else if (res.accessToken) {
+      return this.http.get<User>(`${this.apiUrl}/me`).pipe(
+        tap(user => {
+          this.currentUser.set(user);
+          res.user = user;
+        }),
+        map(() => res),
+        catchError(() => of(res))
+      );
+    }
+    
+    return of(res);
   }
 }

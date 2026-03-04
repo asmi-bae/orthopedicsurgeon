@@ -9,6 +9,7 @@ public class JwtConfig {
     // 🔒 SECURITY: RS256 RSA keys are loaded from environment variables
     private String privateKeyPath;
     private String publicKeyPath;
+    private String secret;
 
     // Default values if not in env
     private long accessTokenExpiry = 900; // 15 min
@@ -28,6 +29,14 @@ public class JwtConfig {
 
     public void setPublicKeyPath(String publicKeyPath) {
         this.publicKeyPath = publicKeyPath;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 
     public long getAccessTokenExpiry() {

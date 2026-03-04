@@ -1,6 +1,7 @@
 package com.orthopedic.api.modules.patient.controller.patient;
 
 import com.orthopedic.api.auth.entity.User;
+import com.orthopedic.api.modules.patient.dto.request.UpdatePatientProfileRequest;
 import com.orthopedic.api.modules.patient.dto.response.PatientMedicalHistoryResponse;
 import com.orthopedic.api.modules.patient.dto.response.PatientResponse;
 import com.orthopedic.api.modules.patient.service.PatientService;
@@ -33,6 +34,14 @@ public class PatientProfileController extends BaseController {
         // Implementation would typically lookup patient by current user ID
         // For now, assuming service has a method for this
         return ok(patientService.getPatientByUserId(currentUser.getId()));
+    }
+
+    @PutMapping
+    @Operation(summary = "Update my patient profile")
+    public ResponseEntity<ApiResponse<PatientResponse>> updateProfile(
+            @CurrentUser User currentUser,
+            @RequestBody UpdatePatientProfileRequest request) {
+        return ok(patientService.updateMyProfile(currentUser.getId(), request));
     }
 
     @GetMapping("/history")

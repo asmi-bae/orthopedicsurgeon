@@ -31,7 +31,7 @@ import { MatIconModule } from '@angular/material/icon';
       </div>
 
       <!-- Right Side: Form Container -->
-      <div class="w-full lg:w-[450px] xl:w-[550px] h-full flex flex-col justify-center z-10 bg-white shadow-2xl lg:shadow-none">
+      <div class="w-full lg:w-[450px] xl:w-[550px] h-full flex flex-col justify-center z-10">
         <div class="px-8 sm:px-16 lg:px-20 overflow-y-auto py-12">
             <router-outlet></router-outlet>
             

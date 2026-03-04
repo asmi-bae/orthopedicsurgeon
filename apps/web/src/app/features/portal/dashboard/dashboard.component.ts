@@ -124,7 +124,7 @@ export class DashboardComponent implements OnInit {
     this.loading.set(true);
     this.apiService.getPatientDashboard().subscribe({
       next: (res) => {
-        const data = res.data || res; // Handling different API response wrappers
+        const data = res.data;
         this.stats.set(data);
         this.activities.set(this.processActivities(data));
         this.loading.set(false);

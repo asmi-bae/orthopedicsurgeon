@@ -31,9 +31,9 @@ export class PaymentListComponent implements OnInit {
   payments = signal<any[]>([]);
 
   columns: any[] = [
-    { key: 'invoiceNumber', header: 'Invoice ID', width: '120px' },
-    { key: 'createdAt', header: 'Date', width: '120px' },
-    { key: 'amount', header: 'Amount', width: '100px' },
+    { key: 'invoiceNumber', header: 'Invoice #', width: '150px' },
+    { key: 'createdAt', header: 'Issued Date', width: '120px' },
+    { key: 'totalAmount', header: 'Amount', width: '100px' },
     { key: 'status', header: 'Status', cellTemplate: null, width: '120px' },
     { key: 'actions', header: '', cellTemplate: null, width: '150px' }
   ];
@@ -47,14 +47,9 @@ export class PaymentListComponent implements OnInit {
 
   loadPayments() {
     this.loading.set(true);
-    this.apiService.getMyProfile().pipe(
-      switchMap(profileRes => {
-        const patientId = profileRes.data.id;
-        return this.apiService.getPatientPayments(patientId);
-      })
-    ).subscribe({
+    this.apiService.getMyInvoices().subscribe({
       next: (res) => {
-        this.payments.set(res.data.content);
+        this.payments.set(res.data);
         this.loading.set(false);
       },
       error: () => {

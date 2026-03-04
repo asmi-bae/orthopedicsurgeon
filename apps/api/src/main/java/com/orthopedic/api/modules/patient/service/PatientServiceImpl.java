@@ -4,6 +4,7 @@ import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.auth.repository.UserRepository;
 import com.orthopedic.api.modules.patient.dto.request.CreatePatientRequest;
 import com.orthopedic.api.modules.patient.dto.request.PatientFilterRequest;
+import com.orthopedic.api.modules.patient.dto.request.UpdatePatientProfileRequest;
 import com.orthopedic.api.modules.patient.dto.response.PatientMedicalHistoryResponse;
 import com.orthopedic.api.modules.patient.dto.response.PatientResponse;
 import com.orthopedic.api.modules.patient.dto.response.PatientSummaryResponse;
@@ -64,11 +65,24 @@ public class PatientServiceImpl implements PatientService {
         return patientMapper.toResponse(patient);
     }
 
+    private Patient getOrCreatePatient(UUID userId) {
+        return patientRepository.findByUserId(userId)
+                .orElseGet(() -> {
+                    User user = userRepository.findById(userId)
+                            .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                    Patient newPatient = new Patient();
+                    newPatient.setUser(user);
+                    newPatient.setDateOfBirth(java.time.LocalDate.of(1900, 1, 1));
+                    newPatient.setGender(Patient.Gender.OTHER);
+                    newPatient.setStatus(Patient.PatientStatus.ACTIVE);
+                    return patientRepository.save(newPatient);
+                });
+    }
+
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public PatientResponse getPatientByUserId(UUID userId) {
-        Patient patient = patientRepository.findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Patient profile not found for user"));
+        Patient patient = getOrCreatePatient(userId);
         return patientMapper.toResponse(patient);
     }
 
@@ -96,6 +110,26 @@ public class PatientServiceImpl implements PatientService {
                     .collect(Collectors.toList());
             patient.setConditions(conditions);
         }
+
+        return patientMapper.toResponse(patientRepository.save(patient));
+    }
+
+    @Override
+    public PatientResponse updateMyProfile(UUID userId, UpdatePatientProfileRequest request) {
+        Patient patient = getOrCreatePatient(userId);
+
+        User user = patient.getUser();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setPhone(request.getPhone());
+        userRepository.save(user);
+
+        patient.setBloodGroup(request.getBloodGroup());
+        patient.setDateOfBirth(request.getDateOfBirth());
+        patient.setEmergencyContactName(request.getEmergencyContactName());
+        patient.setEmergencyContactPhone(request.getEmergencyContactPhone());
+        patient.setAddress(request.getAddress());
+        patient.setCity(request.getCity());
 
         return patientMapper.toResponse(patientRepository.save(patient));
     }

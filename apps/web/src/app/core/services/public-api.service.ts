@@ -53,6 +53,18 @@ export class PublicApiService {
   getPatientDashboard(): Observable<ApiResponse<any>> {
     return this.http.get<ApiResponse<any>>(`${this.apiUrl}/patient/health/dashboard`);
   }
+
+  getMyInvoices(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/patient/invoices`);
+  }
+
+  getInvoiceById(id: string): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/patient/invoices/${id}`);
+  }
+
+  updateMyProfile(data: any): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.apiUrl}/patient/profile`, data);
+  }
 }
 
 
