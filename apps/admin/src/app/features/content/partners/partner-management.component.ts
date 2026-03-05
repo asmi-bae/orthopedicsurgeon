@@ -1,64 +1,120 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
+import { 
+  ZrdCardComponent, 
+  ZrdButtonComponent, 
+  ZrdInputComponent,
+  ZrdBadgeComponent 
+} from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-partner-management',
   standalone: true,
   imports: [
-    CommonModule, MatButtonModule, MatIconModule,
-    MatMenuModule, MatDividerModule, MatFormFieldModule, MatInputModule
+    CommonModule, 
+    ZrdCardComponent, 
+    ZrdButtonComponent, 
+    ZrdInputComponent,
+    ZrdBadgeComponent,
+    MatIconModule,
+    MatMenuModule
   ],
   template: `
-    <div class="space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="space-y-8 animate-in fade-in duration-500">
+
+      <!-- Spartan Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h1 class="text-2xl font-semibold text-slate-900 m-0">Partners</h1>
-          <p class="text-sm text-slate-500 mt-1 m-0">Manage partner organizations and their logos displayed on the website.</p>
+          <h1 class="text-3xl font-bold text-google-gray-900 dark:text-white tracking-tight">Alliance Network</h1>
+          <p class="text-google-gray-500 dark:text-google-gray-400 mt-1">Manage institutional partners, hospital groups, and medical research foundations.</p>
         </div>
-        <button mat-flat-button color="primary">
-          <mat-icon class="text-[18px]">add</mat-icon>
-          Add Partner
-        </button>
+        <zrd-button variant="primary" size="md">
+          <mat-icon leftIcon class="text-[20px]">handshake</mat-icon>
+          Onboard Alliance
+        </zrd-button>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Control Strip -->
+      <div class="flex flex-col sm:flex-row gap-4">
+        <div class="flex-1 max-w-sm">
+          <zrd-input 
+            placeholder="Search alliance partners..." 
+            [hasPrefix]="true"
+          >
+            <mat-icon prefix class="text-google-gray-400">hub</mat-icon>
+          </zrd-input>
+        </div>
+        <div class="flex items-center gap-2 ml-auto">
+           <zrd-button variant="outline" size="sm">
+             <mat-icon leftIcon>category</mat-icon>
+             Category Filter
+           </zrd-button>
+        </div>
+      </div>
+
+      <!-- Spartan Alliance Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @for (partner of partners(); track partner.id) {
-          <div class="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-start justify-between gap-3">
-              <div class="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center shrink-0">
-                <mat-icon class="text-slate-500 text-[24px]">handshake</mat-icon>
+          <zrd-card variant="default" class="group relative hover:scale-[1.02] transition-all cursor-pointer">
+            <div class="flex items-start justify-between gap-4 mb-6">
+              <!-- Entity Identifier -->
+              <div class="w-14 h-14 rounded-2xl bg-google-gray-50 dark:bg-white/5 border border-google-gray-100 dark:border-white/10 flex items-center justify-center shrink-0 transition-colors group-hover:bg-google-blue/5">
+                <mat-icon class="text-google-gray-400 text-[28px] group-hover:text-google-blue transition-colors">corporate_fare</mat-icon>
               </div>
-              <button mat-icon-button [matMenuTriggerFor]="menu"
-                      class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg -mt-1 -mr-1">
-                <mat-icon class="text-[18px]">more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item><mat-icon>edit</mat-icon> Edit</button>
-                <button mat-menu-item><mat-icon>upload</mat-icon> Update Logo</button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item class="text-red-600"><mat-icon class="text-red-500">delete</mat-icon> Remove</button>
-              </mat-menu>
+
+              <div class="flex items-center gap-2">
+                <zrd-badge [variant]="partner.active ? 'success' : 'neutral'" class="font-black text-[10px]">
+                  {{ partner.active ? 'Active' : 'Dormant' }}
+                </zrd-badge>
+                
+                <button [matMenuTriggerFor]="menu" class="p-2 h-9 w-9 flex items-center justify-center rounded-full hover:bg-google-gray-100 dark:hover:bg-white/10 text-google-gray-400 transition-all">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu" class="rounded-2xl border-none shadow-google">
+                  <button mat-menu-item>
+                    <mat-icon class="text-google-blue">edit</mat-icon>
+                    <span class="font-bold text-sm">Update Profile</span>
+                  </button>
+                  <button mat-menu-item>
+                    <mat-icon class="text-google-emerald">upload</mat-icon>
+                    <span class="font-bold text-sm">Replace Brandmark</span>
+                  </button>
+                  <div class="h-px bg-google-gray-100 dark:bg-white/5 my-1 mx-2"></div>
+                  <button mat-menu-item class="text-google-red">
+                    <mat-icon class="text-google-red">link_off</mat-icon>
+                    <span class="font-bold text-sm">Dissolve Alliance</span>
+                  </button>
+                </mat-menu>
+              </div>
             </div>
-            <h3 class="font-semibold text-slate-900 text-sm mt-3 mb-1">{{ partner.name }}</h3>
-            <p class="text-xs text-slate-500 m-0">{{ partner.category }}</p>
-            <div class="flex items-center gap-2 mt-3">
-              <span class="text-xs font-semibold px-2 py-0.5 rounded-full"
-                    [class]="partner.active
-                      ? 'bg-green-50 text-green-700 border border-green-200'
-                      : 'bg-slate-100 text-slate-500 border border-slate-200'">
-                {{ partner.active ? 'Active' : 'Hidden' }}
-              </span>
-              <span class="text-xs text-slate-400">Since {{ partner.since }}</span>
+
+            <div>
+              <h3 class="font-black text-lg text-google-gray-900 dark:text-white m-0 tracking-tight group-hover:text-google-blue transition-colors">{{ partner.name }}</h3>
+              <p class="text-[10px] font-black uppercase tracking-widest text-google-gray-400 mt-1">{{ partner.category }}</p>
             </div>
-          </div>
+
+            <div class="flex items-center justify-between mt-8 pt-4 border-t border-google-gray-100 dark:border-white/5">
+               <div class="flex items-center gap-1.5 text-google-gray-500">
+                  <mat-icon class="text-[14px]">calendar_today</mat-icon>
+                  <span class="text-xs font-bold tracking-tight">Active since {{ partner.since }}</span>
+               </div>
+               <zrd-button variant="ghost" size="sm" class="px-2">History</zrd-button>
+            </div>
+          </zrd-card>
         }
       </div>
+
+      @if (partners().length === 0) {
+        <div class="py-24 text-center">
+          <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+             <mat-icon class="text-google-gray-400 text-3xl">handshake</mat-icon>
+          </div>
+          <h3 class="font-bold text-google-gray-900 dark:text-white">Alliance Directory Empty</h3>
+          <p class="text-sm text-google-gray-500 mt-2">No organizations were found matching your current filter set.</p>
+        </div>
+      }
     </div>
   `,
   styles: [`:host { display: block; }`]

@@ -7,7 +7,7 @@
 @layer base {
   body {
     font-family: 'Inter', 'Roboto', sans-serif;
-    @apply text-slate-900 antialiased bg-slate-50;
+    @apply bg-google-gray-50 text-google-gray-900 dark:bg-google-gray-900 dark:text-google-gray-100 antialiased;
   }
 
   h1,
@@ -32,12 +32,20 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: theme('colors.google-gray.300');
   border-radius: 999px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: theme('colors.google-gray.700');
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: theme('colors.google-gray.400');
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.google-gray.600');
 }
 
 /* ── Active sidebar route ── */
@@ -57,14 +65,14 @@
 
 /* ── Dense toolbar search field ── */
 .dense-toolbar-field .mat-mdc-text-field-wrapper {
-  background-color: #f1f5f9 !important;
+  @apply bg-google-gray-100 dark:bg-white/5 !important;
   border-radius: 8px !important;
 }
 
 .dense-toolbar-field .mdc-notched-outline__leading,
 .dense-toolbar-field .mdc-notched-outline__notch,
 .dense-toolbar-field .mdc-notched-outline__trailing {
-  border-color: #e2e8f0 !important;
+  @apply border-google-gray-200 dark:border-white/10 !important;
 }
 
 .dense-toolbar-field .mat-mdc-form-field-infix {
@@ -146,7 +154,7 @@
 
 /* ── Mat card subtle shadow ── */
 mat-card.premium-card {
-  border: 1px solid #e2e8f0 !important;
+  @apply border border-google-gray-200 dark:border-white/10 !important;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important;
 }
 

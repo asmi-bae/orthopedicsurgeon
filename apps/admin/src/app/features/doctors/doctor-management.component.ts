@@ -1,16 +1,15 @@
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { 
+  ZrdCardComponent, 
+  ZrdButtonComponent, 
+  ZrdInputComponent,
+  ZrdBadgeComponent 
+} from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AdminApiService } from '@core/services/admin-api.service';
 import { DoctorSummary } from '@repo/types';
 
@@ -19,129 +18,145 @@ import { DoctorSummary } from '@repo/types';
   standalone: true,
   imports: [
     CommonModule,
-    MatTableModule, MatCardModule, MatFormFieldModule, MatInputModule,
-    MatButtonModule, MatIconModule, MatChipsModule, MatProgressBarModule,
-    MatMenuModule, MatDividerModule, MatTooltipModule
+    ZrdCardComponent, 
+    ZrdButtonComponent, 
+    ZrdInputComponent,
+    ZrdBadgeComponent,
+    MatIconModule,
+    MatMenuModule,
+    MatTooltipModule,
+    MatProgressBarModule
   ],
   template: `
-    <div class="space-y-6">
+    <div class="space-y-8 animate-in fade-in duration-500">
 
-      <!-- Header -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <!-- Spartan Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h1 class="text-2xl font-semibold text-slate-900 m-0">Medical Staff</h1>
-          <p class="text-sm text-slate-500 mt-1 m-0">Manage doctors, specialists, and their hospital assignments.</p>
+          <h1 class="text-3xl font-bold text-google-gray-900 dark:text-white tracking-tight">Staff Directory</h1>
+          <p class="text-google-gray-500 dark:text-google-gray-400 mt-1">Manage medical professionals and their clinical assignments.</p>
         </div>
-        <button mat-flat-button color="primary">
-          <mat-icon class="text-[18px]">person_add</mat-icon>
-          Enlist Doctor
-        </button>
+        <zrd-button variant="primary" size="md">
+          <mat-icon leftIcon class="text-[20px]">person_add</mat-icon>
+          Onboard Specialist
+        </zrd-button>
       </div>
 
-      <!-- Table Card -->
-      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <!-- Toolbar -->
-        <div class="flex flex-col sm:flex-row gap-3 px-6 py-4 border-b border-slate-100">
-          <mat-form-field appearance="outline" class="flex-1 sm:max-w-sm" subscriptSizing="dynamic">
-            <mat-icon matPrefix class="text-slate-400 text-[18px] mr-2">search</mat-icon>
-            <input matInput placeholder="Search by name or specialization…" (keyup)="applyFilter($event)" />
-          </mat-form-field>
-          <button mat-stroked-button class="text-slate-600 border-slate-300 ml-auto">
-            <mat-icon class="text-[18px]">tune</mat-icon>
-            Filter
-          </button>
+      <!-- Main Directory Card -->
+      <zrd-card variant="default">
+        <!-- Toolbar Layer -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-8">
+          <div class="flex-1 max-w-sm">
+            <zrd-input 
+              placeholder="Filter by name or specialty..." 
+              [hasPrefix]="true"
+              (keyup)="applyFilter($event)"
+            >
+              <mat-icon prefix class="text-google-gray-400">search</mat-icon>
+            </zrd-input>
+          </div>
+          <div class="flex items-center gap-2 ml-auto">
+            <zrd-button variant="outline" size="sm">
+              <mat-icon leftIcon>tune</mat-icon>
+              Search Settings
+            </zrd-button>
+          </div>
         </div>
 
         @if (loading()) {
-          <mat-progress-bar mode="query" color="primary"></mat-progress-bar>
+          <div class="relative h-1 mb-6 -mx-6 overflow-hidden">
+             <mat-progress-bar mode="query" color="primary" class="absolute inset-0"></mat-progress-bar>
+          </div>
         }
 
-        <div class="overflow-x-auto">
-          <table mat-table [dataSource]="doctors()" class="w-full">
-
-            <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3 pl-6">Doctor</th>
-              <td mat-cell *matCellDef="let row" class="py-3 pl-6">
-                <div class="flex items-center gap-3">
-                  <div class="w-9 h-9 rounded-full bg-teal-100 flex items-center justify-center text-sm font-semibold text-teal-700 shrink-0">
-                    {{ row.firstName[0] }}
-                  </div>
-                  <div>
-                    <p class="font-medium text-sm text-slate-900 m-0">Dr. {{ row.firstName }} {{ row.lastName }}</p>
-                    <p class="text-xs text-slate-400 m-0">ID: {{ row.id.split('-')[0] }}</p>
-                  </div>
-                </div>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="specialization">
-              <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3">Specialization</th>
-              <td mat-cell *matCellDef="let row" class="py-3">
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
-                  {{ row.specialization }}
-                </span>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="hospital">
-              <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3">Hospital</th>
-              <td mat-cell *matCellDef="let row">
-                <div class="flex items-center gap-2">
-                  <mat-icon class="text-slate-400 text-[16px]">corporate_fare</mat-icon>
-                  <span class="text-sm text-slate-600">{{ row.hospitalName || 'Unassigned' }}</span>
-                </div>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3">Status</th>
-              <td mat-cell *matCellDef="let row">
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
-                      [class]="row.status === 'ACTIVE'
-                        ? 'bg-green-50 text-green-700 border border-green-200'
-                        : 'bg-slate-100 text-slate-500 border border-slate-200'">
-                  {{ row.status === 'ACTIVE' ? 'Active' : 'Inactive' }}
-                </span>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3 text-right pr-6">Actions</th>
-              <td mat-cell *matCellDef="let row" class="text-right pr-6">
-                <button mat-icon-button [matMenuTriggerFor]="menu"
-                        class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item><mat-icon>edit</mat-icon> Edit Profile</button>
-                  <button mat-menu-item><mat-icon>event</mat-icon> View Schedule</button>
-                  <mat-divider></mat-divider>
-                  <button mat-menu-item class="text-red-600"><mat-icon class="text-red-500">block</mat-icon> Deactivate</button>
-                </mat-menu>
-              </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-slate-50/50"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-                class="border-t border-slate-50 hover:bg-slate-50/80 transition-colors cursor-pointer"></tr>
+        <!-- Spartan Medical Table -->
+        <div class="overflow-x-auto -mx-6">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-google-gray-100 dark:border-white/5 bg-google-gray-50/50 dark:bg-white/5">
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest pl-10">Professional Info</th>
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest">Medical Specialty</th>
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest">Hospital Affiliate</th>
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest">Status</th>
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest text-right pr-10">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-google-gray-100 dark:divide-white/5">
+              @for (row of doctors(); track row.id) {
+                <tr class="hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors group cursor-pointer">
+                  <td class="px-6 py-5 pl-10">
+                    <div class="flex items-center gap-4">
+                      <div class="w-11 h-11 rounded-2xl bg-google-blue/10 flex items-center justify-center text-sm font-black text-google-blue shrink-0">
+                        {{ row.firstName[0] }}
+                      </div>
+                      <div>
+                        <p class="font-bold text-sm text-google-gray-900 dark:text-white m-0 tracking-tight">Dr. {{ row.firstName }} {{ row.lastName }}</p>
+                        <p class="text-[10px] uppercase font-black tracking-widest text-google-gray-400 m-0">ID: {{ row.id.split('-')[0].toUpperCase() }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-5">
+                    <zrd-badge variant="info" class="font-black">{{ row.specialization }}</zrd-badge>
+                  </td>
+                  <td class="px-6 py-5">
+                    <div class="flex items-center gap-2 text-google-gray-600 dark:text-google-gray-400">
+                      <mat-icon class="text-[18px]">domain</mat-icon>
+                      <span class="text-sm font-bold">{{ row.hospitalName || 'Freelance' }}</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-5">
+                    <zrd-badge [variant]="$any(row.status === 'ACTIVE' ? 'success' : 'neutral')">
+                      {{ row.status === 'ACTIVE' ? 'Active' : 'Inactive' }}
+                    </zrd-badge>
+                  </td>
+                  <td class="px-6 py-5 text-right pr-10">
+                    <button [matMenuTriggerFor]="menu" class="p-2 h-9 w-9 flex items-center justify-center rounded-full hover:bg-google-gray-200 dark:hover:bg-white/10 text-google-gray-400 transition-all">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" class="rounded-2xl border-none shadow-google">
+                      <button mat-menu-item>
+                        <mat-icon class="text-google-blue">id_card</mat-icon>
+                        <span class="font-bold text-sm">Full Profile</span>
+                      </button>
+                      <button mat-menu-item>
+                        <mat-icon class="text-google-gray-600">calendar_month</mat-icon>
+                        <span class="font-bold text-sm">Review Schedule</span>
+                      </button>
+                      <div class="h-px bg-google-gray-100 dark:bg-white/5 my-1 mx-2"></div>
+                      <button mat-menu-item class="text-google-red">
+                        <mat-icon class="text-google-red">person_off</mat-icon>
+                        <span class="font-bold text-sm">Suspend Access</span>
+                      </button>
+                    </mat-menu>
+                  </td>
+                </tr>
+              }
+            </tbody>
           </table>
 
           @if (doctors().length === 0 && !loading()) {
-            <div class="py-16 text-center">
-              <mat-icon class="text-slate-300 text-[48px] w-12 h-12 mb-3">person_off</mat-icon>
-              <p class="font-medium text-slate-500 text-sm">No doctors found</p>
-              <p class="text-xs text-slate-400">Try adjusting your search criteria.</p>
+            <div class="py-24 text-center">
+              <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                <mat-icon class="text-google-gray-400 text-3xl">medical_services</mat-icon>
+              </div>
+              <h3 class="font-bold text-google-gray-900 dark:text-white">Directory Empty</h3>
+              <p class="text-sm text-google-gray-500 max-w-xs mx-auto mt-2">No medical staff found matching your current criteria.</p>
             </div>
           }
         </div>
 
-        <div class="px-6 py-3 border-t border-slate-100 bg-slate-50/50">
-          <span class="text-xs text-slate-400">{{ doctors().length }} doctor(s) found</span>
+        <!-- Directory Footer -->
+        <div class="px-6 py-4 mt-6 border-t border-google-gray-100 dark:border-white/5 flex items-center justify-between">
+          <span class="text-xs font-bold text-google-gray-400 uppercase tracking-widest">{{ doctors().length }} Specialist(s) listed</span>
+          <div class="flex items-center gap-2">
+            <zrd-button variant="ghost" size="sm" [disabled]="true">Previous</zrd-button>
+            <zrd-button variant="ghost" size="sm" [disabled]="true">Next</zrd-button>
+          </div>
         </div>
-      </div>
+      </zrd-card>
     </div>
   `,
-  styles: [`:host { display: block; } ::ng-deep .mat-mdc-table { background: transparent !important; }`]
+  styles: [`:host { display: block; }`]
 })
 export class DoctorManagementComponent implements OnInit {
   private api = inject(AdminApiService);

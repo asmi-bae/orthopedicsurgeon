@@ -1,15 +1,16 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
+import { 
+  ZrdCardComponent, 
+  ZrdButtonComponent, 
+  ZrdBadgeComponent 
+} from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '@repo/auth';
+
+type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'outline' | 'neutral';
 
 @Component({
   selector: 'app-admin',
@@ -17,166 +18,165 @@ import { AuthService } from '@repo/auth';
   imports: [
     CommonModule,
     RouterModule,
-    MatCardModule,
-    MatTableModule,
-    MatButtonModule,
+    ZrdCardComponent,
+    ZrdButtonComponent,
+    ZrdBadgeComponent,
     MatIconModule,
-    MatChipsModule,
-    MatListModule,
-    MatDividerModule,
     MatTooltipModule
   ],
   template: `
-    <div class="space-y-6">
+    <div class="space-y-8 animate-in fade-in duration-500">
 
-      <!-- Page Header -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <!-- Spartan Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h1 class="text-2xl font-semibold text-slate-900 m-0">Dashboard</h1>
-          <p class="text-sm text-slate-500 mt-1 m-0">Welcome back. Here's what's happening today.</p>
+          <h1 class="text-3xl font-bold text-google-gray-900 dark:text-white tracking-tight">Dashboard Overview</h1>
+          <p class="text-google-gray-500 dark:text-google-gray-400 mt-1">Real-time health platform monitoring and analytics.</p>
         </div>
-        <div class="flex items-center gap-2">
-          <button mat-stroked-button class="text-slate-600 border-slate-300 hover:bg-slate-50">
-            <mat-icon class="text-[18px]">download</mat-icon>
-            Export Report
-          </button>
-          <button mat-flat-button color="primary">
-            <mat-icon class="text-[18px]">add</mat-icon>
-            Quick Add
-          </button>
+        <div class="flex items-center gap-3">
+          <zrd-button variant="outline" size="md">
+            <mat-icon leftIcon class="text-[20px]">file_download</mat-icon>
+            Analytics Report
+          </zrd-button>
+          <zrd-button variant="primary" size="md">
+            <mat-icon leftIcon class="text-[20px]">add_circle</mat-icon>
+            New Entry
+          </zrd-button>
         </div>
       </div>
 
-      <!-- Stats Grid -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <!-- Google Stats Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
         @for (stat of stats; track stat.label) {
-          <div class="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow">
-            <div class="flex items-center justify-between mb-3">
-              <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+          <zrd-card variant="elevated">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-2xl flex items-center justify-center transition-colors"
                    [class]="stat.iconBg">
-                <mat-icon class="text-[22px]" [class]="stat.iconColor">{{ stat.icon }}</mat-icon>
+                <mat-icon class="text-[26px]" [class]="stat.iconColor">{{ stat.icon }}</mat-icon>
               </div>
-              <span class="text-xs font-semibold px-2 py-1 rounded-full"
-                    [class]="stat.trendClass">
+              <zrd-badge [variant]="stat.trendVariant">
                 {{ stat.trend }}
-              </span>
+              </zrd-badge>
             </div>
-            <p class="text-sm text-slate-500 mb-1 font-medium">{{ stat.label }}</p>
-            <h3 class="text-2xl font-bold text-slate-900 m-0">{{ stat.value }}</h3>
-            <p class="text-xs text-slate-400 mt-1 m-0">{{ stat.description }}</p>
-          </div>
+            <div class="mt-5">
+              <p class="text-sm font-medium text-google-gray-500 dark:text-google-gray-400">{{ stat.label }}</p>
+              <h3 class="text-3xl font-bold text-google-gray-900 dark:text-white mt-1">{{ stat.value }}</h3>
+              <div class="flex items-center gap-1.5 mt-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-google-blue animate-pulse"></div>
+                <p class="text-xs text-google-gray-400 leading-none">{{ stat.description }}</p>
+              </div>
+            </div>
+          </zrd-card>
         }
       </div>
 
       <!-- Content Area -->
-      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
 
-        <!-- Live Appointments Table -->
-        <div class="xl:col-span-2 bg-white rounded-xl border border-slate-200 overflow-hidden">
-          <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-            <div class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-              <h2 class="text-base font-semibold text-slate-800 m-0">Live Appointments</h2>
+        <!-- Spartan Live Monitor Table -->
+        <zrd-card variant="default" [hasHeader]="true" class="xl:col-span-2">
+          <div header class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-google-blue/10 rounded-lg">
+                <mat-icon class="text-google-blue">sensors</mat-icon>
+              </div>
+              <h2 class="text-lg font-bold text-google-gray-900 dark:text-white">Live Appointments</h2>
             </div>
-            <button mat-button color="primary" class="text-sm">View All</button>
+            <zrd-button variant="ghost" size="sm">Manage All</zrd-button>
           </div>
 
-          <div class="overflow-x-auto">
-            <table mat-table [dataSource]="liveAppointments" class="w-full">
-
-              <ng-container matColumnDef="patient">
-                <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3">Patient</th>
-                <td mat-cell *matCellDef="let row" class="py-3">
-                  <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-sm font-semibold text-slate-600">
-                      {{ row.patient[0] }}
-                    </div>
-                    <span class="font-medium text-slate-800 text-sm">{{ row.patient }}</span>
-                  </div>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="doctor">
-                <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3">Doctor</th>
-                <td mat-cell *matCellDef="let row">
-                  <span class="text-sm text-slate-600">{{ row.doctor }}</span>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="time">
-                <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3">Time</th>
-                <td mat-cell *matCellDef="let row">
-                  <span class="text-sm text-slate-700 font-medium">{{ row.time }}</span>
-                </td>
-              </ng-container>
-
-              <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3 text-right pr-6">Status</th>
-                <td mat-cell *matCellDef="let row" class="text-right pr-6">
-                  <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
-                        [class]="row.status === 'CONFIRMED'
-                          ? 'bg-green-50 text-green-700 border border-green-200'
-                          : 'bg-amber-50 text-amber-700 border border-amber-200'">
-                    {{ row.status }}
-                  </span>
-                </td>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-slate-50/50"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-                  class="hover:bg-slate-50 transition-colors border-t border-slate-50 cursor-pointer"></tr>
+          <div class="overflow-x-auto -mx-6">
+            <table class="w-full text-left">
+              <thead>
+                <tr class="border-b border-google-gray-100 dark:border-white/5 bg-google-gray-50/50 dark:bg-white/5">
+                  <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-wider">Patient Info</th>
+                  <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-wider">Specialist</th>
+                  <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-wider">Scheduled</th>
+                  <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-wider text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-google-gray-100 dark:divide-white/5">
+                @for (row of liveAppointments; track row.patient) {
+                  <tr class="hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors group cursor-pointer">
+                    <td class="px-6 py-4">
+                      <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-google-blue/10 flex items-center justify-center text-sm font-bold text-google-blue">
+                          {{ row.patient[0] }}
+                        </div>
+                        <span class="font-bold text-google-gray-900 dark:text-white text-sm">{{ row.patient }}</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span class="text-sm text-google-gray-600 dark:text-google-gray-400 font-medium">{{ row.doctor }}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="flex flex-col">
+                        <span class="text-sm text-google-gray-900 dark:text-white font-bold">{{ row.time }}</span>
+                        <span class="text-[10px] text-google-gray-400 uppercase font-bold tracking-widest">Today</span>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                      <zrd-badge [variant]="row.status === 'CONFIRMED' ? 'success' : 'warning'">
+                         {{ row.status }}
+                      </zrd-badge>
+                    </td>
+                  </tr>
+                }
+              </tbody>
             </table>
           </div>
-        </div>
+        </zrd-card>
 
-        <!-- Top Hospitals -->
-        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
-          <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-            <h2 class="text-base font-semibold text-slate-800 m-0">Top Hospitals</h2>
-            <button mat-button color="primary" class="text-sm">Details</button>
+        <!-- Top Facilities -->
+        <zrd-card variant="default" [hasHeader]="true">
+          <div header class="flex items-center justify-between">
+            <h2 class="text-lg font-bold text-google-gray-900 dark:text-white">Regional Performance</h2>
+            <mat-icon class="text-google-gray-400">more_vert</mat-icon>
           </div>
 
-          <div class="divide-y divide-slate-100">
+          <div class="space-y-1">
             @for (h of topHospitals; track h.name; let i = $index) {
-              <div class="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors cursor-pointer">
-                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-500 shrink-0">
+              <div class="flex items-center gap-4 p-4 hover:bg-google-gray-100 dark:hover:bg-white/5 rounded-2xl transition-all cursor-pointer group">
+                <div class="w-9 h-9 rounded-xl bg-google-gray-100 dark:bg-white/10 flex items-center justify-center text-sm font-black text-google-gray-400 group-hover:bg-google-blue group-hover:text-white transition-all shrink-0">
                   {{ i + 1 }}
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="font-medium text-sm text-slate-800 truncate m-0">{{ h.name }}</p>
-                  <p class="text-xs text-slate-400 m-0">{{ h.city }}</p>
+                  <p class="font-bold text-sm text-google-gray-900 dark:text-white truncate m-0">{{ h.name }}</p>
+                  <p class="text-xs text-google-gray-500 m-0">{{ h.city }}</p>
                 </div>
                 <div class="text-right shrink-0">
-                  <p class="text-sm font-semibold text-slate-800 m-0">{{ h.revenue }}</p>
-                  <p class="text-xs text-green-600 font-medium m-0">{{ h.growth }}</p>
+                  <p class="text-sm font-black text-google-gray-900 dark:text-white m-0">{{ h.revenue }}</p>
+                  <div class="flex items-center justify-end gap-1">
+                    <mat-icon class="text-[14px] text-google-green">trending_up</mat-icon>
+                    <p class="text-[10px] text-google-green font-black m-0">{{ h.growth }}</p>
+                  </div>
                 </div>
               </div>
             }
           </div>
 
-          <div class="px-6 py-4 border-t border-slate-100">
-            <button mat-stroked-button class="w-full text-slate-600 border-slate-300 hover:bg-slate-50">
-              View Full Report
-            </button>
+          <div class="mt-6">
+            <zrd-button variant="outline" class="w-full">Download Data</zrd-button>
           </div>
-        </div>
+        </zrd-card>
       </div>
 
-      <!-- Quick Stats Row -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <!-- Bottom Quick Stats -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
         @for (q of quickStats; track q.label) {
-          <div class="bg-white rounded-xl border border-slate-200 p-4 text-center">
-            <mat-icon class="text-slate-400 mb-2">{{ q.icon }}</mat-icon>
-            <p class="text-xl font-bold text-slate-900 m-0">{{ q.value }}</p>
-            <p class="text-xs text-slate-500 m-0 mt-1">{{ q.label }}</p>
-          </div>
+          <zrd-card variant="default" class="text-center transition-colors">
+            <div class="w-10 h-10 mx-auto rounded-full bg-google-gray-100 dark:bg-white/10 flex items-center justify-center mb-3 text-google-gray-400">
+               <mat-icon>{{ q.icon }}</mat-icon>
+            </div>
+            <p class="text-2xl font-black text-google-gray-900 dark:text-white m-0 tracking-tight">{{ q.value }}</p>
+            <p class="text-xs font-bold text-google-gray-500 m-0 mt-1 uppercase tracking-widest">{{ q.label }}</p>
+          </zrd-card>
         }
       </div>
     </div>
   `,
   styles: [`
     :host { display: block; }
-    ::ng-deep .mat-mdc-table { background: transparent !important; }
   `]
 })
 export class AdminComponent {
@@ -184,26 +184,26 @@ export class AdminComponent {
 
   displayedColumns = ['patient', 'doctor', 'time', 'status'];
 
-  stats = [
+  stats: { label: string; value: string; description: string; icon: string; iconBg: string; iconColor: string; trend: string; trendVariant: BadgeVariant }[] = [
     {
       label: 'Total Revenue', value: '$45,280', description: 'Net earnings this month',
-      icon: 'payments', iconBg: 'bg-blue-50', iconColor: 'text-blue-600',
-      trend: '+12%', trendClass: 'bg-green-50 text-green-700'
+      icon: 'stat_1', iconBg: 'bg-google-blue/10', iconColor: 'text-google-blue',
+      trend: '+12%', trendVariant: 'success'
     },
     {
       label: 'Medical Staff', value: '124', description: 'Certified specialists',
-      icon: 'medical_services', iconBg: 'bg-indigo-50', iconColor: 'text-indigo-600',
-      trend: 'Stable', trendClass: 'bg-slate-100 text-slate-600'
+      icon: 'medical_services', iconBg: 'bg-google-indigo/10', iconColor: 'text-google-indigo',
+      trend: 'Stable', trendVariant: 'neutral'
     },
     {
       label: 'New Patients', value: '1,450', description: 'Registered this month',
-      icon: 'person_add', iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600',
-      trend: '+45', trendClass: 'bg-green-50 text-green-700'
+      icon: 'person_add', iconBg: 'bg-google-emerald/10', iconColor: 'text-google-emerald',
+      trend: '+45', trendVariant: 'success'
     },
     {
       label: 'System Status', value: 'Active', description: 'All systems operational',
-      icon: 'shield', iconBg: 'bg-green-50', iconColor: 'text-green-600',
-      trend: 'Secure', trendClass: 'bg-green-50 text-green-700'
+      icon: 'shield', iconBg: 'bg-google-green/10', iconColor: 'text-google-green',
+      trend: 'Secure', trendVariant: 'success'
     },
   ];
 

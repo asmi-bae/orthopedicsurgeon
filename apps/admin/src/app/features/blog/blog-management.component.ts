@@ -1,70 +1,100 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
+import { 
+  ZrdCardComponent, 
+  ZrdButtonComponent, 
+  ZrdInputComponent,
+  ZrdBadgeComponent 
+} from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-blog-management',
   standalone: true,
   imports: [
-    CommonModule, MatButtonModule, MatIconModule,
-    MatMenuModule, MatDividerModule, MatFormFieldModule, MatInputModule
+    CommonModule, 
+    ZrdCardComponent, 
+    ZrdButtonComponent, 
+    ZrdInputComponent,
+    ZrdBadgeComponent,
+    MatIconModule,
+    MatMenuModule
   ],
   template: `
-    <div class="space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="space-y-8 animate-in fade-in duration-500">
+
+      <!-- Spartan Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h1 class="text-2xl font-semibold text-slate-900 m-0">Blog</h1>
-          <p class="text-sm text-slate-500 mt-1 m-0">Manage blog posts, articles, and news updates.</p>
+          <h1 class="text-3xl font-bold text-google-gray-900 dark:text-white tracking-tight">Editorial Hub</h1>
+          <p class="text-google-gray-500 dark:text-google-gray-400 mt-1">Curate medical insights, patient success stories, and platform news.</p>
         </div>
-        <button mat-flat-button color="primary">
-          <mat-icon class="text-[18px]">add</mat-icon>
-          New Post
-        </button>
+        <zrd-button variant="primary" size="md">
+          <mat-icon leftIcon class="text-[20px]">add_circle</mat-icon>
+          Draft Article
+        </zrd-button>
       </div>
 
-      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div class="flex flex-col sm:flex-row gap-3 px-6 py-4 border-b border-slate-100">
-          <mat-form-field appearance="outline" class="flex-1 sm:max-w-sm" subscriptSizing="dynamic">
-            <mat-icon matPrefix class="text-slate-400 text-[18px] mr-2">search</mat-icon>
-            <input matInput placeholder="Search posts…" />
-          </mat-form-field>
+      <!-- Content Management Card -->
+      <zrd-card variant="default">
+        <!-- Control Strip -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-8">
+          <div class="flex-1 max-w-sm">
+            <zrd-input 
+              placeholder="Search articles by title or author..." 
+              [hasPrefix]="true"
+            >
+              <mat-icon prefix class="text-google-gray-400">search</mat-icon>
+            </zrd-input>
+          </div>
+          <div class="flex items-center gap-2 ml-auto">
+             <zrd-button variant="outline" size="sm">
+               <mat-icon leftIcon>category</mat-icon>
+               Manage Categories
+             </zrd-button>
+          </div>
         </div>
 
-        <div class="divide-y divide-slate-100">
+        <!-- Spartan Editorial List -->
+        <div class="space-y-4">
           @for (post of posts(); track post.id) {
-            <div class="flex items-start gap-4 px-6 py-5 hover:bg-slate-50 transition-colors">
-              <div class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 mt-0.5">
-                <mat-icon class="text-slate-500 text-[20px]">article</mat-icon>
+            <div class="flex items-start gap-6 p-6 rounded-3xl hover:bg-google-gray-50 dark:hover:bg-white/5 transition-all group border border-google-gray-100 dark:border-white/5">
+              <div class="w-12 h-12 rounded-2xl bg-google-blue/10 flex items-center justify-center shrink-0 transition-colors group-hover:bg-google-blue/20">
+                <mat-icon class="text-google-blue text-[24px]">article</mat-icon>
               </div>
               <div class="flex-1 min-w-0">
-                <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start justify-between gap-4">
                   <div>
-                    <p class="font-semibold text-sm text-slate-900 m-0">{{ post.title }}</p>
-                    <p class="text-xs text-slate-400 m-0 mt-0.5">By {{ post.author }} · {{ post.date }}</p>
-                    <p class="text-sm text-slate-500 m-0 mt-1 line-clamp-2">{{ post.excerpt }}</p>
+                    <h3 class="font-bold text-base text-google-gray-900 dark:text-white m-0 tracking-tight transition-colors group-hover:text-google-blue">{{ post.title }}</h3>
+                    <div class="flex items-center gap-x-2 text-[10px] font-black uppercase tracking-widest text-google-gray-400 mt-1">
+                       <span>{{ post.author }}</span>
+                       <span class="w-1 h-1 rounded-full bg-google-gray-300"></span>
+                       <span>{{ post.date }}</span>
+                    </div>
+                    <p class="text-sm text-google-gray-600 dark:text-google-gray-400 m-0 mt-3 line-clamp-2 leading-relaxed">{{ post.excerpt }}</p>
                   </div>
-                  <div class="flex items-center gap-2 shrink-0">
-                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
-                          [class]="post.status === 'Published'
-                            ? 'bg-green-50 text-green-700 border border-green-200'
-                            : 'bg-amber-50 text-amber-700 border border-amber-200'">
+                  <div class="flex items-center gap-3 shrink-0">
+                    <zrd-badge [variant]="post.status === 'Published' ? 'success' : 'warning'" class="font-black">
                       {{ post.status }}
-                    </span>
-                    <button mat-icon-button [matMenuTriggerFor]="menu"
-                            class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg w-8 h-8">
-                      <mat-icon class="text-[18px]">more_vert</mat-icon>
+                    </zrd-badge>
+                    <button [matMenuTriggerFor]="menu" class="p-2 h-9 w-9 flex items-center justify-center rounded-full hover:bg-google-gray-200 dark:hover:bg-white/10 text-google-gray-400 transition-all">
+                      <mat-icon>more_vert</mat-icon>
                     </button>
-                    <mat-menu #menu="matMenu">
-                      <button mat-menu-item><mat-icon>edit</mat-icon> Edit</button>
-                      <button mat-menu-item><mat-icon>visibility</mat-icon> Preview</button>
-                      <button mat-menu-item><mat-icon>public</mat-icon> Publish</button>
-                      <mat-divider></mat-divider>
-                      <button mat-menu-item class="text-red-600"><mat-icon class="text-red-500">delete</mat-icon> Delete</button>
+                    <mat-menu #menu="matMenu" class="rounded-2xl border-none shadow-google">
+                      <button mat-menu-item>
+                        <mat-icon class="text-google-blue">terminal</mat-icon>
+                        <span class="font-bold text-sm">Open Editor</span>
+                      </button>
+                      <button mat-menu-item>
+                        <mat-icon class="text-google-emerald">visibility</mat-icon>
+                        <span class="font-bold text-sm">Live Preview</span>
+                      </button>
+                      <div class="h-px bg-google-gray-100 dark:bg-white/5 my-1 mx-2"></div>
+                      <button mat-menu-item class="text-google-red">
+                        <mat-icon class="text-google-red">delete_sweep</mat-icon>
+                        <span class="font-bold text-sm">Archive Article</span>
+                      </button>
                     </mat-menu>
                   </div>
                 </div>
@@ -73,10 +103,25 @@ import { MatInputModule } from '@angular/material/input';
           }
         </div>
 
-        <div class="px-6 py-3 border-t border-slate-100 bg-slate-50/50">
-          <span class="text-xs text-slate-400">{{ posts().length }} post(s)</span>
+        @if (posts().length === 0) {
+          <div class="py-24 text-center">
+            <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+               <mat-icon class="text-google-gray-400 text-3xl">auto_stories</mat-icon>
+            </div>
+            <h3 class="font-bold text-google-gray-900 dark:text-white">The Hub is Empty</h3>
+            <p class="text-sm text-google-gray-500 mt-2">No articles or drafts found matching your search.</p>
+          </div>
+        }
+
+        <!-- Inventory Footer -->
+        <div class="px-6 py-4 mt-8 border-t border-google-gray-100 dark:border-white/5 flex items-center justify-between">
+          <span class="text-xs font-bold text-google-gray-400 uppercase tracking-widest">{{ posts().length }} Editorial Piece(s)</span>
+          <div class="flex items-center gap-2">
+            <zrd-button variant="ghost" size="sm" [disabled]="true">Older Posts</zrd-button>
+            <zrd-button variant="ghost" size="sm" [disabled]="true">Next</zrd-button>
+          </div>
         </div>
-      </div>
+      </zrd-card>
     </div>
   `,
   styles: [`:host { display: block; }`]

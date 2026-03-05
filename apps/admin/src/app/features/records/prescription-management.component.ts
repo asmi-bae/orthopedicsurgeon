@@ -1,80 +1,134 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
+import { 
+  ZrdCardComponent, 
+  ZrdButtonComponent, 
+  ZrdInputComponent,
+  ZrdBadgeComponent 
+} from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-prescription-management',
   standalone: true,
   imports: [
-    CommonModule, MatButtonModule, MatIconModule,
-    MatMenuModule, MatDividerModule, MatFormFieldModule, MatInputModule
+    CommonModule, 
+    ZrdCardComponent, 
+    ZrdButtonComponent, 
+    ZrdInputComponent,
+    ZrdBadgeComponent,
+    MatIconModule,
+    MatMenuModule
   ],
   template: `
-    <div class="space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="space-y-8 animate-in fade-in duration-500">
+
+      <!-- Spartan Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h1 class="text-2xl font-semibold text-slate-900 m-0">Prescriptions</h1>
-          <p class="text-sm text-slate-500 mt-1 m-0">View and manage all patient prescriptions and medication records.</p>
+          <h1 class="text-3xl font-bold text-google-gray-900 dark:text-white tracking-tight">Clinical Prescriptions</h1>
+          <p class="text-google-gray-500 dark:text-google-gray-400 mt-1">Review, authorize, and track all medication mandates issued by practitioners.</p>
         </div>
-        <button mat-flat-button color="primary">
-          <mat-icon class="text-[18px]">add</mat-icon>
-          New Prescription
-        </button>
+        <zrd-button variant="primary" size="md">
+          <mat-icon leftIcon class="text-[20px]">medication</mat-icon>
+          Draft New Mandate
+        </zrd-button>
       </div>
 
-      <!-- Table Card -->
-      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div class="flex flex-col sm:flex-row gap-3 px-6 py-4 border-b border-slate-100">
-          <mat-form-field appearance="outline" class="flex-1 sm:max-w-sm" subscriptSizing="dynamic">
-            <mat-icon matPrefix class="text-slate-400 text-[18px] mr-2">search</mat-icon>
-            <input matInput placeholder="Search prescriptions…" />
-          </mat-form-field>
+      <!-- Inventory Card -->
+      <zrd-card variant="default">
+        <!-- Search & Control Strip -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-8">
+          <div class="flex-1 max-w-sm">
+            <zrd-input 
+              placeholder="Search by patient, doctor or medication..." 
+              [hasPrefix]="true"
+            >
+              <mat-icon prefix class="text-google-gray-400">search</mat-icon>
+            </zrd-input>
+          </div>
+          <div class="flex items-center gap-2 ml-auto">
+             <zrd-button variant="outline" size="sm">
+               <mat-icon leftIcon>history</mat-icon>
+               Archive Records
+             </zrd-button>
+          </div>
         </div>
 
-        <div class="divide-y divide-slate-100">
+        <!-- Spartan Prescription Directory -->
+        <div class="space-y-4">
           @for (p of prescriptions(); track p.id) {
-            <div class="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors">
-              <div class="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                <mat-icon class="text-indigo-600 text-[20px]">description</mat-icon>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-6 p-6 rounded-3xl hover:bg-google-gray-50 dark:hover:bg-white/5 transition-all group border border-google-gray-100 dark:border-white/5 cursor-pointer">
+              <!-- Identity Ring -->
+              <div class="w-12 h-12 rounded-2xl bg-google-blue/10 flex items-center justify-center shrink-0 transition-all group-hover:scale-110">
+                <mat-icon class="text-google-blue text-[24px]">description</mat-icon>
               </div>
+
+              <!-- Primary Info -->
               <div class="flex-1 min-w-0">
-                <p class="font-medium text-sm text-slate-900 m-0">{{ p.patient }}</p>
-                <p class="text-xs text-slate-400 m-0">Dr. {{ p.doctor }} · {{ p.date }}</p>
+                <h3 class="font-bold text-base text-google-gray-900 dark:text-white m-0 tracking-tight group-hover:text-google-blue transition-colors">{{ p.patient }}</h3>
+                <div class="flex items-center gap-x-2 text-[10px] font-black uppercase tracking-widest text-google-gray-400 mt-1">
+                   <span>Dr. {{ p.doctor }}</span>
+                   <span class="w-1 h-1 rounded-full bg-google-gray-300"></span>
+                   <span>{{ p.date }}</span>
+                </div>
               </div>
-              <div class="hidden sm:block text-center">
-                <p class="text-sm text-slate-600 m-0">{{ p.medication }}</p>
-                <p class="text-xs text-slate-400 m-0">{{ p.dosage }}</p>
+
+              <!-- Medication Details -->
+              <div class="flex flex-col sm:items-center text-left sm:text-center min-w-[150px]">
+                <span class="text-sm font-bold text-google-gray-900 dark:text-white tracking-tight">{{ p.medication }}</span>
+                <span class="text-[10px] font-black uppercase tracking-widest text-google-blue mt-1 bg-google-blue/5 px-2 py-0.5 rounded-full">{{ p.dosage }}</span>
               </div>
-              <span class="text-xs font-semibold px-2.5 py-1 rounded-full shrink-0"
-                    [class]="p.status === 'Active'
-                      ? 'bg-green-50 text-green-700 border border-green-200'
-                      : 'bg-slate-100 text-slate-500 border border-slate-200'">
-                {{ p.status }}
-              </span>
-              <button mat-icon-button [matMenuTriggerFor]="menu"
-                      class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg shrink-0">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item><mat-icon>visibility</mat-icon> View</button>
-                <button mat-menu-item><mat-icon>edit</mat-icon> Edit</button>
-                <button mat-menu-item><mat-icon>print</mat-icon> Print</button>
-                <mat-divider></mat-divider>
-                <button mat-menu-item class="text-red-600"><mat-icon class="text-red-500">delete</mat-icon> Delete</button>
-              </mat-menu>
+
+              <!-- Governance Status -->
+              <div class="flex items-center gap-4 shrink-0">
+                <zrd-badge [variant]="p.status === 'Active' ? 'success' : 'neutral'" class="font-black">
+                  {{ p.status }}
+                </zrd-badge>
+
+                <button [matMenuTriggerFor]="menu" class="p-2 h-9 w-9 flex items-center justify-center rounded-full hover:bg-google-gray-200 dark:hover:bg-white/10 text-google-gray-400 transition-all">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu" class="rounded-2xl border-none shadow-google">
+                  <button mat-menu-item>
+                    <mat-icon class="text-google-blue">visibility</mat-icon>
+                    <span class="font-bold text-sm">Review Full Details</span>
+                  </button>
+                  <button mat-menu-item>
+                    <mat-icon class="text-google-emerald">print</mat-icon>
+                    <span class="font-bold text-sm">Print Script</span>
+                  </button>
+                  <div class="h-px bg-google-gray-100 dark:bg-white/5 my-1 mx-2"></div>
+                  <button mat-menu-item class="text-google-red">
+                    <mat-icon class="text-google-red">cancel</mat-icon>
+                    <span class="font-bold text-sm">Void Prescription</span>
+                  </button>
+                </mat-menu>
+              </div>
             </div>
           }
         </div>
 
-        <div class="px-6 py-3 border-t border-slate-100 bg-slate-50/50">
-          <span class="text-xs text-slate-400">{{ prescriptions().length }} prescription(s)</span>
+        @if (prescriptions().length === 0) {
+          <div class="py-24 text-center">
+            <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+               <mat-icon class="text-google-gray-400 text-3xl">medication_liquid</mat-icon>
+            </div>
+            <h3 class="font-bold text-google-gray-900 dark:text-white">No Prescriptions Found</h3>
+            <p class="text-sm text-google-gray-500 mt-2">Adjust your filters or search criteria to locate specific records.</p>
+          </div>
+        }
+
+        <!-- Paginator Strip -->
+        <div class="px-6 py-4 mt-8 border-t border-google-gray-100 dark:border-white/5 flex items-center justify-between">
+          <span class="text-xs font-bold text-google-gray-400 uppercase tracking-widest">{{ prescriptions().length }} Mandate(s) Logged</span>
+          <div class="flex items-center gap-2">
+            <zrd-button variant="ghost" size="sm" [disabled]="true">Previous</zrd-button>
+            <zrd-button variant="ghost" size="sm" [disabled]="true">Next</zrd-button>
+          </div>
         </div>
-      </div>
+      </zrd-card>
     </div>
   `,
   styles: [`:host { display: block; }`]

@@ -1,160 +1,130 @@
 import { Component, inject, signal, OnInit, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { AdminSidebarComponent } from '@core/components/admin-sidebar/sidebar.component';
-import { AdminUserMenuComponent } from '@core/components/admin-header/user-menu.component';
+import { 
+  ZrdSidebarComponent, 
+  ZrdAvatarComponent,
+  ZrdNavItem 
+} from '@repo/ui';
 import { ThemeService } from '@core/services/theme.service';
 
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatListModule,
     MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatDividerModule,
-    MatBadgeModule,
     MatTooltipModule,
-    MatFormFieldModule,
-    MatInputModule,
-    AdminSidebarComponent,
-    AdminUserMenuComponent
+    ZrdSidebarComponent,
+    ZrdAvatarComponent
   ],
   template: `
-    <mat-sidenav-container class="h-screen overflow-hidden bg-slate-50 dark:bg-slate-900">
+    <div class="flex h-screen overflow-hidden bg-google-gray-50 dark:bg-google-gray-900">
+      
+      <!-- Sidebar (handles its own toggle button at logo position) -->
+      <zrd-sidebar 
+        [items]="navItems" 
+        [collapsed]="collapsed()"
+        (onToggle)="toggleCollapsed()"
+      ></zrd-sidebar>
 
-      <!-- ── Sidebar ── -->
-      <mat-sidenav
-        #sidenav
-        [mode]="isMobile() ? 'over' : 'side'"
-        [opened]="isMobile() ? mobileOpen() : !collapsed()"
-        class="border-none"
-        [style.width]="isMobile() ? '260px' : (collapsed() ? '64px' : '260px')"
-        (closedStart)="mobileOpen.set(false)">
-        <app-admin-sidebar
-          [collapsed]="!isMobile() && collapsed()"
-          (closeRequested)="mobileOpen.set(false)">
-        </app-admin-sidebar>
-      </mat-sidenav>
-
-      <!-- ── Main Area ── -->
-      <mat-sidenav-content class="flex flex-col min-w-0 h-full overflow-hidden">
-
+      <div class="flex-1 flex flex-col min-w-0 transition-all duration-300">
         <!-- Header -->
-        <header class="h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-
-          <!-- Left -->
-          <div class="flex items-center gap-3">
-            <button mat-icon-button (click)="toggle(sidenav)"
-                    class="text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700/50 rounded-lg transition-colors w-9 h-9">
-              <mat-icon>menu</mat-icon>
+        <header class="h-16 flex items-center justify-between px-6 shrink-0 z-20 bg-white/80 dark:bg-google-gray-900/80 backdrop-blur-md border-b border-google-gray-200 dark:border-white/10 sticky top-0">
+          
+          <!-- Mobile-only menu button (lg+ uses sidebar's built-in button) -->
+          <div class="flex items-center">
+            <button
+              (click)="toggleCollapsed()"
+              class="lg:hidden p-2 h-10 w-10 flex items-center justify-center rounded-full hover:bg-google-gray-100 dark:hover:bg-white/5 transition-colors"
+            >
+              <mat-icon class="text-google-gray-600 dark:text-google-gray-400">menu</mat-icon>
             </button>
-            @if (isMobile()) {
-              <span class="text-base font-semibold text-slate-800">Precision Console</span>
-            } @else {
-              <div class="hidden md:flex items-center gap-1.5 text-sm text-slate-400">
-                <mat-icon class="text-base leading-none">home</mat-icon>
-                <span>Admin</span>
-              </div>
-            }
           </div>
 
-          <!-- Center Search -->
-          <div class="flex-1 px-6 hidden md:flex justify-center">
-            <mat-form-field appearance="outline" class="w-full max-w-xl dense-toolbar-field" subscriptSizing="dynamic">
-              <mat-icon matPrefix class="text-slate-400 text-[18px] mr-2">search</mat-icon>
-              <input matInput placeholder="Search patients, doctors, appointments…" />
-            </mat-form-field>
+          <!-- Search -->
+          <div class="flex-1 max-w-2xl px-4 hidden lg:block">
+            <div class="relative group">
+              <mat-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-google-gray-400 group-focus-within:text-google-blue transition-colors">search</mat-icon>
+              <input 
+                type="text" 
+                placeholder="Search resources, patients, doctors..." 
+                class="w-full bg-google-gray-100 dark:bg-white/5 border-none rounded-pill py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-google-blue/20 transition-all outline-none"
+              />
+            </div>
           </div>
 
-          <!-- Right Actions -->
-          <div class="flex flex-1 px-6 md:hidden justify-center items-center">
-            <!-- Mobile spacer -->
-          </div>
-
-          <!-- Right Actions -->
-          <div class="flex items-center gap-1">
-            <!-- Theme Toggle -->
-            <button mat-icon-button (click)="themeService.toggleTheme()" 
-                    class="text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700/50 rounded-lg transition-colors"
-                    matTooltip="Toggle theme" matTooltipPosition="below">
+          <!-- Actions -->
+          <div class="flex items-center gap-2">
+            <button (click)="themeService.toggleTheme()" 
+                    class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-google-gray-100 dark:hover:bg-white/5 text-google-gray-600 dark:text-google-gray-400 transition-all"
+                    matTooltip="Toggle theme">
               <mat-icon>{{ themeService.isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
             </button>
 
-            <!-- Mobile search -->
-            <button mat-icon-button class="text-slate-500 hover:bg-slate-100 rounded-lg md:hidden">
-              <mat-icon>search</mat-icon>
+            <button class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-google-gray-100 dark:hover:bg-white/5 text-google-gray-600 dark:text-google-gray-400 transition-all relative">
+              <mat-icon>notifications_none</mat-icon>
+              <span class="absolute top-2 right-2 w-2 h-2 bg-google-red rounded-full border-2 border-white dark:border-google-gray-900"></span>
             </button>
 
-            <!-- Notifications -->
-            <button mat-icon-button class="text-slate-500 hover:bg-slate-100 rounded-lg transition-colors"
-                    matTooltip="Notifications" matTooltipPosition="below">
-              <mat-icon [matBadge]="'4'" matBadgeColor="warn" matBadgeSize="small">notifications_none</mat-icon>
-            </button>
+            <div class="w-px h-6 bg-google-gray-200 dark:bg-white/10 mx-2"></div>
 
-            <!-- Help -->
-            <button mat-icon-button class="text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700/50 rounded-lg transition-colors hidden sm:flex"
-                    matTooltip="Help" matTooltipPosition="below">
-              <mat-icon>help_outline</mat-icon>
-            </button>
-
-            <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-2 hidden sm:block"></div>
-
-            <!-- Avatar / User menu -->
-            <app-admin-user-menu></app-admin-user-menu>
+            <div class="flex items-center gap-3 pl-2">
+              <div class="text-right hidden sm:block">
+                <p class="text-sm font-medium text-google-gray-900 dark:text-white leading-tight">Admin User</p>
+                <p class="text-xs text-google-gray-500 dark:text-google-gray-400">Super Admin</p>
+              </div>
+              <zrd-avatar src="assets/images/avatar.jpg" fallback="A" size="md"></zrd-avatar>
+            </div>
           </div>
         </header>
 
-        <!-- Page Content -->
-        <main class="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50 dark:bg-slate-900">
-          <div class="max-w-[1440px] mx-auto pb-10">
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar">
+          <div class="p-6 lg:p-8 max-w-[1600px] mx-auto">
             <router-outlet></router-outlet>
           </div>
         </main>
-
-      </mat-sidenav-content>
-    </mat-sidenav-container>
+      </div>
+    </div>
   `,
   styles: [`
     :host { display: block; height: 100vh; }
-    mat-sidenav { border-right: none !important; box-shadow: none !important; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: theme('colors.google-gray.300'); border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
   `]
 })
 export class AdminLayoutComponent implements OnInit {
   collapsed = signal(false);
   isMobile = signal(false);
-  mobileOpen = signal(false);
   themeService = inject(ThemeService);
+
+  navItems: ZrdNavItem[] = [
+    { label: 'Dashboard', icon: 'mat-icon:home', route: '/dashboard' },
+    { label: 'Appointments', icon: 'mat-icon:calendar_today', route: '/appointments' },
+    { label: 'Doctors', icon: 'mat-icon:medical_services', route: '/doctors' },
+    { label: 'Patients', icon: 'mat-icon:people', route: '/patients' },
+    { label: 'Prescriptions', icon: 'mat-icon:description', route: '/records/prescriptions' },
+    { label: 'Reports', icon: 'mat-icon:assessment', route: '/records/reports' },
+    { label: 'Hospitals', icon: 'mat-icon:local_hospital', route: '/hospitals' },
+    { label: 'Finance', icon: 'mat-icon:payments', route: '/finance' },
+    { label: 'Content Management', icon: 'mat-icon:article', route: '/content/hero' },
+    { label: 'Blog', icon: 'mat-icon:rss_feed', route: '/blog' },
+    { label: 'Users', icon: 'mat-icon:admin_panel_settings', route: '/users' }
+  ];
 
   ngOnInit() { this.checkBreakpoint(); }
 
   @HostListener('window:resize')
   checkBreakpoint() {
-    this.isMobile.set(window.innerWidth < 768);
+    const mobile = window.innerWidth < 1024;
+    this.isMobile.set(mobile);
+    if (mobile) this.collapsed.set(true);
   }
 
-  toggle(sidenav: any) {
-    if (this.isMobile()) {
-      this.mobileOpen.update(v => !v);
-      this.mobileOpen() ? sidenav.open() : sidenav.close();
-    } else {
-      this.collapsed.update(v => !v);
-    }
+  toggleCollapsed() {
+    this.collapsed.update(v => !v);
   }
 }

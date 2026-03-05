@@ -1,125 +1,150 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
+import { 
+  ZrdCardComponent, 
+  ZrdButtonComponent, 
+  ZrdInputComponent,
+  ZrdBadgeComponent 
+} from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-appointment-management',
   standalone: true,
   imports: [
-    CommonModule, MatTableModule, MatButtonModule, MatIconModule,
-    MatMenuModule, MatDividerModule, MatFormFieldModule, MatInputModule
+    CommonModule,
+    ZrdCardComponent, 
+    ZrdButtonComponent, 
+    ZrdInputComponent,
+    ZrdBadgeComponent,
+    MatIconModule,
+    MatMenuModule,
+    MatTooltipModule
   ],
   template: `
-    <div class="space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="space-y-8 animate-in fade-in duration-500">
+
+      <!-- Spartan Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
-          <h1 class="text-2xl font-semibold text-slate-900 m-0">Appointments</h1>
-          <p class="text-sm text-slate-500 mt-1 m-0">Manage and track all patient appointment sessions.</p>
+          <h1 class="text-3xl font-bold text-google-gray-900 dark:text-white tracking-tight">Appointments</h1>
+          <p class="text-google-gray-500 dark:text-google-gray-400 mt-1">Manage and track all patient clinical sessions.</p>
         </div>
-        <button mat-flat-button color="primary">
-          <mat-icon class="text-[18px]">add</mat-icon>
-          New Appointment
-        </button>
+        <zrd-button variant="primary" size="md">
+          <mat-icon leftIcon class="text-[20px]">add_task</mat-icon>
+          Schedule Session
+        </zrd-button>
       </div>
 
-      <!-- Summary Stats -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <!-- Summary Layer -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
         @for (s of summaryStats; track s.label) {
-          <div class="bg-white rounded-xl border border-slate-200 px-5 py-4">
-            <p class="text-xl font-bold text-slate-900 m-0">{{ s.value }}</p>
-            <p class="text-xs text-slate-500 m-0 mt-0.5">{{ s.label }}</p>
-          </div>
+          <zrd-card variant="default" class="group hover:bg-google-gray-50 dark:hover:bg-white/5 transition-all">
+            <p class="text-2xl font-black text-google-gray-900 dark:text-white m-0 tracking-tight">{{ s.value }}</p>
+            <p class="text-xs font-bold text-google-gray-500 m-0 mt-1 uppercase tracking-widest">{{ s.label }}</p>
+          </zrd-card>
         }
       </div>
 
-      <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div class="flex flex-col sm:flex-row gap-3 px-6 py-4 border-b border-slate-100">
-          <mat-form-field appearance="outline" class="flex-1 sm:max-w-sm" subscriptSizing="dynamic">
-            <mat-icon matPrefix class="text-slate-400 text-[18px] mr-2">search</mat-icon>
-            <input matInput placeholder="Search appointments…" />
-          </mat-form-field>
+      <!-- Main Directory Card -->
+      <zrd-card variant="default">
+        <!-- Control Strip -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-8">
+          <div class="flex-1 max-w-sm">
+            <zrd-input 
+              placeholder="Search appointments..." 
+              [hasPrefix]="true"
+            >
+              <mat-icon prefix class="text-google-gray-400">search</mat-icon>
+            </zrd-input>
+          </div>
+          <div class="flex items-center gap-2 ml-auto">
+             <zrd-button variant="outline" size="sm">
+               <mat-icon leftIcon>calendar_view_day</mat-icon>
+               Schedule View
+             </zrd-button>
+          </div>
         </div>
 
-        <div class="overflow-x-auto">
-          <table mat-table [dataSource]="appointments()" class="w-full">
-
-            <ng-container matColumnDef="patient">
-              <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3 pl-6">Patient</th>
-              <td mat-cell *matCellDef="let row" class="py-3 pl-6">
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-sm font-semibold text-slate-600 shrink-0">
-                    {{ row.patient.charAt(0) }}
-                  </div>
-                  <span class="font-medium text-sm text-slate-800">{{ row.patient }}</span>
-                </div>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="doctor">
-              <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3">Doctor</th>
-              <td mat-cell *matCellDef="let row">
-                <div class="flex items-center gap-2">
-                  <mat-icon class="text-slate-400 text-[16px]">medical_services</mat-icon>
-                  <span class="text-sm text-slate-600">{{ row.doctor }}</span>
-                </div>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="timestamp">
-              <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3">Date &amp; Time</th>
-              <td mat-cell *matCellDef="let row">
-                <div>
-                  <p class="text-sm font-medium text-slate-800 m-0">{{ row.date }}</p>
-                  <p class="text-xs text-slate-400 m-0">{{ row.time }}</p>
-                </div>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3">Status</th>
-              <td mat-cell *matCellDef="let row">
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full"
-                      [class]="getStatusStyle(row.status)">
-                  {{ row.status }}
-                </span>
-              </td>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef class="text-xs font-semibold text-slate-500 uppercase tracking-wide py-3 text-right pr-6">Actions</th>
-              <td mat-cell *matCellDef="let row" class="text-right pr-6">
-                <button mat-icon-button [matMenuTriggerFor]="menu"
-                        class="text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item><mat-icon>edit_calendar</mat-icon> Reschedule</button>
-                  <button mat-menu-item><mat-icon>check_circle</mat-icon> Confirm</button>
-                  <mat-divider></mat-divider>
-                  <button mat-menu-item class="text-red-600"><mat-icon class="text-red-500">cancel</mat-icon> Cancel</button>
-                </mat-menu>
-              </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="columns" class="bg-slate-50/50"></tr>
-            <tr mat-row *matRowDef="let row; columns: columns;"
-                class="border-t border-slate-50 hover:bg-slate-50/80 transition-colors cursor-pointer"></tr>
+        <!-- Spartan Appointment Table -->
+        <div class="overflow-x-auto -mx-6">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-google-gray-100 dark:border-white/5 bg-google-gray-50/50 dark:bg-white/5">
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest pl-10">Patient Information</th>
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest">Medical Specialist</th>
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest">Date & Time</th>
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest">Session Status</th>
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest text-right pr-10">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-google-gray-100 dark:divide-white/5">
+              @for (row of appointments(); track row.patient) {
+                <tr class="hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors group cursor-pointer">
+                  <td class="px-6 py-5 pl-10">
+                    <div class="flex items-center gap-4">
+                      <div class="w-10 h-10 rounded-full bg-google-blue/10 flex items-center justify-center text-sm font-black text-google-blue shrink-0">
+                        {{ row.patient.charAt(0) }}
+                      </div>
+                      <span class="font-bold text-sm text-google-gray-900 dark:text-white tracking-tight">{{ row.patient }}</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-5">
+                    <div class="flex items-center gap-2 text-google-gray-600 dark:text-google-gray-400">
+                      <mat-icon class="text-[18px]">medical_services</mat-icon>
+                      <span class="text-sm font-bold">{{ row.doctor }}</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-5">
+                    <div class="flex flex-col">
+                       <span class="text-sm font-bold text-google-gray-900 dark:text-white">{{ row.date }}</span>
+                       <span class="text-[10px] text-google-gray-400 uppercase font-black tracking-widest">{{ row.time }}</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-5">
+                    <zrd-badge [variant]="getStatusVariant(row.status)">
+                      {{ row.status }}
+                    </zrd-badge>
+                  </td>
+                  <td class="px-6 py-5 text-right pr-10">
+                    <button [matMenuTriggerFor]="menu" class="p-2 h-9 w-9 flex items-center justify-center rounded-full hover:bg-google-gray-200 dark:hover:bg-white/10 text-google-gray-400 transition-all">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu" class="rounded-2xl border-none shadow-google">
+                      <button mat-menu-item>
+                        <mat-icon class="text-google-blue">edit_calendar</mat-icon>
+                        <span class="font-bold text-sm">Reschedule Session</span>
+                      </button>
+                      <button mat-menu-item>
+                        <mat-icon class="text-google-emerald">check_circle</mat-icon>
+                        <span class="font-bold text-sm">Confirm Arrival</span>
+                      </button>
+                      <div class="h-px bg-google-gray-100 dark:bg-white/5 my-1 mx-2"></div>
+                      <button mat-menu-item class="text-google-red">
+                        <mat-icon class="text-google-red">cancel</mat-icon>
+                        <span class="font-bold text-sm">Cancel Booking</span>
+                      </button>
+                    </mat-menu>
+                  </td>
+                </tr>
+              }
+            </tbody>
           </table>
         </div>
 
-        <div class="px-6 py-3 border-t border-slate-100 bg-slate-50/50">
-          <span class="text-xs text-slate-400">{{ appointments().length }} appointment(s)</span>
+        <div class="px-6 py-4 mt-6 border-t border-google-gray-100 dark:border-white/5 flex items-center justify-between">
+          <span class="text-xs font-bold text-google-gray-400 uppercase tracking-widest">{{ appointments().length }} Appointment(s) logged</span>
+          <div class="flex items-center gap-2">
+            <zrd-button variant="ghost" size="sm" [disabled]="true">Previous</zrd-button>
+            <zrd-button variant="ghost" size="sm" [disabled]="true">Next</zrd-button>
+          </div>
         </div>
-      </div>
+      </zrd-card>
     </div>
   `,
-  styles: [`:host { display: block; } ::ng-deep .mat-mdc-table { background: transparent !important; }`]
+  styles: [`:host { display: block; }`]
 })
 export class AppointmentManagementComponent {
   summaryStats = [
@@ -137,14 +162,12 @@ export class AppointmentManagementComponent {
     { patient: 'Emily Davis',   doctor: 'Dr. Lisa Chen',     date: 'Oct 26, 2024', time: '03:00 PM', status: 'CANCELLED' },
   ]);
 
-  columns = ['patient', 'doctor', 'timestamp', 'status', 'actions'];
-
-  getStatusStyle(status: string): string {
+  getStatusVariant(status: string): any {
     const m: Record<string, string> = {
-      CONFIRMED: 'bg-green-50 text-green-700 border border-green-200',
-      PENDING:   'bg-amber-50 text-amber-700 border border-amber-200',
-      CANCELLED: 'bg-red-50 text-red-700 border border-red-200',
+      CONFIRMED: 'success',
+      PENDING:   'warning',
+      CANCELLED: 'danger',
     };
-    return m[status] ?? 'bg-slate-100 text-slate-600';
+    return m[status] ?? 'neutral';
   }
 }
