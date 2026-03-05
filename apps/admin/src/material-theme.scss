@@ -1,19 +1,39 @@
 @use '@angular/material' as mat;
 
-// Define the theme object.
-$theme: mat.define-theme((color: (theme-type: light,
-        primary: mat.$blue-palette,
-        tertiary: mat.$blue-palette,
-      ),
-      typography: (brand-family: 'Roboto',
-        plain-family: 'Roboto',
-      ),
-      density: (scale: -1),
-    ));
+// Define both light and dark themes.
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$blue-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto',
+    plain-family: 'Roboto',
+  ),
+  density: (scale: -1),
+));
+
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$blue-palette,
+    tertiary: mat.$blue-palette,
+  ),
+  typography: (
+    brand-family: 'Roboto',
+    plain-family: 'Roboto',
+  ),
+  density: (scale: -1),
+));
 
 html {
-  @include mat.all-component-themes($theme);
+  @include mat.all-component-themes($light-theme);
   height: 100%;
+}
+
+html.dark-theme {
+  @include mat.all-component-colors($dark-theme);
 }
 
 body {

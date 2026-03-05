@@ -2,11 +2,12 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse, PageResponse, Doctor, Hospital } from '@repo/types';
+import { environment } from '@env/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AdminApiService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/v1/admin';
+  private apiUrl = `${environment.apiUrl}/admin`;
 
   // Hero Slides
   getHeroSlides(): Observable<any[]> {

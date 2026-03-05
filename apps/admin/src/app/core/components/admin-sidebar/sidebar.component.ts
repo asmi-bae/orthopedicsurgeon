@@ -9,7 +9,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '@repo/auth';
-import { LogoutConfirmDialogComponent } from '../logout-confirm-dialog/logout-confirm-dialog.component';
+import { LogoutConfirmDialogComponent } from '@core/components/logout-confirm-dialog/logout-confirm-dialog.component';
 
 interface NavItem {
   label: string;

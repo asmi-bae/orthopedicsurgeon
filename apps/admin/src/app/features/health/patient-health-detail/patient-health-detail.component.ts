@@ -9,7 +9,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatChipsModule } from '@angular/material/chips';
 import { HealthService } from '@core/services/health.service';
 import { PatientDashboard, PatientTimeline, VitalSigns } from '@repo/types';
-import { RecordVitalsDialogComponent } from '../components/record-vitals-dialog/record-vitals-dialog.component';
+import { RecordVitalsDialogComponent } from '@features/health/components/record-vitals-dialog/record-vitals-dialog.component';
  
 @Component({
   selector: 'app-patient-health-detail',

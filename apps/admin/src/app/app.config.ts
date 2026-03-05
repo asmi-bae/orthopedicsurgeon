@@ -6,7 +6,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
 import { jwtInterceptor, AUTH_API_URL } from '@repo/auth';
-import { environment } from '../environments/environment';
+import { environment } from '@env/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [

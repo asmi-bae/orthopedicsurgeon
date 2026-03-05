@@ -12,8 +12,9 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { AdminSidebarComponent } from '../../components/admin-sidebar/admin-sidebar.component';
-import { AdminUserMenuComponent } from '../../components/admin-header/admin-user-menu.component';
+import { AdminSidebarComponent } from '@core/components/admin-sidebar/sidebar.component';
+import { AdminUserMenuComponent } from '@core/components/admin-header/user-menu.component';
+import { ThemeService } from '@core/services/theme.service';
 
 @Component({
   selector: 'app-admin-layout',
@@ -36,7 +37,7 @@ import { AdminUserMenuComponent } from '../../components/admin-header/admin-user
     AdminUserMenuComponent
   ],
   template: `
-    <mat-sidenav-container class="h-screen overflow-hidden bg-slate-50">
+    <mat-sidenav-container class="h-screen overflow-hidden bg-slate-50 dark:bg-slate-900">
 
       <!-- ── Sidebar ── -->
       <mat-sidenav
@@ -56,12 +57,12 @@ import { AdminUserMenuComponent } from '../../components/admin-header/admin-user
       <mat-sidenav-content class="flex flex-col min-w-0 h-full overflow-hidden">
 
         <!-- Header -->
-        <header class="h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 bg-white border-b border-slate-200">
+        <header class="h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
 
           <!-- Left -->
           <div class="flex items-center gap-3">
             <button mat-icon-button (click)="toggle(sidenav)"
-                    class="text-slate-500 hover:bg-slate-100 rounded-lg transition-colors w-9 h-9">
+                    class="text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700/50 rounded-lg transition-colors w-9 h-9">
               <mat-icon>menu</mat-icon>
             </button>
             @if (isMobile()) {
@@ -83,7 +84,19 @@ import { AdminUserMenuComponent } from '../../components/admin-header/admin-user
           </div>
 
           <!-- Right Actions -->
+          <div class="flex flex-1 px-6 md:hidden justify-center items-center">
+            <!-- Mobile spacer -->
+          </div>
+
+          <!-- Right Actions -->
           <div class="flex items-center gap-1">
+            <!-- Theme Toggle -->
+            <button mat-icon-button (click)="themeService.toggleTheme()" 
+                    class="text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700/50 rounded-lg transition-colors"
+                    matTooltip="Toggle theme" matTooltipPosition="below">
+              <mat-icon>{{ themeService.isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+            </button>
+
             <!-- Mobile search -->
             <button mat-icon-button class="text-slate-500 hover:bg-slate-100 rounded-lg md:hidden">
               <mat-icon>search</mat-icon>
@@ -96,12 +109,12 @@ import { AdminUserMenuComponent } from '../../components/admin-header/admin-user
             </button>
 
             <!-- Help -->
-            <button mat-icon-button class="text-slate-500 hover:bg-slate-100 rounded-lg transition-colors hidden sm:flex"
+            <button mat-icon-button class="text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700/50 rounded-lg transition-colors hidden sm:flex"
                     matTooltip="Help" matTooltipPosition="below">
               <mat-icon>help_outline</mat-icon>
             </button>
 
-            <div class="w-px h-6 bg-slate-200 mx-2 hidden sm:block"></div>
+            <div class="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-2 hidden sm:block"></div>
 
             <!-- Avatar / User menu -->
             <app-admin-user-menu></app-admin-user-menu>
@@ -109,7 +122,7 @@ import { AdminUserMenuComponent } from '../../components/admin-header/admin-user
         </header>
 
         <!-- Page Content -->
-        <main class="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50">
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50 dark:bg-slate-900">
           <div class="max-w-[1440px] mx-auto pb-10">
             <router-outlet></router-outlet>
           </div>
@@ -127,6 +140,7 @@ export class AdminLayoutComponent implements OnInit {
   collapsed = signal(false);
   isMobile = signal(false);
   mobileOpen = signal(false);
+  themeService = inject(ThemeService);
 
   ngOnInit() { this.checkBreakpoint(); }
 

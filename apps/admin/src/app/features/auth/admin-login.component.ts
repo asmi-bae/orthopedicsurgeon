@@ -19,7 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '@repo/auth';
-import { environment } from '../../../environments/environment';
+import { environment } from '@env/environment';
 
 declare var google: any;
 
