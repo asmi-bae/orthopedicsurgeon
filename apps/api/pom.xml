@@ -24,7 +24,7 @@
 		<repository>
 			<id>shibboleth</id>
 			<name>Shibboleth Releases</name>
-			<url>https://build.shibboleth.net/nexus/content/repositories/releases/</url>
+			<url>https://build.shibboleth.net/maven/releases/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -48,6 +48,16 @@
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-saml2-service-provider</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.opensaml</groupId>
+			<artifactId>opensaml-saml-api</artifactId>
+			<version>4.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.opensaml</groupId>
+			<artifactId>opensaml-saml-impl</artifactId>
+			<version>4.3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
