@@ -3,60 +3,88 @@
 
 <head>
     <meta charset="UTF-8">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #e0e0e0;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Report Ready</title>
+    <div th:replace="~{email/fragments :: styles}"></div>
+    <style type="text/css">
+        .report-card {
+            background-color: #f8f9fa;
             border-radius: 8px;
+            padding: 24px;
+            border: 1px solid #dadce0;
+            margin: 24px 0;
+            display: flex;
+            align-items: center;
         }
 
-        .header {
-            background-color: #17a2b8;
-            color: #ffffff;
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px 8px 0 0;
+        .report-icon {
+            margin-right: 16px;
+            color: #1a73e8;
         }
 
-        .content {
-            padding: 30px;
+        .report-info {
+            flex-grow: 1;
         }
 
-        .footer {
-            text-align: center;
-            font-size: 0.8em;
-            color: #888;
+        .report-name {
+            font-weight: 500;
+            color: #202124;
+            font-size: 16px;
+        }
+
+        .report-status {
+            font-size: 12px;
+            color: #70757a;
+            margin-top: 2px;
+        }
+
+        .status-badge {
+            background-color: #e8f0fe;
+            color: #1967d2;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 16px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <h2>Lab Report Ready</h2>
-        </div>
-        <div class="content">
-            <p>Dear <span th:text="${patientName}">Patient</span>,</p>
-            <p>A new lab report has been uploaded to your patient portal.</p>
-            <p><strong>Report:</strong> <span th:text="${reportName}">Report</span></p>
-            <p>You can view and download your report by logging into your account.</p>
-            <p style="text-align: center;">
-                <a href="http://localhost:4200/portal/lab-reports"
-                    style="display: inline-block; padding: 10px 20px; background-color: #17a2b8; color: white; text-decoration: none; border-radius: 5px;">View
-                    Reports</a>
-            </p>
-        </div>
-        <div class="footer">
-            &copy; 2026 Orthopedic Surgeon Platform. All rights reserved.
-        </div>
+    <div class="wrapper">
+        <center>
+            <table class="main">
+                <tr>
+                    <td>
+                        <div th:replace="~{email/fragments :: header}"></div>
+                        <div class="content">
+                            <div class="status-badge">New Document</div>
+                            <h1>Lab Report Ready</h1>
+                            <p>Dear <span th:text="${patientName}" style="font-weight: 500;">Patient</span>,</p>
+                            <p>Good news! Your lab results are now available and have been securely uploaded to your
+                                patient portal.</p>
+
+                            <div class="report-card">
+                                <div class="report-info">
+                                    <div class="report-name" th:text="${reportName}">Report Name</div>
+                                    <div class="report-status">Ready for viewing</div>
+                                </div>
+                            </div>
+
+                            <p>For your privacy and security, we don't include the full report in this email. You can
+                                view, download, or share the report with your primary care provider by logging into your
+                                portal.</p>
+
+                            <div style="text-align: center; margin-top: 32px;">
+                                <a href="http://localhost:4200/portal/lab-reports" class="button">View My Reports</a>
+                            </div>
+                        </div>
+                        <div th:replace="~{email/fragments :: footer}"></div>
+                    </td>
+                </tr>
+            </table>
+        </center>
     </div>
 </body>
 

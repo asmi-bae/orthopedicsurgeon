@@ -10,11 +10,14 @@ import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, UUID> {
+
+       long countByCreatedAtAfter(LocalDateTime dateTime);
 
        @EntityGraph(attributePaths = { "user" })
        Optional<Patient> findByUserId(UUID userId);

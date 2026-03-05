@@ -11,12 +11,14 @@ import java.util.UUID;
 
 @Repository
 public interface HospitalRepository extends JpaRepository<Hospital, UUID> {
-    
+
     Page<Hospital> findAllByStatus(Hospital.HospitalStatus status, Pageable pageable);
-    
+
     Page<Hospital> findAllByCity(String city, Pageable pageable);
-    
+
     boolean existsByLicenseNumber(String licenseNumber);
+
+    long countByStatus(Hospital.HospitalStatus status);
 
     @Query("SELECT COUNT(d) FROM Doctor d WHERE d.hospital.id = :id")
     int countDoctors(UUID id);

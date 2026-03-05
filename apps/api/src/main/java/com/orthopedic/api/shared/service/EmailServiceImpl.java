@@ -28,7 +28,7 @@ public class EmailServiceImpl implements EmailService {
         this.templateEngine = templateEngine;
     }
 
-    @Value("${spring.mail.username}")
+    @Value("${spring.mail.from:${spring.mail.username}}")
     private String fromEmail;
 
     @Override
@@ -60,12 +60,15 @@ public class EmailServiceImpl implements EmailService {
     @Override
     @Async
     public void sendSimpleEmail(String to, String subject, String content) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(content);
-        mailSender.send(message);
-        log.info("Simple Email sent to: {}", to);
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(to);
+            message.setSubject(subject);
+            message.setText(content);
+            mailSender.send(message);
+        } catch (Exception e) {
+            log.error("CRITICAL: Failed to send simple email to {}. Error: {}", to, e.getMessage());
+        }
     }
 }

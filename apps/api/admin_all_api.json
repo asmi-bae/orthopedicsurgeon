@@ -1826,6 +1826,30 @@
       "name": "📊 GROUP AD: ADMIN DASHBOARD",
       "item": [
         {
+          "name": "GET /admin/dashboard (Summary)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/admin/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "admin",
+                "dashboard"
+              ]
+            },
+            "description": "ID: AD-00\nAuth: ADMIN, SUPER_ADMIN\nAggregated stats, live appointments, top hospitals, and quick stats."
+          }
+        },
+        {
           "name": "GET /admin/dashboard/stats",
           "request": {
             "method": "GET",

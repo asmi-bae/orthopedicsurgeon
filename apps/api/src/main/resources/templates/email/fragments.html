@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <div th:fragment="styles">
+        <style type="text/css">
+            @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+            body {
+                font-family: 'Roboto', Arial, sans-serif;
+                background-color: #f8f9fa;
+                margin: 0;
+                padding: 0;
+                -webkit-font-smoothing: antialiased;
+                color: #3c4043;
+            }
+
+            .wrapper {
+                width: 100%;
+                table-layout: fixed;
+                background-color: #f8f9fa;
+                padding-bottom: 40px;
+            }
+
+            .main {
+                background-color: #ffffff;
+                margin: 0 auto;
+                width: 100%;
+                max-width: 600px;
+                border-spacing: 0;
+                font-family: 'Roboto', Arial, sans-serif;
+                color: #3c4043;
+                border: 1px solid #dadce0;
+                border-radius: 8px;
+                overflow: hidden;
+                margin-top: 40px;
+            }
+
+            .header {
+                padding: 32px 40px 16px;
+                text-align: left;
+            }
+
+            .content {
+                padding: 0 40px 40px;
+                line-height: 1.5;
+                font-size: 16px;
+            }
+
+            .footer {
+                padding: 24px 40px;
+                text-align: center;
+                background-color: #f8f9fa;
+                font-size: 12px;
+                color: #70757a;
+            }
+
+            .button {
+                background-color: #1a73e8;
+                border-radius: 4px;
+                color: #ffffff !important;
+                display: inline-block;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: 36px;
+                text-align: center;
+                text-decoration: none;
+                width: auto;
+                padding: 0 24px;
+                -webkit-text-size-adjust: none;
+                box-shadow: 0 1px 3px 0 rgba(60, 64, 67, .3), 0 4px 8px 3px rgba(60, 64, 67, .15);
+            }
+
+            .logo-text {
+                font-weight: 700;
+                font-size: 24px;
+                color: #1e293b;
+                letter-spacing: -0.5px;
+            }
+
+            .logo-accent {
+                color: #4a0000;
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                display: block;
+                margin-top: -4px;
+            }
+
+            h1 {
+                font-size: 22px;
+                font-weight: 500;
+                color: #202124;
+                margin: 0 0 16px;
+            }
+
+            p {
+                margin: 0 0 16px;
+            }
+
+            .divider {
+                border-top: 1px solid #dadce0;
+                margin: 24px 0;
+            }
+        </style>
+    </div>
+</head>
+
+<body>
+    <div th:fragment="header">
+        <div class="header">
+            <span class="logo-text">Orthopedic</span>
+            <span class="logo-accent">Surgeon</span>
+        </div>
+    </div>
+
+    <div th:fragment="footer">
+        <div class="footer">
+            <p>&copy; 2026 Orthopedic Surgeon Platform. All rights reserved.</p>
+            <p>123 Health Ave, Medical City, NY 10016</p>
+            <p style="margin-bottom: 0;">You are receiving this email because you registered on our platform.</p>
+        </div>
+    </div>
+</body>
+
+</html>

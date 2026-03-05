@@ -3,60 +3,89 @@
 
 <head>
     <meta charset="UTF-8">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #e0e0e0;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Reminder</title>
+    <div th:replace="~{email/fragments :: styles}"></div>
+    <style type="text/css">
+        .appointment-card {
+            background-color: #f8f9fa;
             border-radius: 8px;
+            padding: 24px;
+            border: 1px solid #dadce0;
+            margin: 24px 0;
         }
 
-        .header {
-            background-color: #ffc107;
-            color: #212529;
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px 8px 0 0;
+        .detail-row {
+            margin-bottom: 12px;
+            display: flex;
         }
 
-        .content {
-            padding: 30px;
+        .detail-label {
+            font-weight: 500;
+            color: #70757a;
+            width: 100px;
+            min-width: 100px;
         }
 
-        .footer {
-            text-align: center;
-            font-size: 0.8em;
-            color: #888;
+        .detail-value {
+            color: #202124;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            background-color: #fff4e5;
+            color: #b06000;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 16px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <h2>Upcoming Appointment Reminder</h2>
-        </div>
-        <div class="content">
-            <p>Dear <span th:text="${patientName}">Patient</span>,</p>
-            <p>This is a friendly reminder of your upcoming appointment tomorrow.</p>
-            <p><strong>Details:</strong></p>
-            <ul>
-                <li><strong>Time:</strong> <span th:text="${time}">Time</span></li>
-                <li><strong>Doctor:</strong> Dr. <span th:text="${doctorName}">Doctor</span></li>
-                <li><strong>Location:</strong> <span th:text="${hospitalName}">Hospital</span></li>
-            </ul>
-            <p>We look forward to seeing you. If you need to cancel, please let us know immediately.</p>
-        </div>
-        <div class="footer">
-            &copy; 2026 Orthopedic Surgeon Platform. All rights reserved.
-        </div>
+    <div class="wrapper">
+        <center>
+            <table class="main">
+                <tr>
+                    <td>
+                        <div th:replace="~{email/fragments :: header}"></div>
+                        <div class="content">
+                            <div class="status-badge">Reminder</div>
+                            <h1>Upcoming Appointment</h1>
+                            <p>Dear <span th:text="${patientName}" style="font-weight: 500;">Patient</span>,</p>
+                            <p>This is a friendly reminder of your upcoming appointment tomorrow. We value your time and
+                                look forward to seeing you.</p>
+
+                            <div class="appointment-card">
+                                <div class="detail-row">
+                                    <div class="detail-label">Time</div>
+                                    <div class="detail-value" th:text="${time}">Time</div>
+                                </div>
+                                <div class="detail-row">
+                                    <div class="detail-label">Doctor</div>
+                                    <div class="detail-value">Dr. <span th:text="${doctorName}">Doctor</span></div>
+                                </div>
+                                <div class="detail-row" style="margin-bottom: 0;">
+                                    <div class="detail-label">Location</div>
+                                    <div class="detail-value" th:text="${hospitalName}">Hospital Name</div>
+                                </div>
+                            </div>
+
+                            <p>Please remember to arrive 15 minutes early. If you are unable to make it, please
+                                reschedule as soon as possible through the portal.</p>
+
+                            <div style="text-align: center; margin-top: 32px;">
+                                <a href="http://localhost:4200/dashboard" class="button">View Appointment</a>
+                            </div>
+                        </div>
+                        <div th:replace="~{email/fragments :: footer}"></div>
+                    </td>
+                </tr>
+            </table>
+        </center>
     </div>
 </body>
 
