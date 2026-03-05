@@ -1,6 +1,7 @@
 package com.orthopedic.api.modules.lab.service;
 
 import com.orthopedic.api.auth.entity.User;
+import com.orthopedic.api.auth.entity.Role;
 import com.orthopedic.api.modules.lab.dto.request.CreateLabReportRequest;
 import com.orthopedic.api.modules.lab.dto.request.UpdateLabReportResultRequest;
 import com.orthopedic.api.modules.lab.dto.response.LabReportResponse;
@@ -64,6 +65,7 @@ class LabReportServiceTest {
         CreateLabReportRequest request = new CreateLabReportRequest();
         request.setPatientId(patient.getId());
 
+        when(patientRepository.findById(any())).thenReturn(Optional.of(patient));
         when(labReportMapper.toEntity(any())).thenReturn(report);
         when(labReportRepository.save(any())).thenReturn(report);
         when(labReportMapper.toResponse(any())).thenReturn(new LabReportResponse());
@@ -89,7 +91,9 @@ class LabReportServiceTest {
         User otherUser = new User();
         otherUser.setId(UUID.fromString("123e4567-e89b-12d3-a456-426614174001"));
         otherUser.setEmail("other@test.com");
-        otherUser.setRoles(Collections.emptySet());
+        Role role = new Role();
+        role.setName("PATIENT");
+        otherUser.setRoles(Collections.singleton(role));
 
         when(labReportRepository.findById(report.getId())).thenReturn(Optional.of(report));
 
@@ -100,6 +104,7 @@ class LabReportServiceTest {
     void updateReportResult_Success() {
         UpdateLabReportResultRequest request = new UpdateLabReportResultRequest();
         request.setResultSummary("Normal");
+        request.setStatus(LabReport.LabReportStatus.COMPLETED);
 
         when(labReportRepository.findById(report.getId())).thenReturn(Optional.of(report));
         when(labReportRepository.save(any())).thenReturn(report);

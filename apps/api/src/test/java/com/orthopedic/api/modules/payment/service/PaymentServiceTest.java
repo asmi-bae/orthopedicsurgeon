@@ -1,6 +1,7 @@
 package com.orthopedic.api.modules.payment.service;
 
 import com.orthopedic.api.auth.entity.User;
+import com.orthopedic.api.auth.entity.Role;
 import com.orthopedic.api.modules.payment.dto.request.CreatePaymentRequest;
 import com.orthopedic.api.modules.payment.dto.response.PaymentResponse;
 import com.orthopedic.api.modules.payment.entity.Payment;
@@ -53,7 +54,9 @@ class PaymentServiceTest {
         currentUser = new User();
         currentUser.setId(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"));
         currentUser.setEmail("patient@test.com");
-        currentUser.setRoles(Collections.emptySet());
+        Role role = new Role();
+        role.setName("PATIENT");
+        currentUser.setRoles(Collections.singleton(role));
 
         patient = new Patient();
         patient.setId(UUID.randomUUID());
@@ -101,7 +104,9 @@ class PaymentServiceTest {
         User otherUser = new User();
         otherUser.setId(UUID.fromString("123e4567-e89b-12d3-a456-426614174001"));
         otherUser.setEmail("other@test.com");
-        otherUser.setRoles(Collections.emptySet());
+        Role otherRole = new Role();
+        otherRole.setName("PATIENT");
+        otherUser.setRoles(Collections.singleton(otherRole));
 
         when(paymentRepository.findById(payment.getId())).thenReturn(Optional.of(payment));
 

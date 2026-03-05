@@ -57,6 +57,8 @@ class AppointmentIntegrationTest extends BaseIntegrationTest {
         Hospital hospital = new Hospital();
         hospital.setName("Test Hospital");
         hospital.setAddress("Test Address");
+        hospital.setCity("Test City");
+        hospital.setPhone("1234567890");
         hospital.setLicenseNumber("LIC-" + UUID.randomUUID());
         hospital = hospitalRepository.save(hospital);
 
@@ -84,12 +86,15 @@ class AppointmentIntegrationTest extends BaseIntegrationTest {
         testDoctor.setUser(doctorUser);
         testDoctor.setHospital(hospital);
         testDoctor.setSpecialization("Orthopedics");
+        testDoctor.setExperienceYears(10);
+        testDoctor.setConsultationFee(new java.math.BigDecimal("100.00"));
         testDoctor.setLicenseNumber("DOC-" + UUID.randomUUID());
         testDoctor = doctorRepository.save(testDoctor);
 
         testService = new ServiceEntity();
         testService.setHospital(hospital);
         testService.setName("Consultation");
+        testService.setCategory(ServiceEntity.ServiceCategory.CONSULTATION);
         testService.setPrice(new java.math.BigDecimal("50.00"));
         testService.setDurationMinutes(30);
         testService = serviceRepository.save(testService);

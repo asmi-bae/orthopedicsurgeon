@@ -3,6 +3,8 @@ package com.orthopedic.api.modules.hospital.controller;
 import com.orthopedic.api.BaseIntegrationTest;
 import com.orthopedic.api.modules.hospital.dto.request.CreateHospitalRequest;
 import com.orthopedic.api.modules.hospital.repository.HospitalRepository;
+import com.orthopedic.api.modules.doctor.repository.DoctorRepository;
+import com.orthopedic.api.modules.appointment.repository.AppointmentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +28,10 @@ class HospitalControllerIT extends BaseIntegrationTest {
 
     @Autowired
     private HospitalRepository hospitalRepository;
-
+    @Autowired
+    private DoctorRepository doctorRepository;
+    @Autowired
+    private AppointmentRepository appointmentRepository;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -38,20 +43,24 @@ class HospitalControllerIT extends BaseIntegrationTest {
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
+        appointmentRepository.deleteAll();
+        doctorRepository.deleteAll();
         hospitalRepository.deleteAll();
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = "SUPER_ADMIN")
     void createHospital_Success() throws Exception {
         CreateHospitalRequest request = new CreateHospitalRequest();
         request.setName("General Hospital");
         request.setAddress("123 Main St");
+        request.setCity("Test City");
         request.setPhone("1234567890");
+        request.setLicenseNumber("LIC-" + System.currentTimeMillis());
 
         mockMvc.perform(post("/api/v1/hospitals")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.data.name").value("General Hospital"));
     }
@@ -59,6 +68,6 @@ class HospitalControllerIT extends BaseIntegrationTest {
     @Test
     void getHospitals_Unauthorized() throws Exception {
         mockMvc.perform(get("/api/v1/hospitals"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isUnauthorized());
     }
 }

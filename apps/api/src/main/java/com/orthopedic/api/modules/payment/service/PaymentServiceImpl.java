@@ -124,6 +124,10 @@ public class PaymentServiceImpl implements PaymentService {
             throw new BusinessException("Payment is already completed");
         }
 
+        payment.setStatus(Payment.PaymentStatus.COMPLETED);
+        payment.setTransactionId(transactionId);
+        payment.setUpdatedAt(LocalDateTime.now());
+
         Payment saved = paymentRepository.save(payment);
         paymentSuccessCounter.increment();
         return paymentMapper.toResponse(saved);

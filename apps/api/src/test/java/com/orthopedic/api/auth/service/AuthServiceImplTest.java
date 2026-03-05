@@ -7,6 +7,9 @@ import com.orthopedic.api.auth.repository.*;
 import com.orthopedic.api.auth.security.JwtTokenProvider;
 import com.orthopedic.api.config.JwtConfig;
 import com.orthopedic.api.security.service.AuditService;
+import com.orthopedic.api.auth.service.AuthServiceImpl;
+import com.orthopedic.api.auth.service.TokenService;
+import com.orthopedic.api.shared.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +47,18 @@ class AuthServiceImplTest {
     private RedisTemplate<String, Object> redisTemplate;
     @Mock
     private ValueOperations<String, Object> valueOperations;
+    @Mock
+    private TokenService tokenService;
+    @Mock
+    private SessionRepository sessionRepository;
+    @Mock
+    private VerificationTokenRepository verificationTokenRepository;
+    @Mock
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+    @Mock
+    private EmailService emailService;
+    @Mock
+    private TwoFactorService twoFactorService;
 
     @InjectMocks
     private AuthServiceImpl authService;
@@ -74,9 +89,8 @@ class AuthServiceImplTest {
 
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
-        when(tokenProvider.generateAccessToken(any())).thenReturn("accessToken");
+        when(tokenProvider.generateAccessToken(any(), anyString())).thenReturn("accessToken");
         when(jwtConfig.getAccessTokenExpiry()).thenReturn(900L);
-        when(jwtConfig.getRefreshTokenExpiry()).thenReturn(604800L);
 
         LoginResponse response = authService.login(request, "127.0.0.1", "device");
 
@@ -102,15 +116,17 @@ class AuthServiceImplTest {
     @Test
     void refreshToken_Success() {
         String token = "validToken";
-        when(valueOperations.get("refresh_token:" + token)).thenReturn("test@example.com");
+        when(tokenService.getEmailFromToken(token)).thenReturn("test@example.com");
         when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
-        when(tokenProvider.generateAccessToken(any())).thenReturn("newAccessToken");
+        when(tokenProvider.generateAccessToken(any(), anyString())).thenReturn("newAccessToken");
         when(jwtConfig.getAccessTokenExpiry()).thenReturn(900L);
+        when(tokenService.generateAndSaveRefreshToken(any(), anyString())).thenReturn("newRefreshToken");
 
         TokenResponse response = authService.refreshToken(token);
 
         assertNotNull(response);
         assertEquals("newAccessToken", response.getAccessToken());
-        verify(redisTemplate).delete("refresh_token:" + token);
+        assertEquals("newRefreshToken", response.getRefreshToken());
+        verify(tokenService).deleteRefreshToken(token);
     }
 }

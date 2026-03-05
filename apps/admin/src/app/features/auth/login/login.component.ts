@@ -66,7 +66,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
       <!-- Right Side: Form Content -->
       <div class="flex-1 flex items-center justify-center p-8 sm:p-16 bg-white overflow-y-auto">
         <div class="w-full max-w-md">
-          <mat-card class="w-full border-none shadow-none">
+          <mat-card class="w-full border border-slate-200 shadow-xl shadow-slate-200/50 rounded-2xl">
             <mat-card-header class="flex flex-col items-center pt-8 pb-4">
               <div class="mb-4 text-primary-600">
                 <mat-icon class="scale-[2]">admin_panel_settings</mat-icon>

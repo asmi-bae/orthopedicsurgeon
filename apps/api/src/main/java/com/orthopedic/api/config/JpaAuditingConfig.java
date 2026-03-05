@@ -10,24 +10,24 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Configuration
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 public class JpaAuditingConfig {
 
     @Bean
-    public AuditorAware<String> auditorProvider() {
+    public AuditorAware<UUID> auditorProvider() {
         return () -> Optional.ofNullable(SecurityContextHolder.getContext())
                 .map(SecurityContext::getAuthentication)
                 .filter(Authentication::isAuthenticated)
                 .map(Authentication::getPrincipal)
                 .map(principal -> {
                     if (principal instanceof User user) {
-                        return user.getEmail();
-                    } else if (principal instanceof String s) {
-                        return s;
+                        return user.getId();
                     }
-                    return "SYSTEM";
+                    // Default UUID for SYSTEM or test mock users
+                    return UUID.fromString("00000000-0000-0000-0000-000000000000");
                 });
     }
 }
