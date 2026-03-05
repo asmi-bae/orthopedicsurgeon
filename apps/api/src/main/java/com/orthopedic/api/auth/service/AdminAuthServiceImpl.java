@@ -12,19 +12,23 @@ import com.orthopedic.api.auth.repository.UserRepository;
 import com.orthopedic.api.auth.security.CustomUserDetails;
 import com.orthopedic.api.auth.security.JwtTokenProvider;
 import com.orthopedic.api.config.JwtConfig;
+import com.orthopedic.api.shared.service.EmailService;
 import com.orthopedic.api.security.service.AuditService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.UUID;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AdminAuthServiceImpl implements AdminAuthService {
 
     private final UserRepository userRepository;
@@ -36,6 +40,8 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     private final JwtConfig jwtConfig;
     private final TotpService totpService;
     private final TotpSecretRepository totpSecretRepository;
+    private final EmailService emailService;
+    private final Random random = new Random();
 
     @Override
     @Transactional
@@ -48,7 +54,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
         // 1. Check if user is an ADMIN or SUPER_ADMIN
         Set<String> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
-        if (!roles.contains("ADMIN") && !roles.contains("SUPER_ADMIN'")) {
+        if (!roles.contains("ADMIN") && !roles.contains("SUPER_ADMIN")) {
             auditService.logFailedLogin(request.getEmail(), ipAddress, userAgent, "Not an admin account");
             throw new AuthException("Access denied: Not an admin account");
         }
@@ -73,12 +79,22 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         userRepository.save(user);
 
         // 3. For Admins, MFA is mandatory.
-        // Even if they haven't set it up, they shouldn't bypass it. (We assume they
-        // MUST set it up during onboarding)
-        // We will generate a temporary session token for the MFA step.
         String mfaSessionToken = UUID.randomUUID().toString();
         // save to cache for 5 minutes
         sessionCacheService.cacheSession("mfa:" + mfaSessionToken, user.getId().toString(), 300);
+
+        // 4. Generate and Send Email OTP
+        String otp = String.format("%06d", random.nextInt(1000000));
+        sessionCacheService.cacheSession("mfa_otp:" + mfaSessionToken, otp, 300);
+
+        try {
+            emailService.sendSimpleEmail(user.getEmail(),
+                    "Admin Login Verification Code",
+                    "Your administrative login verification code is: " + otp + "\nThis code will expire in 5 minutes.");
+            log.info("MFA OTP sent to email: {}", user.getEmail());
+        } catch (Exception e) {
+            log.error("Failed to send MFA email to {}", user.getEmail(), e);
+        }
 
         return AdminLoginResponse.builder()
                 .requiresMfa(true)
@@ -98,15 +114,21 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         User user = userRepository.findById(UUID.fromString(userIdStr))
                 .orElseThrow(() -> new AuthException("User not found"));
 
-        // Validate TOTP or Backup Code
+        // Validate OTP (Email), TOTP, or Backup Code
         boolean isValid = false;
 
-        // 1. Check if it's a backup code (usually longer or different format, but we
-        // check both)
-        if (request.getCode().length() > 6) {
+        // 1. Check Email OTP (Default flow requested by user)
+        String cachedOtp = (String) sessionCacheService.getCachedSession("mfa_otp:" + request.getSessionToken());
+        if (cachedOtp != null && cachedOtp.equals(request.getCode())) {
+            isValid = true;
+            sessionCacheService.invalidateSession("mfa_otp:" + request.getSessionToken());
+        }
+
+        // 2. Check if it's a backup code
+        if (!isValid && request.getCode().length() > 6) {
             isValid = totpService.verifyBackupCode(user, request.getCode());
-        } else {
-            // 2. Check TOTP
+        } else if (!isValid) {
+            // 3. Check TOTP (Authenticator App)
             isValid = totpSecretRepository.findByUser(user)
                     .map(totp -> totpService.verifyCode(totp.getSecret(), request.getCode()))
                     .orElse(false);

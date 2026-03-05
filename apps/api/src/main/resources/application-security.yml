@@ -5,7 +5,7 @@ security:
         access-token-expiry: 900 # 15 minutes
         refresh-token-expiry-admin: 28800 # 8 hours
         refresh-token-expiry-patient: 604800 # 7 days
-        issuer: orthosync-api
+        issuer: orthopedicsurgeon-api
         audiences:
             web: web
             admin: admin

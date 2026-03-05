@@ -82,7 +82,8 @@ public class SecurityConfig {
                                                 .requestMatchers(PUBLIC_URLS).permitAll()
                                                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
                                                 .requestMatchers("/actuator/**").hasAuthority("SUPER_ADMIN")
-                                                .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
+                                                .requestMatchers("/api/v1/admin/**")
+                                                .hasAnyAuthority("ADMIN", "SUPER_ADMIN")
                                                 .requestMatchers("/api/v1/patient/**").hasAuthority("PATIENT")
                                                 .anyRequest().authenticated())
                                 .oauth2Login(oauth2 -> oauth2
