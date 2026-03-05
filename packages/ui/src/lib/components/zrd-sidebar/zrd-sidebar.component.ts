@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter, booleanAttribute } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 
 export interface ZrdNavItem {
   label: string;
@@ -14,7 +14,7 @@ export interface ZrdNavItem {
 @Component({
   selector: 'zrd-sidebar',
   standalone: true,
-  imports: [RouterModule, MatIcon],
+  imports: [RouterModule, MatIconModule],
   template: `
     <aside 
       [class.w-72]="!collapsed" 
@@ -22,18 +22,25 @@ export interface ZrdNavItem {
       class="h-screen bg-google-gray-50 dark:bg-sidebar-dark transition-all duration-300 flex flex-col fixed left-0 top-0 z-40"
     >
       <!-- Logo Area -->
-      <div class="h-16 flex items-center px-3 mb-4 gap-3">
-        @if (!collapsed) {
-          <div class="flex items-center gap-2 overflow-hidden">
-            <!-- Menu toggle button — same position as logo, always visible in sidebar -->
-            <button
-              (click)="onToggle.emit()"
-              class="p-2 h-10 w-10 flex items-center justify-center rounded-full hover:bg-google-gray-100 dark:hover:bg-white/5 transition-colors flex-shrink-0"
-            >
-              <mat-icon class="text-google-gray-600 dark:text-google-gray-400">menu</mat-icon>
-            </button>
+      <div class="h-16 flex items-center px-4 gap-1"
+           [class.justify-center]="collapsed">
 
-            <span class="font-medium text-lg text-google-gray-900 dark:text-white truncate">Orthopedic Admin</span>
+        <!-- PNG Logo Icon (always visible) -->
+        <img
+          src="logo-orthopedic.png"
+          alt="Orthopedic Logo"
+          class="flex-shrink-0 object-contain"
+          [class.w-12]="!collapsed"
+          [class.h-12]="!collapsed"
+          [class.w-11]="collapsed"
+          [class.h-11]="collapsed"
+        />
+
+        <!-- Text: only when expanded -->
+        @if (!collapsed) {
+          <div class="flex flex-col overflow-hidden">
+            <span class="font-black tracking-tighter leading-none uppercase text-base text-google-gray-900 dark:text-white truncate">Orthopedic</span>
+            <span class="font-bold uppercase tracking-widest leading-none mt-0.5 text-xs text-google-red dark:text-google-red truncate">Surgeon</span>
           </div>
         }
       </div>
@@ -46,8 +53,11 @@ export interface ZrdNavItem {
               [routerLink]="item.route"
               routerLinkActive="bg-google-blue/10 text-google-blue active-nav"
               #rla="routerLinkActive"
-              class="flex items-center gap-4 py-2 rounded-full hover:bg-google-gray-100 dark:hover:bg-white/5 transition-all duration-200 group relative"
-              [class.px-3.5]="collapsed"
+              class="flex items-center py-2 rounded-full hover:bg-google-gray-100 dark:hover:bg-white/5 transition-all duration-200 group relative"
+              [class.justify-center]="collapsed"
+              [class.px-0]="collapsed"
+              [class.gap-0]="collapsed"
+              [class.gap-4]="!collapsed"
               [class.px-5]="!collapsed"
               [title]="collapsed ? item.label : ''"
             >

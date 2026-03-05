@@ -6,8 +6,6 @@ import {
   ZrdInputComponent,
   ZrdBadgeComponent 
 } from '@repo/ui';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-report-management',
@@ -18,8 +16,6 @@ import { MatMenuModule } from '@angular/material/menu';
     ZrdButtonComponent, 
     ZrdInputComponent,
     ZrdBadgeComponent,
-    MatIconModule,
-    MatMenuModule
   ],
   template: `
     <div class="space-y-8 animate-in fade-in duration-500">
@@ -31,7 +27,7 @@ import { MatMenuModule } from '@angular/material/menu';
           <p class="text-google-gray-500 dark:text-google-gray-400 mt-1">Access radiological studies, pathology results, and clinical evaluations.</p>
         </div>
         <zrd-button variant="primary" size="md">
-          <mat-icon leftIcon class="text-[20px]">upload_file</mat-icon>
+          <span leftIcon class="material-symbols-outlined text-[20px] leading-none">upload_file</span>
           Ingest New Report
         </zrd-button>
       </div>
@@ -45,12 +41,12 @@ import { MatMenuModule } from '@angular/material/menu';
               placeholder="Search reports by patient or type..." 
               [hasPrefix]="true"
             >
-              <mat-icon prefix class="text-google-gray-400">search</mat-icon>
+              <span prefix class="material-symbols-outlined text-google-gray-400 text-[20px] leading-none">search</span>
             </zrd-input>
           </div>
           <div class="flex items-center gap-2 ml-auto">
              <zrd-button variant="outline" size="sm">
-               <mat-icon leftIcon>biotech</mat-icon>
+               <span leftIcon class="material-symbols-outlined text-[18px] leading-none">biotech</span>
                Lab Integration
              </zrd-button>
           </div>
@@ -63,7 +59,7 @@ import { MatMenuModule } from '@angular/material/menu';
               <!-- Diagnostic Identifier -->
               <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-all group-hover:bg-opacity-80"
                    [class]="r.type === 'X-Ray' ? 'bg-google-blue/10 text-google-blue' : r.type === 'MRI' ? 'bg-google-emerald/10 text-google-emerald' : 'bg-google-red/10 text-google-red'">
-                <mat-icon class="text-[24px]">radiology</mat-icon>
+                <span class="material-symbols-outlined text-[24px] leading-none">radiology</span>
               </div>
 
               <!-- Identity & Context -->
@@ -88,29 +84,33 @@ import { MatMenuModule } from '@angular/material/menu';
               </div>
 
               <!-- Record Control -->
-              <div class="shrink-0">
-                <button [matMenuTriggerFor]="menu" class="p-2 h-9 w-9 flex items-center justify-center rounded-full hover:bg-google-gray-200 dark:hover:bg-white/10 text-google-gray-400 transition-all">
-                  <mat-icon>more_horiz</mat-icon>
+              <div class="shrink-0 relative" (click)="$event.stopPropagation()">
+                <button 
+                  (click)="toggleMenu(r.id)"
+                  class="p-2 h-9 w-9 flex items-center justify-center rounded-full hover:bg-google-gray-200 dark:hover:bg-white/10 text-google-gray-400 transition-all">
+                  <span class="material-symbols-outlined text-[20px] leading-none">more_horiz</span>
                 </button>
-                <mat-menu #menu="matMenu" class="rounded-2xl border-none shadow-google">
-                  <button mat-menu-item>
-                    <mat-icon class="text-google-blue">visibility</mat-icon>
-                    <span class="font-bold text-sm">View Digital Study</span>
-                  </button>
-                  <button mat-menu-item>
-                    <mat-icon class="text-google-emerald">file_download</mat-icon>
-                    <span class="font-bold text-sm">Download Archive</span>
-                  </button>
-                  <button mat-menu-item>
-                    <mat-icon class="text-google-blue">share</mat-icon>
-                    <span class="font-bold text-sm">Secure Share</span>
-                  </button>
-                  <div class="h-px bg-google-gray-100 dark:bg-white/5 my-1 mx-2"></div>
-                  <button mat-menu-item class="text-google-red">
-                    <mat-icon class="text-google-red">delete_forever</mat-icon>
-                    <span class="font-bold text-sm">Purge Record</span>
-                  </button>
-                </mat-menu>
+                @if (openMenuId() === r.id) {
+                  <div class="absolute right-0 top-full mt-1 z-50 min-w-[180px] bg-white dark:bg-google-gray-900 rounded-2xl shadow-google border border-google-gray-100 dark:border-white/10 py-2 overflow-hidden">
+                    <button (click)="closeMenu()" class="w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                      <span class="material-symbols-outlined text-google-blue text-[20px] leading-none">visibility</span>
+                      <span class="font-bold">View Digital Study</span>
+                    </button>
+                    <button (click)="closeMenu()" class="w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                      <span class="material-symbols-outlined text-google-emerald text-[20px] leading-none">file_download</span>
+                      <span class="font-bold">Download Archive</span>
+                    </button>
+                    <button (click)="closeMenu()" class="w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors text-left">
+                      <span class="material-symbols-outlined text-google-blue text-[20px] leading-none">share</span>
+                      <span class="font-bold">Secure Share</span>
+                    </button>
+                    <div class="h-px bg-google-gray-100 dark:bg-white/5 my-1 mx-2"></div>
+                    <button (click)="closeMenu()" class="w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors text-left text-google-red">
+                      <span class="material-symbols-outlined text-google-red text-[20px] leading-none">delete_forever</span>
+                      <span class="font-bold">Purge Record</span>
+                    </button>
+                  </div>
+                }
               </div>
             </div>
           }
@@ -119,7 +119,7 @@ import { MatMenuModule } from '@angular/material/menu';
         @if (reports().length === 0) {
           <div class="py-24 text-center">
             <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-               <mat-icon class="text-google-gray-400 text-3xl">fact_check</mat-icon>
+               <span class="material-symbols-outlined text-google-gray-400 text-3xl leading-none">fact_check</span>
             </div>
             <h3 class="font-bold text-google-gray-900 dark:text-white">Registry Cleared</h3>
             <p class="text-sm text-google-gray-500 mt-2">No diagnostic artifacts were retrieved for this query.</p>
@@ -146,4 +146,14 @@ export class ReportManagementComponent {
     { id: 3, patient: 'Robert Wilson', type: 'CT',    doctor: 'David King',    date: 'Oct 18, 2024' },
     { id: 4, patient: 'Sarah Parker',  type: 'X-Ray', doctor: 'Lisa Chen',     date: 'Oct 22, 2024' },
   ]);
+
+  openMenuId = signal<number | null>(null);
+
+  toggleMenu(id: number) {
+    this.openMenuId.update(current => current === id ? null : id);
+  }
+
+  closeMenu() {
+    this.openMenuId.set(null);
+  }
 }
