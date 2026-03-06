@@ -15,4 +15,7 @@ public interface PaymentService {
     PageResponse<PaymentResponse> getPatientPayments(UUID patientId, Pageable pageable, User currentUser);
     
     PaymentResponse processPayment(UUID id, String transactionId);
+    
+    PageResponse<PaymentResponse> getAllPayments(Pageable pageable);
+    com.orthopedic.api.modules.payment.dto.response.FinancialSummaryResponse getFinancialSummary();
 }

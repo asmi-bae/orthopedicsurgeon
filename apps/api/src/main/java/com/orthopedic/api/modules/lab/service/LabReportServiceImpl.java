@@ -111,6 +111,12 @@ public class LabReportServiceImpl implements LabReportService {
         Page<LabReport> page = labReportRepository.findAllByDoctorId(doctorId, pageable);
         return PageResponse.fromPage(page.map(labReportMapper::toResponse));
     }
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<LabReportResponse> getAllReports(Pageable pageable) {
+        Page<LabReport> page = labReportRepository.findAll(pageable);
+        return PageResponse.fromPage(page.map(labReportMapper::toResponse));
+    }
 
     private void validatePatientAccess(UUID patientId, User currentUser) {
         if (hasAnyRole(currentUser, "ADMIN", "STAFF", "SUPER_ADMIN")) {

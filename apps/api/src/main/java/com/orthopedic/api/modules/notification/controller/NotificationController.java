@@ -76,7 +76,7 @@ public class NotificationController extends BaseController {
 
     @PostMapping("/send")
     @Operation(summary = "Admin sends a notification")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> sendNotification(
             @RequestBody SendNotificationRequest request) {
         if (request.getRecipientId() != null) {

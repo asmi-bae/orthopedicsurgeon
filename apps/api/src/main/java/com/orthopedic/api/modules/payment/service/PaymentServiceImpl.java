@@ -133,6 +133,42 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentMapper.toResponse(saved);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<PaymentResponse> getAllPayments(Pageable pageable) {
+        Page<Payment> page = paymentRepository.findAll(pageable);
+        return PageResponse.fromPage(page.map(paymentMapper::toResponse));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public com.orthopedic.api.modules.payment.dto.response.FinancialSummaryResponse getFinancialSummary() {
+        List<Payment> allPayments = paymentRepository.findAll();
+        
+        BigDecimal totalRevenue = allPayments.stream()
+                .filter(p -> p.getStatus() == Payment.PaymentStatus.COMPLETED)
+                .map(Payment::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
+        BigDecimal monthlyRevenue = allPayments.stream()
+                .filter(p -> p.getStatus() == Payment.PaymentStatus.COMPLETED && p.getCreatedAt().isAfter(oneMonthAgo))
+                .map(Payment::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        long totalCount = allPayments.size();
+        long pendingCount = allPayments.stream()
+                .filter(p -> p.getStatus() == Payment.PaymentStatus.PENDING)
+                .count();
+
+        return com.orthopedic.api.modules.payment.dto.response.FinancialSummaryResponse.builder()
+                .totalRevenue(totalRevenue)
+                .monthlyRevenue(monthlyRevenue)
+                .totalPayments(totalCount)
+                .pendingPayments(pendingCount)
+                .build();
+    }
+
     private void validateOwnership(Payment payment, User currentUser) {
         if (hasAnyRole(currentUser, "ADMIN", "STAFF", "SUPER_ADMIN")) {
             return;

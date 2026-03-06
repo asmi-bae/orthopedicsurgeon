@@ -43,6 +43,20 @@ public class AdminLabReportController extends BaseController {
                         labReportService.createReportRequest(request)));
     }
 
+    @GetMapping
+    @Operation(summary = "List all lab reports (Admin)")
+    public ResponseEntity<ApiResponse<PageResponse<LabReportResponse>>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "DESC") String direction) {
+
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction,
+                Collections.singletonList("createdAt"));
+
+        return ok(labReportService.getAllReports(pageable));
+    }
+
     @GetMapping("/patient/{patientId}")
     @Operation(summary = "Get list of lab reports for any patient")
     public ResponseEntity<ApiResponse<PageResponse<LabReportResponse>>> getByPatient(

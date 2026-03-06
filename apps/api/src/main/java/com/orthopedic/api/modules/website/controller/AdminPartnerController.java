@@ -17,7 +17,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/admin/website/partner")
 @RequiredArgsConstructor
 @Tag(name = "Admin Website Partner", description = "Admin endpoints for managing partners")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
 public class AdminPartnerController {
 
     private final PartnerRepository partnerRepository;

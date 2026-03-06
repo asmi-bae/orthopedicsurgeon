@@ -13,4 +13,5 @@ public interface PrescriptionService {
     PrescriptionResponse getPrescriptionById(UUID id, User currentUser);
     PrescriptionResponse getPrescriptionByAppointment(UUID appointmentId, User currentUser);
     PageResponse<PrescriptionResponse> getPatientPrescriptions(UUID patientId, Pageable pageable, User currentUser);
+    PageResponse<PrescriptionResponse> getAllPrescriptions(Pageable pageable);
 }

@@ -107,6 +107,12 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         Page<Prescription> page = prescriptionRepository.findAllByPatientId(patientId, pageable);
         return PageResponse.fromPage(page.map(prescriptionMapper::toResponse));
     }
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<PrescriptionResponse> getAllPrescriptions(Pageable pageable) {
+        Page<Prescription> page = prescriptionRepository.findAll(pageable);
+        return PageResponse.fromPage(page.map(prescriptionMapper::toResponse));
+    }
 
     private void validatePatientAccess(UUID patientId, User currentUser) {
         if (hasAnyRole(currentUser, "ADMIN", "STAFF", "SUPER_ADMIN")) {

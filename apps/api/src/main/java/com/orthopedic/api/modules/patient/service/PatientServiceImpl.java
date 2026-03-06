@@ -46,7 +46,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'DOCTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'DOCTOR', 'SUPER_ADMIN')")
     public PageResponse<PatientSummaryResponse> getAllPatients(PatientFilterRequest filters, Pageable pageable) {
         Page<Patient> patients = patientRepository.findPatients(
                 filters.getBloodGroup(),
@@ -60,7 +60,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'DOCTOR') or @permissionEvaluator.isPatientOwner(authentication, #id)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'DOCTOR', 'SUPER_ADMIN') or @permissionEvaluator.isPatientOwner(authentication, #id)")
     public PatientResponse getPatientById(UUID id) {
         Patient patient = patientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
@@ -89,7 +89,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
     @LogMutation(action = "CREATE_PATIENT", entityName = "PATIENT")
     public PatientResponse createPatient(CreatePatientRequest request) {
         User user = userRepository.findById(request.getUserId())
@@ -139,7 +139,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
     @LogMutation(action = "ADMIN_UPDATE_PATIENT", entityName = "PATIENT")
     public PatientResponse updatePatient(UUID id, AdminUpdatePatientRequest request) {
         Patient patient = patientRepository.findById(id)
@@ -164,7 +164,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
     @LogMutation(action = "DELETE_PATIENT", entityName = "PATIENT")
     public void deletePatient(UUID id) {
         Patient patient = patientRepository.findById(id)
@@ -175,7 +175,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR') or @permissionEvaluator.isPatientOwner(authentication, #id)")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR', 'SUPER_ADMIN') or @permissionEvaluator.isPatientOwner(authentication, #id)")
     public PatientMedicalHistoryResponse getMedicalHistory(UUID id) {
         PatientResponse patient = getPatientById(id);
 

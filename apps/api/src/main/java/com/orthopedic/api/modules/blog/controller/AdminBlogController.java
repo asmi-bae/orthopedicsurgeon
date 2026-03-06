@@ -23,7 +23,7 @@ public class AdminBlogController {
     private final BlogServiceImpl blogService;
 
     @GetMapping("/posts")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     @Operation(summary = "Get all blog posts for admin")
     public ResponseEntity<List<BlogPostResponse>> getAllPosts(
             @RequestParam(defaultValue = "0") int page,
@@ -32,7 +32,7 @@ public class AdminBlogController {
     }
 
     @PostMapping("/posts")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     @Operation(summary = "Create a new blog post")
     public ResponseEntity<BlogPostResponse> createPost(@Valid @RequestBody CreateBlogPostRequest request) {
         // Placeholder authorId
@@ -41,7 +41,7 @@ public class AdminBlogController {
     }
 
     @DeleteMapping("/posts/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     @Operation(summary = "Delete a blog post")
     public ResponseEntity<Void> deletePost(@PathVariable UUID id) {
         blogService.deletePost(id);
