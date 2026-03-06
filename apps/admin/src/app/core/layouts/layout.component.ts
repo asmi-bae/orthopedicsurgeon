@@ -8,6 +8,7 @@ import {
   ZrdNavItem 
 } from '@repo/ui';
 import { AdminUserMenuComponent } from '@core/components/admin-header/user-menu.component';
+import { NotificationMenuComponent } from '@core/components/admin-header/notification-menu.component';
 import { ThemeService } from '@core/services/theme.service';
 
 @Component({
@@ -19,7 +20,8 @@ import { ThemeService } from '@core/services/theme.service';
     MatIconModule,
     MatTooltipModule,
     ZrdSidebarComponent,
-    AdminUserMenuComponent
+    AdminUserMenuComponent,
+    NotificationMenuComponent
   ],
   template: `
     <div class="flex h-screen overflow-hidden bg-google-gray-50 dark:bg-google-gray-900">
@@ -66,10 +68,7 @@ import { ThemeService } from '@core/services/theme.service';
               <mat-icon>{{ themeService.isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
             </button>
 
-            <button class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-google-gray-100 dark:hover:bg-white/5 text-google-gray-600 dark:text-google-gray-400 transition-all relative">
-              <mat-icon>notifications_none</mat-icon>
-              <span class="absolute top-2 right-2 w-2 h-2 bg-google-red rounded-full border-2 border-white dark:border-google-gray-900"></span>
-            </button>
+            <app-admin-notification-menu></app-admin-notification-menu>
 
             <div class="w-px h-6 bg-google-gray-200 dark:bg-white/10 mx-2"></div>
 
