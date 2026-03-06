@@ -28,13 +28,16 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final NotificationMapper notificationMapper;
+    private final SseEmitterManager sseEmitterManager;
 
     public NotificationServiceImpl(NotificationRepository notificationRepository,
             UserRepository userRepository,
-            NotificationMapper notificationMapper) {
+            NotificationMapper notificationMapper,
+            SseEmitterManager sseEmitterManager) {
         this.notificationRepository = notificationRepository;
         this.userRepository = userRepository;
         this.notificationMapper = notificationMapper;
+        this.sseEmitterManager = sseEmitterManager;
     }
 
     @Override
@@ -45,12 +48,41 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = notificationMapper.toEntity(request);
         notification.setRecipient(recipient);
         notification.setStatus(Notification.NotificationStatus.UNREAD);
+        notification.setRead(false);
+        notification.setGlobal(false);
 
-        notificationRepository.save(notification);
+        Notification saved = notificationRepository.save(notification);
+        NotificationResponse response = notificationMapper.toResponse(saved);
 
-        // Placeholder for real multi-channel delivery (Mail, SMS, etc.)
+        // Push real-time notification via SSE
+        sseEmitterManager.sendToUser(recipient.getId(), response);
+
         log.info("Notification sent to user {}: {} - {}", recipient.getEmail(), request.getTitle(),
                 request.getMessage());
+    }
+
+    @Override
+    public void sendToRole(String role, SendNotificationRequest request) {
+        userRepository.findAll().stream()
+                .filter(u -> u.getRoles().stream().anyMatch(r -> r.getName().equals(role)))
+                .forEach(u -> {
+                    request.setRecipientId(u.getId());
+                    sendNotification(request);
+                });
+    }
+
+    @Override
+    public void sendToAll(SendNotificationRequest request) {
+        Notification notification = notificationMapper.toEntity(request);
+        notification.setGlobal(true);
+        notification.setStatus(Notification.NotificationStatus.UNREAD);
+        notification.setRead(false);
+
+        notificationRepository.save(notification);
+        NotificationResponse response = notificationMapper.toResponse(notification);
+
+        // Broadcast via SSE
+        sseEmitterManager.broadcast(response);
     }
 
     @Override
@@ -70,19 +102,32 @@ public class NotificationServiceImpl implements NotificationService {
         }
 
         notification.setStatus(Notification.NotificationStatus.READ);
+        notification.setRead(true);
         notificationRepository.save(notification);
     }
 
     @Override
     public void markAllAsRead(User currentUser) {
-        // Simple implementation for demo
         notificationRepository.findAllByRecipientId(currentUser.getId(), Pageable.unpaged())
                 .forEach(n -> {
                     if (n.getStatus() == Notification.NotificationStatus.UNREAD) {
                         n.setStatus(Notification.NotificationStatus.READ);
+                        n.setRead(true);
                         notificationRepository.save(n);
                     }
                 });
+    }
+
+    @Override
+    public void deleteNotification(UUID id, User currentUser) {
+        Notification notification = notificationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Notification not found"));
+
+        if (!notification.getRecipient().getId().equals(currentUser.getId())) {
+            throw new AccessDeniedException("Access denied");
+        }
+
+        notificationRepository.delete(notification);
     }
 
     @Override
@@ -90,5 +135,10 @@ public class NotificationServiceImpl implements NotificationService {
     public long getUnreadCount(User currentUser) {
         return notificationRepository.countByRecipientIdAndStatus(currentUser.getId(),
                 Notification.NotificationStatus.UNREAD);
+    }
+
+    @Override
+    public org.springframework.web.servlet.mvc.method.annotation.SseEmitter subscribe(User user) {
+        return sseEmitterManager.createEmitter(user.getId());
     }
 }

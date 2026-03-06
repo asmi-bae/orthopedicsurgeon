@@ -61,7 +61,7 @@
             },
             "development": {
               "buildTarget": "admin:build:development",
-              "port": 4201
+              "port": 4200
             }
           },
           "defaultConfiguration": "development"

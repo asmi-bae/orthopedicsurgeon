@@ -9,7 +9,7 @@ public class RolePermissionMapping {
     private static final Map<String, Set<Permission>> mapping = new ConcurrentHashMap<>();
 
     static {
-        mapping.put("SUPER_ADMIN'", EnumSet.allOf(Permission.class));
+        mapping.put("SUPER_ADMIN", EnumSet.allOf(Permission.class));
 
         mapping.put("ADMIN", EnumSet.of(
                 Permission.MANAGE_USERS,

@@ -1,41 +1,73 @@
 package com.orthopedic.api.auth.service;
 
 import com.orthopedic.api.config.JwtConfig;
+import com.orthopedic.api.auth.entity.RefreshToken;
 import com.orthopedic.api.auth.entity.User;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.orthopedic.api.auth.repository.RefreshTokenRepository;
+import com.orthopedic.api.shared.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Service
+@Transactional
 public class TokenService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtConfig jwtConfig;
 
-    public TokenService(RedisTemplate<String, Object> redisTemplate, JwtConfig jwtConfig) {
-        this.redisTemplate = redisTemplate;
+    public TokenService(RefreshTokenRepository refreshTokenRepository, JwtConfig jwtConfig) {
+        this.refreshTokenRepository = refreshTokenRepository;
         this.jwtConfig = jwtConfig;
     }
 
-    public String generateAndSaveRefreshToken(User user, String deviceInfo) {
-        String token = UUID.randomUUID().toString();
-        // ⚡ PERF: Store in Redis with TTL to save Postgres INSERT and manage expiry
-        // automatically
-        redisTemplate.opsForValue().set(
-                "refresh_token:" + token,
-                user.getEmail(),
-                jwtConfig.getRefreshTokenExpiry(),
-                TimeUnit.SECONDS);
+    public RefreshToken createRefreshToken(User user, String deviceInfo) {
+        // Delete existing token if any (standard rotation/cleanup)
+        refreshTokenRepository.deleteByUser(user);
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .user(user)
+                .token(UUID.randomUUID().toString())
+                .expiryDate(LocalDateTime.now().plusSeconds(jwtConfig.getRefreshTokenExpiry()))
+                .deviceInfo(deviceInfo)
+                .isRevoked(false)
+                .build();
+
+        return refreshTokenRepository.save(refreshToken);
+    }
+
+    public RefreshToken verifyExpiration(RefreshToken token) {
+        if (token.getExpiryDate().isBefore(LocalDateTime.now())) {
+            refreshTokenRepository.delete(token);
+            throw new RuntimeException("Refresh token was expired. Please make a new signin request");
+        }
         return token;
     }
 
-    public void deleteRefreshToken(String token) {
-        redisTemplate.delete("refresh_token:" + token);
+    public RefreshToken rotateRefreshToken(String tokenValue, String deviceInfo) {
+        RefreshToken oldToken = refreshTokenRepository.findByToken(tokenValue)
+                .orElseThrow(() -> new ResourceNotFoundException("Refresh token not found"));
+
+        if (oldToken.isRevoked()) {
+            // 🚨 SECURITY: If a revoked token is used, someone might be stealing it.
+            // Revoke all tokens for this user as a precaution.
+            refreshTokenRepository.deleteByUser(oldToken.getUser());
+            throw new RuntimeException("Refresh token is revoked. Potential security breach.");
+        }
+
+        verifyExpiration(oldToken);
+
+        // Issue new token (Rotation)
+        return createRefreshToken(oldToken.getUser(), deviceInfo);
     }
 
-    public String getEmailFromToken(String token) {
-        return (String) redisTemplate.opsForValue().get("refresh_token:" + token);
+    public void deleteRefreshToken(String token) {
+        refreshTokenRepository.deleteByToken(token);
+    }
+
+    public void revokeAllUserTokens(User user) {
+        refreshTokenRepository.deleteByUser(user);
     }
 }

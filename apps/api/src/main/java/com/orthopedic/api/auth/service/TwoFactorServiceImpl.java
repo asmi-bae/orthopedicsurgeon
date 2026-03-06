@@ -139,11 +139,11 @@ public class TwoFactorServiceImpl implements TwoFactorService {
 
             UserDetails userDetails = new com.orthopedic.api.auth.security.CustomUserDetails(user);
             String accessToken = tokenProvider.generateAccessToken(userDetails);
-            String refreshTokenString = tokenService.generateAndSaveRefreshToken(user, userAgent);
+            com.orthopedic.api.auth.entity.RefreshToken refreshToken = tokenService.createRefreshToken(user, userAgent);
 
             return TokenResponse.builder()
                     .accessToken(accessToken)
-                    .refreshToken(refreshTokenString)
+                    .refreshToken(refreshToken.getToken())
                     .tokenType("Bearer")
                     .expiresIn(jwtConfig.getAccessTokenExpiry())
                     .build();

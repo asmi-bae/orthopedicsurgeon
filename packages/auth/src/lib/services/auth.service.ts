@@ -16,6 +16,7 @@ export interface AuthResponse {
   requiresMfa?: boolean;
   sessionToken?: string;
   userId?: string;
+  expiresIn?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -27,6 +28,40 @@ export class AuthService {
   currentUser = signal<User | null>(null);
   loading = signal(false);
   error = signal<string | null>(null);
+  showSessionWarning = signal(false);
+
+  private refreshTimer?: any;
+  private inactivityTimer?: any;
+  private warningTimer?: any;
+  private lastActivity = Date.now();
+  private authChannel = new BroadcastChannel('auth_channel');
+
+  constructor() {
+    this.setupBroadcastChannel();
+    this.handleUserActivity();
+    if (this.isLoggedIn()) {
+      this.startInactivityTimer();
+    }
+  }
+
+  private setupBroadcastChannel() {
+    this.authChannel.onmessage = (event) => {
+      if (event.data.type === 'LOGOUT') {
+        this.clearLocalSession();
+      }
+    };
+  }
+
+  private handleUserActivity() {
+    ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(event => {
+      window.addEventListener(event, () => {
+        this.lastActivity = Date.now();
+        if (this.isLoggedIn()) {
+          this.resetInactivityTimer();
+        }
+      });
+    });
+  }
 
   login(credentials: any): Observable<AuthResponse> {
     this.loading.set(true);
@@ -55,15 +90,44 @@ export class AuthService {
   }
 
   logout() {
+    const refreshToken = localStorage.getItem('refreshToken');
+    
+    // Fire and forget logout to backend
+    this.http.post(`${this.apiUrl}/logout`, { refreshToken }).subscribe();
+
+    this.clearLocalSession();
+    this.authChannel.postMessage({ type: 'LOGOUT' });
+  }
+
+  private clearLocalSession() {
+    if (this.refreshTimer) clearTimeout(this.refreshTimer);
+    if (this.inactivityTimer) clearTimeout(this.inactivityTimer);
+    if (this.warningTimer) clearTimeout(this.warningTimer);
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
     this.currentUser.set(null);
+    this.showSessionWarning.set(false);
     this.router.navigate(['/auth/login']);
+  }
+
+  refreshToken(): Observable<AuthResponse> {
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (!refreshToken) return of({});
+
+    return this.http.post<AuthResponse>(`${this.apiUrl}/refresh`, { refreshToken }).pipe(
+      tap(res => {
+        if (res.accessToken) localStorage.setItem('token', res.accessToken);
+        if (res.refreshToken) localStorage.setItem('refreshToken', res.refreshToken);
+      }),
+      catchError(err => {
+        this.logout();
+        throw err;
+      })
+    );
   }
 
   verify2fa(data: { sessionToken: string; code: string; deviceFingerprint?: string }): Observable<AuthResponse> {
     this.loading.set(true);
-    // Use /login/mfa for admin if the URL suggests it, otherwise fallback/standard
     const endpoint = this.apiUrl.includes('/admin') ? `${this.apiUrl}/login/mfa` : `${this.apiUrl}/verify-2fa`;
     return this.http.post<AuthResponse>(endpoint, data).pipe(
       switchMap((res: AuthResponse) => {
@@ -109,19 +173,76 @@ export class AuthService {
   checkAuth(): Observable<boolean> {
     if (!this.isLoggedIn()) return of(false);
     return this.http.get<User>(`${this.apiUrl}/me`).pipe(
-      tap(user => this.currentUser.set(user)),
+      tap(user => {
+        this.currentUser.set(user);
+        this.scheduleTokenRefresh(900);
+        this.startInactivityTimer();
+      }),
       map(() => true),
-      catchError(() => {
-        this.logout();
-        return of(false);
+      catchError(err => {
+        if (err.status === 401 || err.status === 403) {
+          this.logout();
+          return of(false);
+        }
+        return of(true);
       })
     );
+  }
+
+  private scheduleTokenRefresh(expiresIn: number) {
+    if (this.refreshTimer) clearTimeout(this.refreshTimer);
+    
+    // Refresh 1 minute before expiry (or 10% before)
+    const refreshDelay = (expiresIn - 60) * 1000;
+    if (refreshDelay <= 0) return;
+
+    this.refreshTimer = setTimeout(() => {
+      // Only refresh if user was active in last 15 mins
+      if (Date.now() - this.lastActivity < 15 * 60 * 1000) {
+        this.refreshToken().subscribe();
+      } else {
+        console.warn('User inactive, skipping auto-refresh');
+      }
+    }, refreshDelay);
+  }
+
+  private startInactivityTimer() {
+    if (this.inactivityTimer) clearTimeout(this.inactivityTimer);
+    if (this.warningTimer) clearTimeout(this.warningTimer);
+
+    // 30 minutes of inactivity -> Show Warning
+    this.inactivityTimer = setTimeout(() => {
+      this.showSessionWarning.set(true);
+      
+      // 2 more minutes -> Force Logout
+      this.warningTimer = setTimeout(() => {
+        if (this.showSessionWarning()) {
+          this.logout();
+        }
+      }, 2 * 60 * 1000);
+
+    }, 30 * 60 * 1000);
+  }
+
+  private resetInactivityTimer() {
+    if (this.showSessionWarning()) {
+      this.showSessionWarning.set(false);
+    }
+    this.startInactivityTimer();
+  }
+
+  token(): string | null {
+    return localStorage.getItem('token');
   }
 
   private handleSuccess(res: AuthResponse): Observable<AuthResponse> {
     if (res.accessToken) localStorage.setItem('token', res.accessToken);
     if (res.refreshToken) localStorage.setItem('refreshToken', res.refreshToken);
     
+    if (res.expiresIn) {
+      this.scheduleTokenRefresh(res.expiresIn);
+    }
+
     if (res.user) {
       this.currentUser.set(res.user);
       return of(res);

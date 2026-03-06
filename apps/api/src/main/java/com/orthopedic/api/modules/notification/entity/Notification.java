@@ -34,6 +34,19 @@ public class Notification extends BaseEntity {
     @Column(nullable = false)
     private NotificationStatus status = NotificationStatus.UNREAD;
 
+    @Column(nullable = false)
+    private boolean isRead = false;
+
+    @Column(name = "recipient_role")
+    private String recipientRole;
+
+    @Column(nullable = false)
+    private boolean isGlobal = false;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private NotificationLevel severity = NotificationLevel.INFO;
+
     public User getRecipient() {
         return recipient;
     }
@@ -80,6 +93,40 @@ public class Notification extends BaseEntity {
 
     public void setStatus(NotificationStatus status) {
         this.status = status;
+        this.isRead = (status == NotificationStatus.READ);
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+        this.status = read ? NotificationStatus.READ : NotificationStatus.UNREAD;
+    }
+
+    public String getRecipientRole() {
+        return recipientRole;
+    }
+
+    public void setRecipientRole(String recipientRole) {
+        this.recipientRole = recipientRole;
+    }
+
+    public boolean isGlobal() {
+        return isGlobal;
+    }
+
+    public void setGlobal(boolean global) {
+        isGlobal = global;
+    }
+
+    public NotificationLevel getSeverity() {
+        return severity;
+    }
+
+    public void setSeverity(NotificationLevel severity) {
+        this.severity = severity;
     }
 
     public enum NotificationType {
@@ -93,5 +140,9 @@ public class Notification extends BaseEntity {
 
     public enum NotificationStatus {
         UNREAD, READ, ARCHIVED
+    }
+
+    public enum NotificationLevel {
+        INFO, WARNING, SUCCESS, ERROR
     }
 }

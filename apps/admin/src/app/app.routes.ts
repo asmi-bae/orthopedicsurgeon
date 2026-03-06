@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AdminLayoutComponent } from '@core/layouts/layout.component';
-import { authGuard } from '@repo/auth';
+import { authGuard, guestGuard } from '@repo/auth';
 
 export const routes: Routes = [
   {
@@ -69,14 +69,17 @@ export const routes: Routes = [
   },
   {
     path: 'auth/login',
+    canActivate: [guestGuard],
     loadComponent: () => import('@features/auth/admin-login.component').then(m => m.AdminLoginComponent)
   },
   {
     path: 'auth/forgot-password',
+    canActivate: [guestGuard],
     loadComponent: () => import('@features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
   },
   {
     path: 'auth/reset-password',
+    canActivate: [guestGuard],
     loadComponent: () => import('@features/auth/reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
   }
 ];

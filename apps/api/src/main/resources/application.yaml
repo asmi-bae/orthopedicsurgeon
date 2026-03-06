@@ -1,4 +1,7 @@
 app:
+  frontend:
+    public-url: ${PUBLIC_FRONTEND_URL:http://localhost:4201}
+    admin-url: ${ADMIN_FRONTEND_URL:http://localhost:4200}
   rate-limit:
     default-limit: 60
     default-window: 60
@@ -6,6 +9,11 @@ app:
     login-window: 900
     search-limit: 20
     search-window: 60
+
+jwt:
+  secret: ${JWT_SECRET:7a5996cc5a03d462996453eab41f39e0d73fff7f8a48b53aa65a4577c4fd8979f}
+  access-token-expiry: 900 # 15 minutes
+  refresh-token-expiry: 604800 # 7 days
 
 management:
   endpoints:

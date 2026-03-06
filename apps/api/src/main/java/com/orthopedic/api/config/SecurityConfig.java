@@ -40,6 +40,8 @@ public class SecurityConfig {
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
                         "/oauth2/**",
+                        "/actuator/**",
+                        "/api/v1/notifications/stream",
                         "/ws/**",
                         "/api/v1/public/**"
         };
@@ -81,10 +83,10 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers(PUBLIC_URLS).permitAll()
                                                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
-                                                .requestMatchers("/actuator/**").hasAuthority("SUPER_ADMIN")
+                                                .requestMatchers("/actuator/**").hasAuthority("ROLE_SUPER_ADMIN")
                                                 .requestMatchers("/api/v1/admin/**")
                                                 .hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                                .requestMatchers("/api/v1/patient/**").hasAuthority("PATIENT")
+                                                .requestMatchers("/api/v1/patient/**").hasAuthority("ROLE_PATIENT")
                                                 .anyRequest().authenticated())
                                 .oauth2Login(oauth2 -> oauth2
                                                 .userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService))

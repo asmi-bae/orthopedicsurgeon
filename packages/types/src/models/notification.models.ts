@@ -21,6 +21,13 @@ export enum NotificationStatus {
   ARCHIVED = 'ARCHIVED'
 }
 
+export enum NotificationLevel {
+  INFO = 'INFO',
+  WARNING = 'WARNING',
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR'
+}
+
 export interface Notification {
   id: string;
   title: string;
@@ -28,5 +35,8 @@ export interface Notification {
   type: NotificationType;
   channel: NotificationChannel;
   status: NotificationStatus;
+  isRead: boolean;
+  isGlobal: boolean;
+  severity: NotificationLevel;
   createdAt: string;
 }

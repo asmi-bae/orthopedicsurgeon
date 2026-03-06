@@ -31,7 +31,7 @@ interface NavItem {
     ZrdBadgeComponent
   ],
   template: `
-    <div class="flex flex-col h-full bg-google-gray-950 transition-all duration-300 overflow-hidden border-r border-white/5 shadow-2xl"
+    <div class="flex flex-col h-full bg- transition-all duration-300 overflow-hidden border-r border-white/5 shadow-2xl"
          [class.w-16]="collapsed">
 
       <!-- ── Spartan Brand Block ── -->

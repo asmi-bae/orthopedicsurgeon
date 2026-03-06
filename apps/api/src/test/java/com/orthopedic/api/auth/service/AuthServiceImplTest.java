@@ -87,15 +87,22 @@ class AuthServiceImplTest {
         request.setEmail("test@example.com");
         request.setPassword("password");
 
+        RefreshToken mockRefreshToken = RefreshToken.builder()
+                .token("refreshTokenValue")
+                .user(testUser)
+                .build();
+
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(true);
         when(tokenProvider.generateAccessToken(any(), anyString())).thenReturn("accessToken");
         when(jwtConfig.getAccessTokenExpiry()).thenReturn(900L);
+        when(tokenService.createRefreshToken(any(), anyString())).thenReturn(mockRefreshToken);
 
         LoginResponse response = authService.login(request, "127.0.0.1", "device");
 
         assertNotNull(response);
         assertEquals("accessToken", response.getAccessToken());
+        assertEquals("refreshTokenValue", response.getRefreshToken());
         assertFalse(response.isRequiresMfa());
         verify(auditService).logAudit(any(), any(), any(), eq("SUCCESS"));
     }
@@ -115,18 +122,20 @@ class AuthServiceImplTest {
 
     @Test
     void refreshToken_Success() {
-        String token = "validToken";
-        when(tokenService.getEmailFromToken(token)).thenReturn("test@example.com");
-        when(userRepository.findByEmail("test@example.com")).thenReturn(Optional.of(testUser));
+        String oldToken = "validToken";
+        RefreshToken mockNewRefreshToken = RefreshToken.builder()
+                .token("newRefreshTokenValue")
+                .user(testUser)
+                .build();
+
+        when(tokenService.rotateRefreshToken(eq(oldToken), anyString())).thenReturn(mockNewRefreshToken);
         when(tokenProvider.generateAccessToken(any(), anyString())).thenReturn("newAccessToken");
         when(jwtConfig.getAccessTokenExpiry()).thenReturn(900L);
-        when(tokenService.generateAndSaveRefreshToken(any(), anyString())).thenReturn("newRefreshToken");
 
-        TokenResponse response = authService.refreshToken(token);
+        TokenResponse response = authService.refreshToken(oldToken);
 
         assertNotNull(response);
         assertEquals("newAccessToken", response.getAccessToken());
-        assertEquals("newRefreshToken", response.getRefreshToken());
-        verify(tokenService).deleteRefreshToken(token);
+        assertEquals("newRefreshTokenValue", response.getRefreshToken());
     }
 }

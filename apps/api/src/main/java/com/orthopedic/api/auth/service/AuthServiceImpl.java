@@ -50,6 +50,12 @@ public class AuthServiceImpl implements AuthService {
     @Value("${spring.security.oauth2.client.registration.google.client-id:}")
     private String googleClientId;
 
+    @Value("${app.frontend.public-url}")
+    private String publicFrontendUrl;
+
+    @Value("${app.frontend.admin-url}")
+    private String adminFrontendUrl;
+
     public AuthServiceImpl(UserRepository userRepository,
             RoleRepository roleRepository,
             PasswordEncoder passwordEncoder,
@@ -130,12 +136,12 @@ public class AuthServiceImpl implements AuthService {
         UserDetails userDetails = new CustomUserDetails(user);
         String jti = UUID.randomUUID().toString();
         String accessToken = tokenProvider.generateAccessToken(userDetails, jti);
-        String refreshTokenString = tokenService.generateAndSaveRefreshToken(user, userAgent);
+        RefreshToken refreshToken = tokenService.createRefreshToken(user, userAgent);
 
         Session session = Session.builder()
                 .user(user)
                 .accessTokenJti(UUID.fromString(jti))
-                .refreshTokenHash(passwordEncoder.encode(refreshTokenString))
+                .refreshTokenHash(passwordEncoder.encode(refreshToken.getToken()))
                 .deviceFingerprint(request.getDeviceFingerprint())
                 .ipAddress(ipAddress)
                 .userAgent(userAgent)
@@ -148,7 +154,7 @@ public class AuthServiceImpl implements AuthService {
 
         return LoginResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshTokenString)
+                .refreshToken(refreshToken.getToken())
                 .tokenType("Bearer")
                 .expiresIn(jwtConfig.getAccessTokenExpiry())
                 .requiresMfa(false)
@@ -206,7 +212,7 @@ public class AuthServiceImpl implements AuthService {
         verificationTokenRepository.save(vToken);
 
         // Send Email (A-05)
-        String verifyUrl = "http://localhost:4201/auth/verify?token=" + token;
+        String verifyUrl = publicFrontendUrl + "/auth/verify?token=" + token;
         java.util.Map<String, Object> variables = new java.util.HashMap<>();
         variables.put("name", savedUser.getFirstName());
         variables.put("verifyUrl", verifyUrl);
@@ -257,7 +263,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         verificationTokenRepository.save(vToken);
 
-        String verifyUrl = "http://localhost:4201/auth/verify?token=" + token;
+        String verifyUrl = publicFrontendUrl + "/auth/verify?token=" + token;
         java.util.Map<String, Object> variables = new java.util.HashMap<>();
         variables.put("name", user.getFirstName());
         variables.put("verifyUrl", verifyUrl);
@@ -309,25 +315,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public TokenResponse refreshToken(String refreshTokenString) {
-        String email = tokenService.getEmailFromToken(refreshTokenString);
-        if (email == null) {
-            throw new AuthException("Invalid or expired refresh token");
-        }
-
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new AuthException("User not found"));
+        RefreshToken newRefreshToken = tokenService.rotateRefreshToken(refreshTokenString, "rotated");
+        User user = newRefreshToken.getUser();
 
         UserDetails userDetails = new CustomUserDetails(user);
         String newJti = UUID.randomUUID().toString();
         String newAccessToken = tokenProvider.generateAccessToken(userDetails, newJti);
 
-        tokenService.deleteRefreshToken(refreshTokenString);
-        String newRefreshTokenString = tokenService.generateAndSaveRefreshToken(user, "rotated");
-
         Session session = Session.builder()
                 .user(user)
                 .accessTokenJti(UUID.fromString(newJti))
-                .refreshTokenHash(passwordEncoder.encode(newRefreshTokenString))
+                .refreshTokenHash(passwordEncoder.encode(newRefreshToken.getToken()))
                 .lastActivity(LocalDateTime.now())
                 .isActive(true)
                 .build();
@@ -335,7 +333,7 @@ public class AuthServiceImpl implements AuthService {
 
         return TokenResponse.builder()
                 .accessToken(newAccessToken)
-                .refreshToken(newRefreshTokenString)
+                .refreshToken(newRefreshToken.getToken())
                 .tokenType("Bearer")
                 .expiresIn(jwtConfig.getAccessTokenExpiry())
                 .build();
@@ -442,7 +440,8 @@ public class AuthServiceImpl implements AuthService {
         UserDetails userDetails = new CustomUserDetails(user);
         String jti = UUID.randomUUID().toString();
         String accessToken = tokenProvider.generateAccessToken(userDetails, jti);
-        String refreshTokenString = tokenService.generateAndSaveRefreshToken(user, userAgent);
+        RefreshToken refreshToken = tokenService.createRefreshToken(user, userAgent);
+        String refreshTokenString = refreshToken.getToken();
 
         Session session = Session.builder()
                 .user(user)
@@ -487,7 +486,7 @@ public class AuthServiceImpl implements AuthService {
 
         passwordResetTokenRepository.save(resetToken);
 
-        String resetUrl = "http://localhost:4200/auth/reset-password?token=" + token;
+        String resetUrl = adminFrontendUrl + "/auth/reset-password?token=" + token;
         java.util.Map<String, Object> variables = new java.util.HashMap<>();
         variables.put("name", user.getFirstName());
         variables.put("resetUrl", resetUrl);

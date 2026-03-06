@@ -2,6 +2,7 @@ package com.orthopedic.api.auth.service;
 
 import com.orthopedic.api.auth.dto.*;
 import com.orthopedic.api.auth.entity.Role;
+import com.orthopedic.api.auth.entity.RefreshToken;
 import com.orthopedic.api.auth.entity.Session;
 import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.auth.exception.AuthException;
@@ -41,6 +42,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     private final TotpService totpService;
     private final TotpSecretRepository totpSecretRepository;
     private final EmailService emailService;
+    private final TokenService tokenService;
     private final Random random = new Random();
 
     @Override
@@ -54,7 +56,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
         // 1. Check if user is an ADMIN or SUPER_ADMIN
         Set<String> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
-        if (!roles.contains("ROLE_ADMIN") && !roles.contains("ROLE_SUPER_ADMIN")) {
+        if (!roles.contains("ADMIN") && !roles.contains("SUPER_ADMIN")) {
             auditService.logFailedLogin(request.getEmail(), ipAddress, userAgent, "Not an admin account");
             throw new AuthException("Access denied: Not an admin account");
         }
@@ -146,13 +148,13 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         CustomUserDetails userDetails = new CustomUserDetails(user);
         String jti = UUID.randomUUID().toString();
         String accessToken = tokenProvider.generateAccessToken(userDetails, jti);
-        String refreshTokenString = tokenProvider.generateRefreshToken(user.getId());
+        RefreshToken refreshToken = tokenService.createRefreshToken(user, userAgent);
 
         // Create Database Session
         Session session = Session.builder()
                 .user(user)
                 .accessTokenJti(UUID.fromString(jti))
-                .refreshTokenHash(passwordEncoder.encode(refreshTokenString)) // simple hash for DB storage
+                .refreshTokenHash(passwordEncoder.encode(refreshToken.getToken())) // simple hash for DB storage
                 .deviceFingerprint(request.getDeviceFingerprint())
                 .ipAddress(ipAddress)
                 .userAgent(userAgent)
@@ -164,7 +166,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
         return AdminMfaResponse.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshTokenString)
+                .refreshToken(refreshToken.getToken())
                 .deviceTrusted(false) // Not yet implemented trust flow thoroughly
                 .sessionId(session.getSessionId())
                 .userId(user.getId())
@@ -174,32 +176,26 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     @Override
     @Transactional
     public TokenResponse refreshAdminToken(String refreshTokenString) {
-        if (!tokenProvider.validateToken(refreshTokenString)) {
-            throw new AuthException("Invalid refresh token");
-        }
-
-        String userIdStr = tokenProvider.getUsernameFromToken(refreshTokenString);
-        UUID userId = UUID.fromString(userIdStr);
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new AuthException("User not found"));
-
-        // We should verify against the DB session
-        // For simplicity, find active sessions for the user and verify the hash.
-        // A complete implementation would get the session ID from the token or look it
-        // up.
+        RefreshToken newRefreshToken = tokenService.rotateRefreshToken(refreshTokenString, "rotated-admin");
+        User user = newRefreshToken.getUser();
 
         CustomUserDetails userDetails = new CustomUserDetails(user);
         String newJti = UUID.randomUUID().toString();
         String newAccessToken = tokenProvider.generateAccessToken(userDetails, newJti);
-        String newRefreshToken = tokenProvider.generateRefreshToken(userId);
 
         // Update the session in DB
-        // ... (Skipping full search/replace on sessions for brevity,
-        // normally we'd replace the token hash in the matching Session record)
+        Session session = Session.builder()
+                .user(user)
+                .accessTokenJti(UUID.fromString(newJti))
+                .refreshTokenHash(passwordEncoder.encode(newRefreshToken.getToken()))
+                .lastActivity(LocalDateTime.now())
+                .isActive(true)
+                .build();
+        sessionRepository.save(session);
 
         return TokenResponse.builder()
                 .accessToken(newAccessToken)
-                .refreshToken(newRefreshToken)
+                .refreshToken(newRefreshToken.getToken())
                 .build();
     }
 
