@@ -13,6 +13,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final WebSocketAuthInterceptor authInterceptor;
 
+    @org.springframework.beans.factory.annotation.Value("${app.frontend.admin-url}")
+    private String adminUrl;
+
+    @org.springframework.beans.factory.annotation.Value("${app.frontend.public-url}")
+    private String publicUrl;
+
     public WebSocketConfig(WebSocketAuthInterceptor authInterceptor) {
         this.authInterceptor = authInterceptor;
     }
@@ -28,7 +34,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("http://localhost:4200", "http://localhost:4201") // Strict CORS for WS
+                .setAllowedOrigins(adminUrl, publicUrl) // Strict CORS for WS
                 .withSockJS();
     }
 

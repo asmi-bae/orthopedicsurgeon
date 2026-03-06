@@ -26,7 +26,6 @@ import { Notification as NotificationModel, NotificationType, NotificationLevel 
     MatTooltipModule,
     MatMenuModule,
     MatBadgeModule,
-    ZrdCardComponent
   ],
   template: `
     <!-- Trigger Button wrapped with MatMenu -->

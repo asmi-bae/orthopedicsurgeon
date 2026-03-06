@@ -12,12 +12,15 @@ import java.io.IOException;
 @Component
 public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    @org.springframework.beans.factory.annotation.Value("${app.frontend.public-url}")
+    private String publicUrl;
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException {
         
-        String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:4201/auth/login")
+        String targetUrl = UriComponentsBuilder.fromUriString(publicUrl + "/auth/login")
             .queryParam("error", exception.getLocalizedMessage())
             .build().toUriString();
 

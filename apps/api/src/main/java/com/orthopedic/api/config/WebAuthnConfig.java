@@ -11,6 +11,12 @@ import java.util.Set;
 @Configuration
 public class WebAuthnConfig {
 
+    @org.springframework.beans.factory.annotation.Value("${app.frontend.admin-url}")
+    private String adminUrl;
+
+    @org.springframework.beans.factory.annotation.Value("${app.frontend.public-url}")
+    private String publicUrl;
+
     @Bean
     public RelyingParty relyingParty(WebAuthnCredentialRepository credentialRepository) {
         RelyingPartyIdentity rpIdentity = RelyingPartyIdentity.builder()
@@ -21,7 +27,7 @@ public class WebAuthnConfig {
         return RelyingParty.builder()
                 .identity(rpIdentity)
                 .credentialRepository(credentialRepository)
-                .origins(Set.of("http://localhost:4200", "http://localhost:4201"))
+                .origins(Set.of(adminUrl, publicUrl))
                 .build();
     }
 }

@@ -10,6 +10,11 @@ app:
     search-limit: 20
     search-window: 60
 
+security:
+  cors:
+    web-origins: http://localhost:4201,https://orthopedicsurgeon.com
+    admin-origins: http://localhost:4200,https://admin.orthopedicsurgeon.com
+
 jwt:
   secret: ${JWT_SECRET:7a5996cc5a03d462996453eab41f39e0d73fff7f8a48b53aa65a4577c4fd8979f}
   access-token-expiry: 900 # 15 minutes

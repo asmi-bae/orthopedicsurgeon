@@ -12,10 +12,10 @@ import java.util.List;
 @Configuration
 public class CorsConfig {
 
-    @Value("${security.cors.web-origins:https://orthopedicsurgeon.com,http://localhost:4200}")
+    @Value("${security.cors.web-origins}")
     private List<String> webOrigins;
 
-    @Value("${security.cors.admin-origins:https://admin.orthopedicsurgeon.com,http://localhost:4201}")
+    @Value("${security.cors.admin-origins}")
     private List<String> adminOrigins;
 
     @Bean

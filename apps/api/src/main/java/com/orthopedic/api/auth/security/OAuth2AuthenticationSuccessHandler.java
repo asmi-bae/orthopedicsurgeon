@@ -27,6 +27,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final RedisTemplate<String, Object> redisTemplate;
     private final UserRepository userRepository;
 
+    @org.springframework.beans.factory.annotation.Value("${app.frontend.admin-url}")
+    private String adminUrl;
+
+    @org.springframework.beans.factory.annotation.Value("${app.frontend.public-url}")
+    private String publicUrl;
+
     public OAuth2AuthenticationSuccessHandler(JwtTokenProvider tokenProvider,
             JwtConfig jwtConfig,
             RedisTemplate<String, Object> redisTemplate,
@@ -54,12 +60,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             String tempToken = UUID.randomUUID().toString();
             redisTemplate.opsForValue().set("temp_auth:" + tempToken, user.getEmail(), 10, TimeUnit.MINUTES);
 
-            targetUrl = UriComponentsBuilder.fromUriString("http://localhost:4200/auth/2fa")
+            targetUrl = UriComponentsBuilder.fromUriString(adminUrl + "/auth/2fa")
                     .fragment("tempToken=" + tempToken)
                     .build().toUriString();
         } else {
             String accessToken = tokenProvider.generateAccessToken(userDetails);
-            String baseUrl = isAdmin ? "http://localhost:4200" : "http://localhost:4201";
+            String baseUrl = isAdmin ? adminUrl : publicUrl;
             targetUrl = UriComponentsBuilder.fromUriString(baseUrl + "/auth/callback")
                     .fragment("token=" + accessToken)
                     .build().toUriString();
