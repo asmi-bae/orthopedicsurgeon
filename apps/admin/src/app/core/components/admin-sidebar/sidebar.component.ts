@@ -31,7 +31,7 @@ interface NavItem {
     ZrdBadgeComponent
   ],
   template: `
-    <div class="flex flex-col h-full bg- transition-all duration-300 overflow-hidden border-r border-white/5 shadow-2xl"
+    <div class="flex flex-col h-full transition-all duration-300 overflow-hidden border-r border-white/5 shadow-2xl"
          [class.w-16]="collapsed">
 
       <!-- ── Spartan Brand Block ── -->
@@ -58,7 +58,7 @@ interface NavItem {
               <!-- Group logic remained for consistency but styled as Spartan -->
               @if (collapsed) {
                 <div class="flex justify-center py-1">
-                   <button class="w-10 h-10 rounded-2xl flex items-center justify-center text-google-gray-400 hover:text-white hover:bg-white/10 transition-all group"
+                   <button class="w-10 h-10 rounded-full flex items-center justify-center text-google-gray-400 hover:text-white hover:bg-white/10 transition-all group"
                            [matTooltip]="item.label" matTooltipPosition="right">
                       <mat-icon class="text-[20px]">{{ item.icon }}</mat-icon>
                    </button>
@@ -85,19 +85,27 @@ interface NavItem {
               }
             } @else {
               <!-- Single Item Spartan Style -->
-              <a [routerLink]="item.route" routerLinkActive="!text-white !bg-google-blue/10 !border-google-blue/20"
-                 [class.justify-center]="collapsed"
-                 [matTooltip]="collapsed ? item.label : ''" matTooltipPosition="right"
-                 (click)="onNavClick()"
-                 class="flex items-center gap-3 px-3 py-3 rounded-2xl text-google-gray-400 hover:text-white hover:bg-white/5 transition-all group border border-transparent">
-                <mat-icon [class.mr-0]="collapsed" class="text-[20px] shrink-0">{{ item.icon }}</mat-icon>
-                @if (!collapsed) {
-                   <span class="text-sm font-bold tracking-tight">{{ item.label }}</span>
-                   @if (item.badge) {
+              <!-- Single Item Spartan Style -->
+              @if (collapsed) {
+                 <div class="flex justify-center py-1">
+                   <a [routerLink]="item.route" routerLinkActive="!text-white !bg-google-blue/10 !border-google-blue/20"
+                      [matTooltip]="item.label" matTooltipPosition="right"
+                      (click)="onNavClick()"
+                      class="w-10 h-10 rounded-full flex items-center justify-center text-google-gray-400 hover:text-white hover:bg-white/10 transition-all group">
+                      <mat-icon class="text-[20px]">{{ item.icon }}</mat-icon>
+                   </a>
+                 </div>
+              } @else {
+                <a [routerLink]="item.route" routerLinkActive="!text-white !bg-google-blue/10 !border-google-blue/20"
+                   (click)="onNavClick()"
+                   class="flex items-center gap-3 px-3 py-3 rounded-2xl text-google-gray-400 hover:text-white hover:bg-white/5 transition-all group border border-transparent">
+                  <mat-icon class="text-[20px] shrink-0">{{ item.icon }}</mat-icon>
+                  <span class="text-sm font-bold tracking-tight">{{ item.label }}</span>
+                  @if (item.badge) {
                      <zrd-badge variant="info" class="ml-auto text-[8px] px-1.5 py-0 font-black">{{ item.badge }}</zrd-badge>
-                   }
-                }
-              </a>
+                  }
+                </a>
+              }
             }
           }
         </div>

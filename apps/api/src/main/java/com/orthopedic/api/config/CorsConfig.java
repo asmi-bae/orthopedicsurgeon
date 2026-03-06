@@ -47,6 +47,20 @@ public class CorsConfig {
 
         source.registerCorsConfiguration("/api/v1/admin/**", adminConfig);
 
+        // Configuration for Shared API (Notifications)
+        CorsConfiguration sharedConfig = new CorsConfiguration();
+        java.util.List<String> sharedOrigins = new java.util.ArrayList<>();
+        if (webOrigins != null) sharedOrigins.addAll(webOrigins);
+        if (adminOrigins != null) sharedOrigins.addAll(adminOrigins);
+        sharedConfig.setAllowedOrigins(sharedOrigins);
+        sharedConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        sharedConfig.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Idempotency-Key", "X-Device-Fingerprint"));
+        sharedConfig.setExposedHeaders(List.of("X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset"));
+        sharedConfig.setAllowCredentials(true);
+        sharedConfig.setMaxAge(3600L);
+
+        source.registerCorsConfiguration("/api/v1/notifications/**", sharedConfig);
+
         return source;
     }
 }

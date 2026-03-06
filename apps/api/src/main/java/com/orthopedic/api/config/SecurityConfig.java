@@ -41,7 +41,6 @@ public class SecurityConfig {
                         "/swagger-ui/**",
                         "/oauth2/**",
                         "/actuator/**",
-                        "/api/v1/notifications/stream",
                         "/ws/**",
                         "/api/v1/public/**"
         };

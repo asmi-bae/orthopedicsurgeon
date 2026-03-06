@@ -63,8 +63,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void sendToRole(String role, SendNotificationRequest request) {
-        userRepository.findAll().stream()
-                .filter(u -> u.getRoles().stream().anyMatch(r -> r.getName().equals(role)))
+        userRepository.findAllByRoleName(role)
                 .forEach(u -> {
                     request.setRecipientId(u.getId());
                     sendNotification(request);
@@ -108,14 +107,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void markAllAsRead(User currentUser) {
-        notificationRepository.findAllByRecipientId(currentUser.getId(), Pageable.unpaged())
-                .forEach(n -> {
-                    if (n.getStatus() == Notification.NotificationStatus.UNREAD) {
-                        n.setStatus(Notification.NotificationStatus.READ);
-                        n.setRead(true);
-                        notificationRepository.save(n);
-                    }
-                });
+        notificationRepository.markAllAsRead(currentUser.getId());
     }
 
     @Override

@@ -1,6 +1,6 @@
 import { Injectable, inject, signal, OnDestroy } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, shareReplay, finalize } from 'rxjs';
 import { environment } from '@env/environment';
 import { ApiResponse, PageResponse, Notification as NotificationModel } from '@repo/types';
 import { AuthService } from '@repo/auth';
@@ -19,20 +19,21 @@ export class NotificationService implements OnDestroy {
   unreadCount = signal<number>(0);
   notifications = signal<NotificationModel[]>([]);
   loading = signal<boolean>(false);
+  private unreadCountRequest$: Observable<ApiResponse<number>> | null = null;
 
   constructor() {
-    this.initSseStream();
+    this.connectSse();
   }
 
-  private initSseStream() {
-    // Note: Standard EventSource doesn't support headers directly.
-    // If your backend doesn't support token as query param, consider using a polyfill or fetch.
-    // Assuming backend handles token in query param or we use a custom EventSource wrapper if needed.
-    // For simplicity, we'll try to use the query param approach if possible, or assume the backend allows it.
-    
+  private connectSse() {
+    if (this.eventSource) {
+      this.eventSource.close();
+    }
+
     const token = this.auth.token();
+    if (!token) return;
+
     const urlWithToken = `${this.streamUrl}?token=${token}`;
-    
     this.eventSource = new EventSource(urlWithToken);
 
     this.eventSource.addEventListener('CONNECT', (event: any) => {
@@ -51,7 +52,14 @@ export class NotificationService implements OnDestroy {
 
     this.eventSource.onerror = (error) => {
       console.error('SSE Error:', error);
-      // EventSource automatically tries to reconnect
+      this.eventSource?.close();
+      this.eventSource = null;
+      // Wait for a new token or retry after a delay (e.g., 5 seconds)
+      setTimeout(() => {
+        if (this.auth.isLoggedIn()) {
+          this.connectSse();
+        }
+      }, 5000);
     };
   }
 
@@ -87,13 +95,23 @@ export class NotificationService implements OnDestroy {
   }
 
   getUnreadCount(): Observable<ApiResponse<number>> {
-    return this.http.get<ApiResponse<number>>(`${this.baseUrl}/unread-count`).pipe(
+    if (this.unreadCountRequest$) {
+      return this.unreadCountRequest$;
+    }
+
+    this.unreadCountRequest$ = this.http.get<ApiResponse<number>>(`${this.baseUrl}/unread-count`).pipe(
       tap(res => {
         if (res.success) {
           this.unreadCount.set(res.data);
         }
-      })
+      }),
+      finalize(() => {
+        this.unreadCountRequest$ = null;
+      }),
+      shareReplay(1)
     );
+
+    return this.unreadCountRequest$;
   }
 
   markAsRead(id: string): Observable<ApiResponse<void>> {

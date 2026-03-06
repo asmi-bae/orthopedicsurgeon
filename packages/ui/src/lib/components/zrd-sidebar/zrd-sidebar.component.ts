@@ -16,10 +16,19 @@ export interface ZrdNavItem {
   standalone: true,
   imports: [RouterModule, MatIconModule],
   template: `
+    @if (isMobile && !collapsed) {
+      <div 
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
+        (click)="onToggle.emit()"
+      ></div>
+    }
+
     <aside 
-      [class.w-72]="!collapsed" 
-      [class.w-20]="collapsed"
-      class="h-screen bg-google-gray-50 dark:bg-sidebar-dark transition-all duration-300 flex flex-col fixed left-0 top-0 z-40"
+      [class.w-72]="!collapsed || isMobile" 
+      [class.w-20]="collapsed && !isMobile"
+      [class.-translate-x-full]="isMobile && collapsed"
+      [class.translate-x-0]="!isMobile || !collapsed"
+      class="h-screen bg-google-gray-100 dark:bg-sidebar-dark flex flex-col fixed left-0 top-0 z-50 transition-all duration-300 ease-in-out lg:translate-x-0"
     >
       <!-- Logo Area -->
       <div class="h-16 flex items-center px-4 gap-1"
@@ -51,6 +60,7 @@ export interface ZrdNavItem {
           <div class="flex flex-col">
             <a 
               [routerLink]="item.route"
+              (click)="isMobile && onToggle.emit()"
               routerLinkActive="bg-google-blue/10 text-google-blue active-nav"
               #rla="routerLinkActive"
               class="flex items-center py-2 rounded-full hover:bg-google-gray-100 dark:hover:bg-white/5 transition-all duration-200 group relative"
@@ -97,5 +107,6 @@ export interface ZrdNavItem {
 export class ZrdSidebarComponent {
   @Input() items: ZrdNavItem[] = [];
   @Input({ transform: booleanAttribute }) collapsed = false;
+  @Input({ transform: booleanAttribute }) isMobile = false;
   @Output() onToggle = new EventEmitter<void>();
 }

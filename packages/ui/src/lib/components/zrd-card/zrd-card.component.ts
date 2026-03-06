@@ -9,16 +9,16 @@ export type ZrdCardVariant = 'default' | 'elevated' | 'outlined' | 'ghost';
   imports: [CommonModule],
   template: `
     <div [class]="classes">
-      <div *ngIf="hasHeader" class="px-6 py-4 border-b border-secondary-100">
+      <div *ngIf="hasHeader" class="px-4 py-4 sm:px-6">
         <ng-content select="[header]"></ng-content>
       </div>
       
-      <div class="px-6 py-5">
+      <div class="px-4 py-5 sm:p-6">
         <ng-container *ngIf="loading; else content">
-          <div class="space-y-3">
-            <div class="h-4 bg-secondary-100 rounded animate-pulse w-3/4"></div>
-            <div class="h-4 bg-secondary-100 rounded animate-pulse"></div>
-            <div class="h-4 bg-secondary-100 rounded animate-pulse w-5/6"></div>
+          <div class="space-y-3 animate-pulse">
+            <div class="h-4 bg-google-gray-200 dark:bg-white/10 rounded w-3/4"></div>
+            <div class="h-4 bg-google-gray-200 dark:bg-white/10 rounded w-full"></div>
+            <div class="h-4 bg-google-gray-200 dark:bg-white/10 rounded w-5/6"></div>
           </div>
         </ng-container>
         <ng-template #content>
@@ -26,7 +26,7 @@ export type ZrdCardVariant = 'default' | 'elevated' | 'outlined' | 'ghost';
         </ng-template>
       </div>
 
-      <div *ngIf="hasFooter" class="px-6 py-4 bg-secondary-50/50 border-t border-secondary-100">
+      <div *ngIf="hasFooter" class="px-4 py-4 sm:px-6 bg-google-gray-50/50 dark:bg-white/5">
         <ng-content select="[footer]"></ng-content>
       </div>
     </div>
@@ -43,12 +43,12 @@ export class ZrdCardComponent {
   @Input({ transform: booleanAttribute }) hasFooter = false;
 
   get classes(): string {
-    const base = 'overflow-hidden rounded-md transition-all duration-300 bg-white dark:bg-surface-dark';
+    const base = 'block bg-white dark:bg-[#1f1f1f] rounded-md overflow-hidden';
     
     const variants: Record<ZrdCardVariant, string> = {
       default: 'border border-google-gray-200 dark:border-white/10 shadow-sm',
-      elevated: 'border border-google-gray-100 dark:border-white/5 shadow-google',
-      outlined: 'border-2 border-google-gray-200 dark:border-white/20',
+      elevated: 'shadow-google dark:border dark:border-white/10 dark:shadow-none',
+      outlined: 'border border-google-gray-300 dark:border-white/20',
       ghost: 'bg-transparent border-none shadow-none'
     };
 

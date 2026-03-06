@@ -1,7 +1,7 @@
 import { Injectable, signal, inject, InjectionToken } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, catchError, of, map, finalize, switchMap } from 'rxjs';
+import { Observable, tap, catchError, of, map, finalize, switchMap, shareReplay } from 'rxjs';
 import { User, Role } from '@repo/types';
 
 export const AUTH_API_URL = new InjectionToken<string>('AUTH_API_URL', {
@@ -170,9 +170,16 @@ export class AuthService {
     return this.currentUser()?.roles.includes(role) || false;
   }
 
+  private checkAuthRequest$: Observable<boolean> | null = null;
+
   checkAuth(): Observable<boolean> {
     if (!this.isLoggedIn()) return of(false);
-    return this.http.get<User>(`${this.apiUrl}/me`).pipe(
+    
+    if (this.checkAuthRequest$) {
+      return this.checkAuthRequest$;
+    }
+
+    this.checkAuthRequest$ = this.http.get<User>(`${this.apiUrl}/me`).pipe(
       tap(user => {
         this.currentUser.set(user);
         this.scheduleTokenRefresh(900);
@@ -185,8 +192,14 @@ export class AuthService {
           return of(false);
         }
         return of(true);
-      })
+      }),
+      finalize(() => {
+        this.checkAuthRequest$ = null;
+      }),
+      shareReplay(1)
     );
+    
+    return this.checkAuthRequest$;
   }
 
   private scheduleTokenRefresh(expiresIn: number) {

@@ -75,9 +75,6 @@ import { ZrdButtonComponent, ZrdCardComponent } from '@repo/ui';
                     {{ user.email }}
                   </div>
                   
-                  <a routerLink="/settings" (click)="close()" class="mt-4 px-6 py-2 rounded-full border border-google-gray-200 dark:border-white/10 hover:bg-google-gray-100 dark:hover:bg-white/5 transition-colors text-sm font-medium text-google-gray-700 dark:text-google-gray-300">
-                    Manage your profile
-                  </a>
                 } @else {
                   <h3 class="text-xl font-medium text-google-gray-900 dark:text-white m-0">Welcome</h3>
                   <p class="text-sm text-google-gray-500 dark:text-google-gray-400 mt-2 italic">Please sign in to access your dashboard</p>

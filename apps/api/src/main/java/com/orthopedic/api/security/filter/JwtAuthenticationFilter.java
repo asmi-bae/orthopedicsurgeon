@@ -40,6 +40,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             token = getCookieValue(request, accessTokenCookieName);
         }
 
+        // Allow token in query parameter for SSE requests
+        if (token == null && request.getParameter("token") != null) {
+            token = request.getParameter("token");
+        }
+
         if (token == null) {
             filterChain.doFilter(request, response);
             return;

@@ -190,4 +190,12 @@ Auth: SUPER_ADMIN [JWT]
     return this.http.put(`${this.baseUrl}/admin/auth/sso/providers/${id}`, payload);
   }
 
+  /**
+   * GET /admin/auth/me
+   * Get current authenticated admin profile
+   */
+  getAdminAuthMe(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/auth/me`);
+  }
+
 }
