@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,8 +15,9 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
+    @EntityGraph(attributePaths = { "roles" })
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")
-    List<User> findAllByRoleName(@Param("roleName") String roleName);
+    List<User> findAllByRoleName(@org.springframework.data.repository.query.Param("roleName") String roleName);
 
     // NOTE: Do NOT cache User entities in Redis — the roles collection is a
     // Hibernate PersistentSet which cannot be deserialized outside an active
@@ -30,6 +30,10 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     boolean existsByEmail(String email);
 
+    @EntityGraph(attributePaths = { "roles" })
+    Page<User> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = { "roles" })
     Page<User> findByEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
             String email, String firstName, String lastName, Pageable pageable);
 

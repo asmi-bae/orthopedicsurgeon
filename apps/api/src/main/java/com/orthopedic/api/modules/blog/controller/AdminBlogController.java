@@ -25,8 +25,10 @@ public class AdminBlogController {
     @GetMapping("/posts")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Get all blog posts for admin")
-    public ResponseEntity<List<BlogPostResponse>> getAllPosts() {
-        return ResponseEntity.ok(blogService.getAllPostsForAdmin());
+    public ResponseEntity<List<BlogPostResponse>> getAllPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(blogService.getAllPostsForAdmin(page, size));
     }
 
     @PostMapping("/posts")

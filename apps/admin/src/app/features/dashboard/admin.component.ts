@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, computed } from '@angular/core';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { 
   ZrdCardComponent, 
@@ -9,6 +9,9 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '@repo/auth';
+import { ADMINDASHBOARDService } from '../../core/services/api/admindashboard.service';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs/operators';
 
 type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'outline' | 'neutral';
 
@@ -24,6 +27,7 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
     MatIconModule,
     MatTooltipModule
   ],
+  providers: [CurrencyPipe],
   template: `
     <div class="space-y-8 animate-in fade-in duration-500">
 
@@ -47,7 +51,7 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
 
       <!-- Google Stats Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-        @for (stat of stats; track stat.label) {
+        @for (stat of stats(); track stat.label) {
           <zrd-card variant="elevated">
             <div class="flex items-start justify-between">
               <div class="w-12 h-12 rounded-2xl flex items-center justify-center transition-colors"
@@ -82,7 +86,7 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
               </div>
               <h2 class="text-lg font-bold text-google-gray-900 dark:text-white">Live Appointments</h2>
             </div>
-            <zrd-button variant="ghost" size="sm">Manage All</zrd-button>
+            <zrd-button variant="ghost" size="sm" routerLink="/appointments">Manage All</zrd-button>
           </div>
 
           <div class="overflow-x-auto -mx-6">
@@ -96,27 +100,27 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
                 </tr>
               </thead>
               <tbody class="divide-y divide-google-gray-100 dark:divide-white/5">
-                @for (row of liveAppointments; track row.patient) {
+                @for (row of liveAppointments(); track row.id) {
                   <tr class="hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors group cursor-pointer">
                     <td class="px-6 py-4">
                       <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-google-blue/10 flex items-center justify-center text-sm font-bold text-google-blue">
-                          {{ row.patient[0] }}
+                          {{ row.patientName[0] }}
                         </div>
-                        <span class="font-bold text-google-gray-900 dark:text-white text-sm">{{ row.patient }}</span>
+                        <span class="font-bold text-google-gray-900 dark:text-white text-sm">{{ row.patientName }}</span>
                       </div>
                     </td>
                     <td class="px-6 py-4">
-                      <span class="text-sm text-google-gray-600 dark:text-google-gray-400 font-medium">{{ row.doctor }}</span>
+                      <span class="text-sm text-google-gray-600 dark:text-google-gray-400 font-medium">{{ row.doctorName }}</span>
                     </td>
                     <td class="px-6 py-4">
                       <div class="flex flex-col">
                         <span class="text-sm text-google-gray-900 dark:text-white font-bold">{{ row.time }}</span>
-                        <span class="text-[10px] text-google-gray-400 uppercase font-bold tracking-widest">Today</span>
+                        <span class="text-[10px] text-google-gray-400 uppercase font-bold tracking-widest">Scheduled</span>
                       </div>
                     </td>
                     <td class="px-6 py-4 text-right">
-                      <zrd-badge [variant]="row.status === 'CONFIRMED' ? 'success' : 'warning'">
+                      <zrd-badge [variant]="getStatusVariant(row.status)">
                          {{ row.status }}
                       </zrd-badge>
                     </td>
@@ -135,7 +139,7 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
           </div>
 
           <div class="space-y-1">
-            @for (h of topHospitals; track h.name; let i = $index) {
+            @for (h of topHospitals(); track h.id; let i = $index) {
               <div class="flex items-center gap-4 p-4 hover:bg-google-gray-100 dark:hover:bg-white/5 rounded-2xl transition-all cursor-pointer group">
                 <div class="w-9 h-9 rounded-xl bg-google-gray-100 dark:bg-white/10 flex items-center justify-center text-sm font-black text-google-gray-400 group-hover:bg-google-blue group-hover:text-white transition-all shrink-0">
                   {{ i + 1 }}
@@ -163,7 +167,7 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
 
       <!-- Bottom Quick Stats -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        @for (q of quickStats; track q.label) {
+        @for (q of quickStats(); track q.label) {
           <zrd-card variant="default" class="text-center transition-colors">
             <div class="w-10 h-10 mx-auto rounded-full bg-google-gray-100 dark:bg-white/10 flex items-center justify-center mb-3 text-google-gray-400">
                <mat-icon>{{ q.icon }}</mat-icon>
@@ -181,51 +185,71 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
 })
 export class AdminComponent {
   auth = inject(AuthService);
+  dashboardService = inject(ADMINDASHBOARDService);
+  currencyPipe = inject(CurrencyPipe);
 
-  displayedColumns = ['patient', 'doctor', 'time', 'status'];
+  // Use toSignal to handle API data reactively
+  dashboardData = toSignal(
+    this.dashboardService.getAdminDashboard().pipe(
+      map(res => res?.data)
+    )
+  );
 
-  stats: { label: string; value: string; description: string; icon: string; iconBg: string; iconColor: string; trend: string; trendVariant: BadgeVariant }[] = [
-    {
-      label: 'Total Revenue', value: '$45,280', description: 'Net earnings this month',
-      icon: 'stat_1', iconBg: 'bg-google-blue/10', iconColor: 'text-google-blue',
-      trend: '+12%', trendVariant: 'success'
-    },
-    {
-      label: 'Medical Staff', value: '124', description: 'Certified specialists',
-      icon: 'medical_services', iconBg: 'bg-google-indigo/10', iconColor: 'text-google-indigo',
-      trend: 'Stable', trendVariant: 'neutral'
-    },
-    {
-      label: 'New Patients', value: '1,450', description: 'Registered this month',
-      icon: 'person_add', iconBg: 'bg-google-emerald/10', iconColor: 'text-google-emerald',
-      trend: '+45', trendVariant: 'success'
-    },
-    {
-      label: 'System Status', value: 'Active', description: 'All systems operational',
-      icon: 'shield', iconBg: 'bg-google-green/10', iconColor: 'text-google-green',
-      trend: 'Secure', trendVariant: 'success'
-    },
-  ];
+  stats = computed(() => {
+    const d = this.dashboardData();
+    const s = d?.stats;
+    return [
+      {
+        label: 'Total Revenue', 
+        value: this.currencyPipe.transform(s?.totalRevenue || 0, 'USD', 'symbol', '1.0-0') || '$0',
+        description: 'Net earnings this month',
+        icon: 'payments', iconBg: 'bg-google-blue/10', iconColor: 'text-google-blue',
+        trend: s?.revenueTrend || '0%', trendVariant: (s?.revenueTrend?.startsWith('-') ? 'danger' : 'success') as BadgeVariant
+      },
+      {
+        label: 'Medical Staff', 
+        value: (s?.medicalStaffCount || 0).toLocaleString(),
+        description: 'Certified specialists',
+        icon: 'medical_services', iconBg: 'bg-google-indigo/10', iconColor: 'text-google-indigo',
+        trend: s?.staffTrend || 'Stable', trendVariant: 'neutral' as BadgeVariant
+      },
+      {
+        label: 'New Patients', 
+        value: (s?.newPatientsCount || 0).toLocaleString(),
+        description: 'Registered this month',
+        icon: 'person_add', iconBg: 'bg-google-emerald/10', iconColor: 'text-google-emerald',
+        trend: s?.patientTrend || '+0', trendVariant: 'success' as BadgeVariant
+      },
+      {
+        label: 'System Status', 
+        value: s?.systemStatus || 'Active',
+        description: 'All systems operational',
+        icon: 'shield', iconBg: 'bg-google-green/10', iconColor: 'text-google-green',
+        trend: 'Secure', trendVariant: 'success' as BadgeVariant
+      },
+    ];
+  });
 
-  liveAppointments = [
-    { patient: 'John Doe',       doctor: 'Dr. Sarah Johnson', time: '10:30 AM', status: 'CONFIRMED' },
-    { patient: 'Jane Smith',     doctor: 'Dr. Mike Ross',     time: '11:00 AM', status: 'WAITING' },
-    { patient: 'Robert Brown',   doctor: 'Dr. David King',    time: '11:15 AM', status: 'CONFIRMED' },
-    { patient: 'Emily Davis',    doctor: 'Dr. Sarah Johnson', time: '11:45 AM', status: 'WAITING' },
-    { patient: 'Michael Wilson', doctor: 'Dr. Lisa Chen',     time: '12:00 PM', status: 'CONFIRMED' },
-  ];
+  liveAppointments = computed(() => this.dashboardData()?.liveAppointments || []);
+  topHospitals = computed(() => this.dashboardData()?.topHospitals || []);
+  
+  quickStats = computed(() => {
+    const q = this.dashboardData()?.quickStats;
+    return [
+      { label: 'Appointments Today',   value: String(q?.appointmentsToday || 0),  icon: 'event_available' },
+      { label: 'Pending Prescriptions', value: String(q?.pendingPrescriptions || 0),  icon: 'description' },
+      { label: 'Active Hospitals',      value: String(q?.activeHospitals || 0),   icon: 'corporate_fare' },
+      { label: 'Open Invoices',         value: q?.openInvoicesAmount || '$0', icon: 'receipt_long' },
+    ];
+  });
 
-  topHospitals = [
-    { name: 'City Orthopedic',    city: 'Dhaka',      revenue: '$12,450', growth: '+15%' },
-    { name: 'Bone Health Center', city: 'Chittagong', revenue: '$8,200',  growth: '+8%'  },
-    { name: 'Metro General',      city: 'Sylhet',     revenue: '$5,900',  growth: '+12%' },
-    { name: 'Nightingale Clinic', city: 'Rajshahi',   revenue: '$3,100',  growth: '+5%'  },
-  ];
-
-  quickStats = [
-    { label: 'Appointments Today',   value: '48',  icon: 'event_available' },
-    { label: 'Pending Prescriptions', value: '12',  icon: 'description' },
-    { label: 'Active Hospitals',      value: '8',   icon: 'corporate_fare' },
-    { label: 'Open Invoices',         value: '$3.2k', icon: 'receipt_long' },
-  ];
+  getStatusVariant(status: string): BadgeVariant {
+    switch (status?.toUpperCase()) {
+      case 'CONFIRMED': return 'success';
+      case 'WAITING': return 'warning';
+      case 'CANCELLED': return 'danger';
+      default: return 'info';
+    }
+  }
 }
+

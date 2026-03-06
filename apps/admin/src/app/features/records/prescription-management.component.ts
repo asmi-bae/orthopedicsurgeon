@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, signal, inject, OnInit } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { 
   ZrdCardComponent, 
   ZrdButtonComponent, 
@@ -8,6 +8,8 @@ import {
 } from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { PRESCRIPTIONSService } from '../../core/services/api/prescriptions.service';
 
 @Component({
   selector: 'app-prescription-management',
@@ -19,7 +21,9 @@ import { MatMenuModule } from '@angular/material/menu';
     ZrdInputComponent,
     ZrdBadgeComponent,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    MatProgressBarModule,
+    DatePipe
   ],
   template: `
     <div class="space-y-8 animate-in fade-in duration-500">
@@ -44,6 +48,7 @@ import { MatMenuModule } from '@angular/material/menu';
             <zrd-input 
               placeholder="Search by patient, doctor or medication..." 
               [hasPrefix]="true"
+              (keyup)="applyFilter($event)"
             >
               <mat-icon prefix class="text-google-gray-400">search</mat-icon>
             </zrd-input>
@@ -56,6 +61,12 @@ import { MatMenuModule } from '@angular/material/menu';
           </div>
         </div>
 
+        @if (loading()) {
+          <div class="relative h-1 mb-6 -mx-6 overflow-hidden">
+             <mat-progress-bar mode="query" color="primary" class="absolute inset-0"></mat-progress-bar>
+          </div>
+        }
+
         <!-- Spartan Prescription Directory -->
         <div class="space-y-4">
           @for (p of prescriptions(); track p.id) {
@@ -67,23 +78,23 @@ import { MatMenuModule } from '@angular/material/menu';
 
               <!-- Primary Info -->
               <div class="flex-1 min-w-0">
-                <h3 class="font-bold text-base text-google-gray-900 dark:text-white m-0 tracking-tight group-hover:text-google-blue transition-colors">{{ p.patient }}</h3>
+                <h3 class="font-bold text-base text-google-gray-900 dark:text-white m-0 tracking-tight group-hover:text-google-blue transition-colors">{{ p.patientName }}</h3>
                 <div class="flex items-center gap-x-2 text-[10px] font-black uppercase tracking-widest text-google-gray-400 mt-1">
-                   <span>Dr. {{ p.doctor }}</span>
+                   <span>Dr. {{ p.doctorName }}</span>
                    <span class="w-1 h-1 rounded-full bg-google-gray-300"></span>
-                   <span>{{ p.date }}</span>
+                   <span>{{ p.prescribedAt | date:'mediumDate' }}</span>
                 </div>
               </div>
 
               <!-- Medication Details -->
-              <div class="flex flex-col sm:items-center text-left sm:text-center min-w-[150px]">
-                <span class="text-sm font-bold text-google-gray-900 dark:text-white tracking-tight">{{ p.medication }}</span>
-                <span class="text-[10px] font-black uppercase tracking-widest text-google-blue mt-1 bg-google-blue/5 px-2 py-0.5 rounded-full">{{ p.dosage }}</span>
+              <div class="flex flex-col sm:items-center text-left sm:text-center min-w-[200px]">
+                <span class="text-sm font-bold text-google-gray-900 dark:text-white tracking-tight truncate max-w-[200px]">{{ p.notes || 'Routine Medication' }}</span>
+                <span class="text-[10px] font-black uppercase tracking-widest text-google-blue mt-1 bg-google-blue/5 px-2 py-0.5 rounded-full">{{ p.status }}</span>
               </div>
 
               <!-- Governance Status -->
               <div class="flex items-center gap-4 shrink-0">
-                <zrd-badge [variant]="p.status === 'Active' ? 'success' : 'neutral'" class="font-black">
+                <zrd-badge [variant]="getStatusVariant(p.status)" class="font-black">
                   {{ p.status }}
                 </zrd-badge>
 
@@ -110,7 +121,7 @@ import { MatMenuModule } from '@angular/material/menu';
           }
         </div>
 
-        @if (prescriptions().length === 0) {
+        @if (prescriptions().length === 0 && !loading()) {
           <div class="py-24 text-center">
             <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
                <mat-icon class="text-google-gray-400 text-3xl">medication_liquid</mat-icon>
@@ -133,11 +144,39 @@ import { MatMenuModule } from '@angular/material/menu';
   `,
   styles: [`:host { display: block; }`]
 })
-export class PrescriptionManagementComponent {
-  prescriptions = signal([
-    { id: 1, patient: 'John Doe',      doctor: 'Sarah Johnson', date: 'Oct 15, 2024', medication: 'Ibuprofen 400mg',    dosage: '3x daily', status: 'Active' },
-    { id: 2, patient: 'Jane Smith',    doctor: 'Mike Ross',     date: 'Oct 16, 2024', medication: 'Amoxicillin 500mg', dosage: '2x daily', status: 'Active' },
-    { id: 3, patient: 'Robert Wilson', doctor: 'David King',    date: 'Oct 10, 2024', medication: 'Aspirin 100mg',     dosage: '1x daily', status: 'Expired' },
-    { id: 4, patient: 'Sarah Parker',  doctor: 'Lisa Chen',     date: 'Oct 20, 2024', medication: 'Metformin 500mg',   dosage: '2x daily', status: 'Active' },
-  ]);
+export class PrescriptionManagementComponent implements OnInit {
+  private prescriptionService = inject(PRESCRIPTIONSService);
+
+  prescriptions = signal<any[]>([]);
+  loading = signal(false);
+
+  ngOnInit() {
+    this.loadPrescriptions();
+  }
+
+  loadPrescriptions() {
+    this.loading.set(true);
+    this.prescriptionService.getAdminPrescriptions().subscribe({
+      next: (res: any) => {
+        const data = res?.data?.content || res?.data || [];
+        this.prescriptions.set(Array.isArray(data) ? data : []);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
+    });
+  }
+
+  applyFilter(event: Event) {
+    // filter logic
+  }
+
+  getStatusVariant(status: string): any {
+    const s = status?.toUpperCase();
+    if (s === 'ACTIVE') return 'success';
+    if (s === 'DISPENSED') return 'info';
+    if (s === 'EXPIRED') return 'neutral';
+    if (s === 'CANCELLED' || s === 'VOID') return 'error';
+    return 'neutral';
+  }
 }
+

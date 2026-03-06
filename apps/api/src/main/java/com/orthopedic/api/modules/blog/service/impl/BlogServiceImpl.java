@@ -22,7 +22,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -146,12 +148,24 @@ public class BlogServiceImpl {
         }
 
         @Transactional(readOnly = true)
-        public List<BlogPostResponse> getAllPostsForAdmin() {
-                return blogPostRepository.findAll().stream()
+        public List<BlogPostResponse> getAllPostsForAdmin(int page, int size) {
+                List<BlogPost> posts = blogPostRepository.findAll(PageRequest.of(page, size)).getContent();
+
+                if (posts.isEmpty()) {
+                        return Collections.emptyList();
+                }
+
+                List<UUID> postIds = posts.stream().map(BlogPost::getId).toList();
+                List<Object[]> counts = blogCommentRepository.countByPostIds(postIds);
+                Map<UUID, Long> countMap = counts.stream()
+                                .collect(Collectors.toMap(
+                                                row -> (UUID) row[0],
+                                                row -> (Long) row[1]));
+
+                return posts.stream()
                                 .map(post -> {
-                                        long commentCount = blogCommentRepository
-                                                        .countByPostIdAndIsApprovedTrue(post.getId());
-                                        BlogPostResponse resp = BlogPostResponse.builder()
+                                        long commentCount = countMap.getOrDefault(post.getId(), 0L);
+                                        return BlogPostResponse.builder()
                                                         .id(post.getId())
                                                         .title(post.getTitle())
                                                         .slug(post.getSlug())
@@ -169,9 +183,8 @@ public class BlogServiceImpl {
                                                         .commentsCount((int) commentCount)
                                                         .publishedAt(post.getPublishedAt())
                                                         .build();
-                                        return resp;
                                 })
-                                .toList();
+                                .collect(Collectors.toList());
         }
 
         @Transactional

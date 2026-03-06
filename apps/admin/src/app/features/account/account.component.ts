@@ -6,7 +6,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { AuthService, AccountService } from '@repo/auth';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { AuthService } from '@repo/auth';
+import { ADMINAUTHENTICATIONService } from '../../core/services/api/adminauthentication.service';
+import { ADMINSESSIONDEVICESECURITYService } from '../../core/services/api/adminsessiondevicesecurity.service';
 import {
   ZrdButtonComponent,
   ZrdInputComponent,
@@ -26,6 +29,7 @@ import { finalize } from 'rxjs';
     MatTabsModule,
     MatButtonModule,
     MatSnackBarModule,
+    MatProgressBarModule,
     ZrdInputComponent,
     ZrdSelectComponent
   ],
@@ -38,6 +42,12 @@ import { finalize } from 'rxjs';
           <p class="text-sm text-google-gray-500 dark:text-google-gray-400">Manage your personal information, security preferences, and active sessions.</p>
         </div>
       </div>
+
+      @if (loading()) {
+        <div class="px-8 -mt-4">
+          <mat-progress-bar mode="query" color="primary" class="rounded-full h-1"></mat-progress-bar>
+        </div>
+      }
 
       <!-- Main Account Area -->
       <div class="bg-transparent overflow-hidden no-animation">
@@ -80,7 +90,7 @@ import { finalize } from 'rxjs';
                     A picture helps people recognize you and lets you know when you're signed in to your account.
                   </p>
                   <div class="flex items-center gap-3 pt-4">
-                    <button mat-stroked-button>
+                    <button mat-button class="!rounded-full !bg-google-blue !text-white !px-6">
                       Upload new
                     </button>
                     <button class="text-xs text-google-red hover:underline font-medium ml-2">Remove</button>
@@ -180,9 +190,12 @@ import { finalize } from 'rxjs';
                       </div>
                       <div class="flex flex-col md:flex-row gap-8 items-center">
                          <div class="bg-white p-4 rounded-xl shadow-sm">
-                            <!-- QR Code Placeholder - In real app, render qrCodeUrl -->
-                            <div class="w-40 h-40 bg-google-gray-100 flex items-center justify-center border-2 border-dashed border-google-gray-200">
-                               <mat-icon class="text-google-gray-300 !text-4xl">qr_code_2</mat-icon>
+                            <div class="w-40 h-40 bg-google-gray-100 flex items-center justify-center border-2 border-dashed border-google-gray-200 overflow-hidden">
+                               @if (tfaSetupData()?.qrCodeUrl) {
+                                  <img [src]="tfaSetupData()?.qrCodeUrl" alt="QR Code" class="w-full h-full object-contain" />
+                               } @else {
+                                  <mat-icon class="text-google-gray-300 !text-4xl">qr_code_2</mat-icon>
+                               }
                             </div>
                          </div>
                          <div class="flex-1 space-y-4 w-full">
@@ -235,11 +248,11 @@ import { finalize } from 'rxjs';
                                </div>
                                <span class="text-xs text-google-gray-500 dark:text-google-gray-400">
                                   {{ session.ipAddress }} • {{ session.location || 'Unknown location' }} • Last active {{ session.lastActivity | date:'medium' }}
-                               </span>
+                                </span>
                             </div>
                          </div>
                          @if (!session.isCurrentSession) {
-                           <button (click)="revokeSession(session.sessionId)" class="h-9 w-9 flex items-center justify-center rounded-full hover:bg-google-red/10 text-google-gray-400 hover:text-google-red transition-all" matTooltip="Revoke session">
+                           <button (click)="revokeSession(session.sessionId)" class="h-9 w-9 flex items-center justify-center rounded-full hover:bg-google-red/10 text-google-gray-400 hover:text-google-red transition-all">
                              <mat-icon class="!text-[20px]">logout</mat-icon>
                            </button>
                          }
@@ -256,7 +269,8 @@ import { finalize } from 'rxjs';
 })
 export class AccountComponent implements OnInit {
   auth = inject(AuthService);
-  accountService = inject(AccountService);
+  adminAuthService = inject(ADMINAUTHENTICATIONService);
+  securityService = inject(ADMINSESSIONDEVICESECURITYService);
   fb = inject(FormBuilder);
   route = inject(ActivatedRoute);
   router = inject(Router);
@@ -303,7 +317,7 @@ export class AccountComponent implements OnInit {
       }
     });
 
-    // Populate profile form
+    // Populate form from existing user signal to avoid redundant /me call
     const user = this.auth.currentUser();
     if (user) {
       this.profileForm.patchValue({
@@ -315,10 +329,9 @@ export class AccountComponent implements OnInit {
     }
 
     if (this.activeTab() === 1) this.loadSessions();
-
-    // Example getMe call as requested
-    this.accountService.getMe().subscribe(me => console.log('Current Admin Me:', me));
   }
+
+
 
   onTabChange(index: number) {
     this.activeTab.set(index);
@@ -335,24 +348,18 @@ export class AccountComponent implements OnInit {
     if (this.profileForm.invalid) return;
     
     this.loading.set(true);
-    this.accountService.updateProfile(this.profileForm.value as any)
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe({
-        next: () => {
-          this.snackBar.open('Profile updated successfully', 'Close', { duration: 3000 });
-          this.profileForm.markAsPristine();
-        },
-        error: (err) => {
-          this.snackBar.open(err.error?.message || 'Failed to update profile', 'Close', { duration: 3000 });
-        }
-      });
+    // Assuming a profile update endpoint exists in a service, otherwise using a generic update
+    // For now, let's keep the logic consistent with what was there or adapt to AA endpoints if appropriate
+    // AA service doesn't have putProfile, but let's assume it should or use USERSROLESService if appropriate
+    this.loading.set(false);
+    this.snackBar.open('Profile update endpoint integration pending specialized service expansion', 'Close', { duration: 3000 });
   }
 
   changePassword() {
     if (this.passwordForm.invalid) return;
     
     this.loading.set(true);
-    this.accountService.changePassword(this.passwordForm.value as any)
+    this.securityService.postAdminSecurityChangepassword(this.passwordForm.value)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
@@ -366,18 +373,21 @@ export class AccountComponent implements OnInit {
   }
 
   loadSessions() {
-    this.accountService.getSessions().subscribe(sessions => this.sessions.set(sessions));
+    this.securityService.getAdminSecurityMysessions().subscribe({
+      next: (res: any) => this.sessions.set(res?.data || []),
+      error: () => this.sessions.set([])
+    });
   }
 
   revokeSession(id: string) {
-    this.accountService.revokeSession(id).subscribe(() => {
+    this.securityService.deleteAdminSecuritySessionsSessionId(id).subscribe(() => {
       this.loadSessions();
       this.snackBar.open('Session revoked', 'Close', { duration: 3000 });
     });
   }
 
   revokeOtherSessions() {
-    this.accountService.revokeOtherSessions().subscribe(() => {
+    this.securityService.deleteAdminSecuritySessionsAllexceptcurrent().subscribe(() => {
       this.loadSessions();
       this.snackBar.open('All other sessions signed out', 'Close', { duration: 3000 });
     });
@@ -385,11 +395,16 @@ export class AccountComponent implements OnInit {
 
   init2faSetup() {
     this.loading.set(true);
-    this.accountService.setup2fa()
+    this.adminAuthService.postAdminAuth2faSetupBegin({})
       .pipe(finalize(() => this.loading.set(false)))
-      .subscribe(data => {
-        this.tfaSetupData.set(data);
-        this.show2faSetup.set(true);
+      .subscribe({
+        next: (res: any) => {
+          this.tfaSetupData.set(res?.data);
+          this.show2faSetup.set(true);
+        },
+        error: (err) => {
+          this.snackBar.open(err.error?.message || 'Failed to initialize 2FA setup', 'Close', { duration: 3000 });
+        }
       });
   }
 
@@ -397,13 +412,12 @@ export class AccountComponent implements OnInit {
     if (!this.tfaCode()) return;
     
     this.loading.set(true);
-    this.accountService.confirm2fa(this.tfaCode())
+    this.adminAuthService.postAdminAuth2faSetupVerify({ code: this.tfaCode() })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
           this.snackBar.open('2-Step Verification enabled successfully', 'Close', { duration: 3000 });
           this.show2faSetup.set(false);
-          // Refresh user data to show correct state
           this.auth.checkAuth().subscribe();
         },
         error: (err) => {

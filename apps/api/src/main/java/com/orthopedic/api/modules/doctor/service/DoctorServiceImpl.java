@@ -50,7 +50,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "doctors", key = "#filters.toString() + #pageable.pageNumber")
+    @Cacheable(value = "doctors", key = "{#filters, #pageable.pageNumber}")
     public PageResponse<DoctorSummaryResponse> getAllDoctors(DoctorFilterRequest filters, Pageable pageable) {
         Page<Doctor> doctors = doctorRepository.findAvailableDoctors(
                 filters.getSpecialization(),
@@ -108,7 +108,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "doctor_slots", key = "#doctorId + #date.toString()")
+    @Cacheable(value = "doctor_slots", key = "{#doctorId, #date}")
     public List<LocalTime> getAvailableSlots(UUID doctorId, LocalDate date) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));

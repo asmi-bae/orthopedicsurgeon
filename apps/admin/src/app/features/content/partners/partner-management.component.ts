@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { 
   ZrdCardComponent, 
@@ -8,6 +8,8 @@ import {
 } from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { WEBSITECONTROLService } from '../../../core/services/api/websitecontrol.service';
 
 @Component({
   selector: 'app-partner-management',
@@ -19,7 +21,8 @@ import { MatMenuModule } from '@angular/material/menu';
     ZrdInputComponent,
     ZrdBadgeComponent,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    MatProgressBarModule
   ],
   template: `
     <div class="space-y-8 animate-in fade-in duration-500">
@@ -42,6 +45,7 @@ import { MatMenuModule } from '@angular/material/menu';
           <zrd-input 
             placeholder="Search alliance partners..." 
             [hasPrefix]="true"
+            (keyup)="applyFilter($event)"
           >
             <mat-icon prefix class="text-google-gray-400">hub</mat-icon>
           </zrd-input>
@@ -53,6 +57,12 @@ import { MatMenuModule } from '@angular/material/menu';
            </zrd-button>
         </div>
       </div>
+
+      @if (loading()) {
+        <div class="relative h-1 mb-6 -mx-6 overflow-hidden">
+           <mat-progress-bar mode="query" color="primary" class="absolute inset-0"></mat-progress-bar>
+        </div>
+      }
 
       <!-- Spartan Alliance Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -92,13 +102,13 @@ import { MatMenuModule } from '@angular/material/menu';
 
             <div>
               <h3 class="font-black text-lg text-google-gray-900 dark:text-white m-0 tracking-tight group-hover:text-google-blue transition-colors">{{ partner.name }}</h3>
-              <p class="text-[10px] font-black uppercase tracking-widest text-google-gray-400 mt-1">{{ partner.category }}</p>
+              <p class="text-[10px] font-black uppercase tracking-widest text-google-gray-400 mt-1">{{ partner.categoryName || partner.category }}</p>
             </div>
 
             <div class="flex items-center justify-between mt-8 pt-4 border-t border-google-gray-100 dark:border-white/5">
                <div class="flex items-center gap-1.5 text-google-gray-500">
                   <mat-icon class="text-[14px]">calendar_today</mat-icon>
-                  <span class="text-xs font-bold tracking-tight">Active since {{ partner.since }}</span>
+                  <span class="text-xs font-bold tracking-tight">Active status verified</span>
                </div>
                <zrd-button variant="ghost" size="sm" class="px-2">History</zrd-button>
             </div>
@@ -106,7 +116,7 @@ import { MatMenuModule } from '@angular/material/menu';
         }
       </div>
 
-      @if (partners().length === 0) {
+      @if (partners().length === 0 && !loading()) {
         <div class="py-24 text-center">
           <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
              <mat-icon class="text-google-gray-400 text-3xl">handshake</mat-icon>
@@ -119,13 +129,30 @@ import { MatMenuModule } from '@angular/material/menu';
   `,
   styles: [`:host { display: block; }`]
 })
-export class PartnerManagementComponent {
-  partners = signal([
-    { id: 1, name: 'Metro Health Group',    category: 'Hospital Network',     active: true,  since: '2022' },
-    { id: 2, name: 'PhysioFirst',           category: 'Rehabilitation Center', active: true,  since: '2023' },
-    { id: 3, name: 'BioMed Innovations',    category: 'Medical Technology',    active: true,  since: '2021' },
-    { id: 4, name: 'Global Health Fund',    category: 'Healthcare Foundation', active: false, since: '2023' },
-    { id: 5, name: 'SurgeTech Labs',        category: 'Research & Development', active: true, since: '2024' },
-    { id: 6, name: 'CareBridge Insurance',  category: 'Insurance Provider',    active: true,  since: '2022' },
-  ]);
+export class PartnerManagementComponent implements OnInit {
+  private websiteService = inject(WEBSITECONTROLService);
+
+  partners = signal<any[]>([]);
+  loading = signal(false);
+
+  ngOnInit() {
+    this.loadPartners();
+  }
+
+  loadPartners() {
+    this.loading.set(true);
+    this.websiteService.getAdminWebsitePartners().subscribe({
+      next: (res: any) => {
+        const data = res?.data || [];
+        this.partners.set(Array.isArray(data) ? data : []);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
+    });
+  }
+
+  applyFilter(event: Event) {
+    // filter logic
+  }
 }
+

@@ -10,8 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { AdminApiService } from '@core/services/admin-api.service';
-import { DoctorSummary } from '@repo/types';
+import { DOCTORSMANAGEMENTService } from '../../core/services/api/doctorsmanagement.service';
 
 @Component({
   selector: 'app-doctor-management',
@@ -87,10 +86,12 @@ import { DoctorSummary } from '@repo/types';
                   <td class="px-6 py-5 pl-10">
                     <div class="flex items-center gap-4">
                       <div class="w-11 h-11 rounded-2xl bg-google-blue/10 flex items-center justify-center text-sm font-black text-google-blue shrink-0">
-                        {{ row.firstName[0] }}
+                        {{ (row.user?.firstName || row.firstName || '?')[0] }}
                       </div>
                       <div>
-                        <p class="font-bold text-sm text-google-gray-900 dark:text-white m-0 tracking-tight">Dr. {{ row.firstName }} {{ row.lastName }}</p>
+                        <p class="font-bold text-sm text-google-gray-900 dark:text-white m-0 tracking-tight text-nowrap">
+                          Dr. {{ row.user?.firstName || row.firstName }} {{ row.user?.lastName || row.lastName }}
+                        </p>
                         <p class="text-[10px] uppercase font-black tracking-widest text-google-gray-400 m-0">ID: {{ row.id.split('-')[0].toUpperCase() }}</p>
                       </div>
                     </div>
@@ -101,12 +102,12 @@ import { DoctorSummary } from '@repo/types';
                   <td class="px-6 py-5">
                     <div class="flex items-center gap-2 text-google-gray-600 dark:text-google-gray-400">
                       <mat-icon class="text-[18px]">domain</mat-icon>
-                      <span class="text-sm font-bold">{{ row.hospitalName || 'Freelance' }}</span>
+                      <span class="text-sm font-bold text-nowrap">{{ row.hospitalName || 'Freelance' }}</span>
                     </div>
                   </td>
                   <td class="px-6 py-5">
-                    <zrd-badge [variant]="$any(row.status === 'ACTIVE' ? 'success' : 'neutral')">
-                      {{ row.status === 'ACTIVE' ? 'Active' : 'Inactive' }}
+                    <zrd-badge [variant]="getStatusVariant(row.status)">
+                      {{ row.status }}
                     </zrd-badge>
                   </td>
                   <td class="px-6 py-5 text-right pr-10">
@@ -159,23 +160,36 @@ import { DoctorSummary } from '@repo/types';
   styles: [`:host { display: block; }`]
 })
 export class DoctorManagementComponent implements OnInit {
-  private api = inject(AdminApiService);
+  private doctorService = inject(DOCTORSMANAGEMENTService);
 
-  doctors = signal<DoctorSummary[]>([]);
+  doctors = signal<any[]>([]);
   loading = signal(false);
-  displayedColumns = ['name', 'specialization', 'hospital', 'status', 'actions'];
 
-  ngOnInit() { this.loadDoctors(); }
+  ngOnInit() {
+    this.loadDoctors();
+  }
 
   loadDoctors() {
     this.loading.set(true);
-    this.api.getDoctors().subscribe({
-      next: (res) => { this.doctors.set(res.data.content); this.loading.set(false); },
-      error: () => { this.loading.set(false); }
+    this.doctorService.getAdminDoctors().subscribe({
+      next: (res: any) => {
+        const data = res?.data?.content || res?.data || [];
+        this.doctors.set(Array.isArray(data) ? data : []);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
     });
   }
 
   applyFilter(event: Event) {
-    // server-side filtering can be implemented here
+    // filter logic
+  }
+
+  getStatusVariant(status: string): any {
+    const s = status?.toUpperCase();
+    if (s === 'ACTIVE' || s === 'AVAILABLE') return 'success';
+    if (s === 'INACTIVE' || s === 'BUSY') return 'neutral';
+    if (s === 'PENDING') return 'warning';
+    return 'neutral';
   }
 }

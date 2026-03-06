@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { 
   ZrdCardComponent, 
   ZrdButtonComponent, 
@@ -9,19 +10,23 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { APPOINTMENTSMANAGEMENTService } from '../../core/services/api/appointmentsmanagement.service';
 
 @Component({
   selector: 'app-appointment-management',
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     ZrdCardComponent, 
     ZrdButtonComponent, 
     ZrdInputComponent,
     ZrdBadgeComponent,
     MatIconModule,
     MatMenuModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressBarModule
   ],
   template: `
     <div class="space-y-8 animate-in fade-in duration-500">
@@ -40,7 +45,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
       <!-- Summary Layer -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-        @for (s of summaryStats; track s.label) {
+        @for (s of summary(); track s.label) {
           <zrd-card variant="default" class="group hover:bg-google-gray-50 dark:hover:bg-white/5 transition-all">
             <p class="text-2xl font-black text-google-gray-900 dark:text-white m-0 tracking-tight">{{ s.value }}</p>
             <p class="text-xs font-bold text-google-gray-500 m-0 mt-1 uppercase tracking-widest">{{ s.label }}</p>
@@ -56,6 +61,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
             <zrd-input 
               placeholder="Search appointments..." 
               [hasPrefix]="true"
+              (keyup)="applyFilter($event)"
             >
               <mat-icon prefix class="text-google-gray-400">search</mat-icon>
             </zrd-input>
@@ -67,6 +73,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
              </zrd-button>
           </div>
         </div>
+
+        @if (loading()) {
+          <div class="relative h-1 mb-6 -mx-6 overflow-hidden">
+             <mat-progress-bar mode="query" color="primary" class="absolute inset-0"></mat-progress-bar>
+          </div>
+        }
 
         <!-- Spartan Appointment Table -->
         <div class="overflow-x-auto -mx-6">
@@ -81,26 +93,26 @@ import { MatTooltipModule } from '@angular/material/tooltip';
               </tr>
             </thead>
             <tbody class="divide-y divide-google-gray-100 dark:divide-white/5">
-              @for (row of appointments(); track row.patient) {
+              @for (row of appointments(); track row.id) {
                 <tr class="hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors group cursor-pointer">
                   <td class="px-6 py-5 pl-10">
                     <div class="flex items-center gap-4">
                       <div class="w-10 h-10 rounded-full bg-google-blue/10 flex items-center justify-center text-sm font-black text-google-blue shrink-0">
-                        {{ row.patient.charAt(0) }}
+                        {{ row.patient?.fullName?.charAt(0) || 'A' }}
                       </div>
-                      <span class="font-bold text-sm text-google-gray-900 dark:text-white tracking-tight">{{ row.patient }}</span>
+                      <span class="font-bold text-sm text-google-gray-900 dark:text-white tracking-tight">{{ row.patient?.fullName }}</span>
                     </div>
                   </td>
                   <td class="px-6 py-5">
                     <div class="flex items-center gap-2 text-google-gray-600 dark:text-google-gray-400">
                       <mat-icon class="text-[18px]">medical_services</mat-icon>
-                      <span class="text-sm font-bold">{{ row.doctor }}</span>
+                      <span class="text-sm font-bold">{{ row.doctor?.fullName }}</span>
                     </div>
                   </td>
                   <td class="px-6 py-5">
                     <div class="flex flex-col">
-                       <span class="text-sm font-bold text-google-gray-900 dark:text-white">{{ row.date }}</span>
-                       <span class="text-[10px] text-google-gray-400 uppercase font-black tracking-widest">{{ row.time }}</span>
+                       <span class="text-sm font-bold text-google-gray-900 dark:text-white">{{ row.appointmentDate }}</span>
+                       <span class="text-[10px] text-google-gray-400 uppercase font-black tracking-widest">{{ row.startTime }}</span>
                     </div>
                   </td>
                   <td class="px-6 py-5">
@@ -132,6 +144,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
               }
             </tbody>
           </table>
+          
+          @if (appointments().length === 0 && !loading()) {
+            <div class="py-24 text-center">
+              <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                <mat-icon class="text-google-gray-400 text-3xl">event_busy</mat-icon>
+              </div>
+              <h3 class="font-bold text-google-gray-900 dark:text-white">No Appointments</h3>
+              <p class="text-sm text-google-gray-500 max-w-xs mx-auto mt-2">No clinical sessions found for the selected period.</p>
+            </div>
+          }
         </div>
 
         <div class="px-6 py-4 mt-6 border-t border-google-gray-100 dark:border-white/5 flex items-center justify-between">
@@ -146,28 +168,60 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   `,
   styles: [`:host { display: block; }`]
 })
-export class AppointmentManagementComponent {
-  summaryStats = [
-    { label: 'Total Today',  value: '48' },
-    { label: 'Confirmed',    value: '32' },
-    { label: 'Pending',      value: '12' },
-    { label: 'Cancelled',    value: '4'  },
-  ];
+export class AppointmentManagementComponent implements OnInit {
+  private appointmentService = inject(APPOINTMENTSMANAGEMENTService);
 
-  appointments = signal([
-    { patient: 'John Doe',      doctor: 'Dr. Sarah Johnson', date: 'Oct 24, 2024', time: '10:00 AM', status: 'CONFIRMED' },
-    { patient: 'Jane Smith',    doctor: 'Dr. Mike Ross',     date: 'Oct 24, 2024', time: '11:00 AM', status: 'PENDING'   },
-    { patient: 'Robert Wilson', doctor: 'Dr. Sarah Johnson', date: 'Oct 25, 2024', time: '02:30 PM', status: 'CONFIRMED' },
-    { patient: 'Sarah Parker',  doctor: 'Dr. Mike Ross',     date: 'Oct 25, 2024', time: '09:15 AM', status: 'CONFIRMED' },
-    { patient: 'Emily Davis',   doctor: 'Dr. Lisa Chen',     date: 'Oct 26, 2024', time: '03:00 PM', status: 'CANCELLED' },
-  ]);
+  appointments = signal<any[]>([]);
+  stats = signal<any>(null);
+  loading = signal(false);
+
+  summary = computed(() => {
+    const s = this.stats();
+    return [
+      { label: 'Total Today',  value: String(s?.totalAppointments || 0) },
+      { label: 'Confirmed',    value: String(s?.confirmedAppointments || 0) },
+      { label: 'Pending',      value: String(s?.pendingAppointments || 0) },
+      { label: 'Cancelled',    value: String(s?.cancelledAppointments || 0) },
+    ];
+  });
+
+  ngOnInit() {
+    this.loadData();
+  }
+
+  loadData() {
+    this.loading.set(true);
+    // Load list
+    this.appointmentService.getAdminAppointments().subscribe({
+      next: (res) => {
+        const data = res?.data?.content || res?.data || [];
+        this.appointments.set(Array.isArray(data) ? data : []);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
+    });
+
+    // Load stats
+    this.appointmentService.getAdminAppointmentsStats().subscribe({
+      next: (res) => {
+        this.stats.set(res?.data);
+      }
+    });
+  }
+
+  applyFilter(event: Event) {
+    // filter logic can be added here
+  }
 
   getStatusVariant(status: string): any {
     const m: Record<string, string> = {
       CONFIRMED: 'success',
       PENDING:   'warning',
       CANCELLED: 'danger',
+      COMPLETED: 'info',
+      WAITING: 'warning'
     };
-    return m[status] ?? 'neutral';
+    return m[status?.toUpperCase()] ?? 'neutral';
   }
 }
+

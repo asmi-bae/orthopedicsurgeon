@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { Component, signal, inject, OnInit, computed } from '@angular/core';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { 
   ZrdCardComponent, 
   ZrdButtonComponent, 
@@ -9,6 +9,8 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { PAYMENTSService } from '../../core/services/api/payments.service';
+import { REPORTSService } from '../../core/services/api/reports.service';
 
 @Component({
   selector: 'app-finance-management',
@@ -24,6 +26,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatMenuModule,
     MatProgressBarModule
   ],
+  providers: [CurrencyPipe],
   template: `
     <div class="space-y-8 animate-in fade-in duration-500">
 
@@ -41,14 +44,14 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 
       <!-- Financial Summary Layer -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        @for (s of summaryCards; track s.label) {
+        @for (s of summary(); track s.label) {
           <zrd-card variant="default" class="group relative overflow-hidden">
             <div class="flex items-center justify-between mb-6">
               <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-google-gray-50 dark:bg-white/5 transition-colors group-hover:bg-google-blue/10">
                 <mat-icon class="text-[24px]" [class]="s.iconColor">{{ s.icon }}</mat-icon>
               </div>
-              <zrd-badge [variant]="s.badge.includes('+') ? 'success' : 'neutral'" class="font-black text-[10px]">
-                {{ s.badge }}
+              <zrd-badge [variant]="$any(s.trend >= 0 ? 'success' : 'neutral')" class="font-black text-[10px]">
+                {{ s.trend >= 0 ? '+' : '' }}{{ s.trend }}%
               </zrd-badge>
             </div>
             <div class="flex flex-col">
@@ -57,7 +60,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
             </div>
             <!-- Delta Progress Indicator -->
             <div class="h-1 bg-google-gray-100 dark:bg-white/5 mt-6 rounded-full overflow-hidden">
-               <div class="h-full bg-google-blue" [style.width.%]="s.badge.includes('+') ? 75 : 45"></div>
+               <div class="h-full bg-google-blue" [style.width.%]="s.trend >= 0 ? 75 : 45"></div>
             </div>
           </zrd-card>
         }
@@ -72,11 +75,18 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
             <zrd-input 
               placeholder="Search by TX-ID or patient name..." 
               [hasPrefix]="true"
+              (keyup)="applyFilter($event)"
             >
               <mat-icon prefix class="text-google-gray-400">payments</mat-icon>
             </zrd-input>
           </div>
         </div>
+
+        @if (loading()) {
+          <div class="relative h-1 mb-6 -mx-6 overflow-hidden">
+             <mat-progress-bar mode="query" color="primary" class="absolute inset-0"></mat-progress-bar>
+          </div>
+        }
 
         <!-- Spartan Ledger Table -->
         <div class="overflow-x-auto -mx-6">
@@ -94,27 +104,29 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
               @for (row of transactions(); track row.id) {
                 <tr class="hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors group cursor-pointer">
                   <td class="px-6 py-5 pl-10">
-                    <span class="font-mono text-xs font-black text-google-gray-400 group-hover:text-google-blue transition-colors">{{ row.id }}</span>
+                    <span class="font-mono text-xs font-black text-google-gray-400 group-hover:text-google-blue transition-colors">
+                      {{ row.id.split('-')[0] }}
+                    </span>
                   </td>
                   <td class="px-6 py-5">
                     <div class="flex items-center gap-3">
                       <div class="w-9 h-9 rounded-full bg-google-blue/10 flex items-center justify-center text-[10px] font-black text-google-blue uppercase shrink-0 tracking-tighter">
-                        {{ row.patient.charAt(0) }}
+                        {{ row.patientName?.charAt(0) || 'P' }}
                       </div>
-                      <span class="text-sm font-bold text-google-gray-900 dark:text-white tracking-tight">{{ row.patient }}</span>
+                      <span class="text-sm font-bold text-google-gray-900 dark:text-white tracking-tight">{{ row.patientName }}</span>
                     </div>
                   </td>
                   <td class="px-6 py-5">
-                    <span class="text-sm font-black text-google-gray-900 dark:text-white">{{ row.amount | currency }}</span>
+                    <span class="text-sm font-black text-google-gray-900 dark:text-white">{{ row.totalAmount | currency }}</span>
                   </td>
                   <td class="px-6 py-5">
-                    <zrd-badge [variant]="row.status === 'SUCCESS' ? 'success' : 'warning'" class="font-black">
-                      {{ row.status === 'SUCCESS' ? 'Settled' : 'Unprocessed' }}
+                    <zrd-badge [variant]="row.status === 'COMPLETED' || row.status === 'SUCCESS' ? 'success' : 'warning'" class="font-black">
+                      {{ (row.status === 'COMPLETED' || row.status === 'SUCCESS') ? 'Settled' : 'Unprocessed' }}
                     </zrd-badge>
                   </td>
                   <td class="px-6 py-5 text-right pr-10">
                     <div class="flex flex-col items-end">
-                       <span class="text-sm font-bold text-google-gray-600 dark:text-google-gray-400 tracking-tight">{{ row.date }}</span>
+                       <span class="text-sm font-bold text-google-gray-600 dark:text-google-gray-400 tracking-tight">{{ (row.paymentDate || row.createdAt) | date:'mediumDate' }}</span>
                        <span class="text-[10px] uppercase font-black tracking-widest text-google-emerald group-hover:translate-x-[-4px] transition-transform">✓ Audit Verified</span>
                     </div>
                   </td>
@@ -122,6 +134,16 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
               }
             </tbody>
           </table>
+
+          @if (transactions().length === 0 && !loading()) {
+            <div class="py-24 text-center">
+              <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                <mat-icon class="text-google-gray-400 text-3xl">account_balance_wallet</mat-icon>
+              </div>
+              <h3 class="font-bold text-google-gray-900 dark:text-white">No Ledger Entries</h3>
+              <p class="text-sm text-google-gray-500 max-w-xs mx-auto mt-2">No transaction data found in the current audit cycle.</p>
+            </div>
+          }
         </div>
 
         <!-- Ledger Footer -->
@@ -136,18 +158,68 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
   `,
   styles: [`:host { display: block; }`]
 })
-export class FinanceManagementComponent {
-  summaryCards = [
-    { label: 'Net Revenue',         value: '$1.24M', icon: 'payments',         iconBg: 'bg-google-blue/10',   iconColor: 'text-google-blue',  badge: '+12.5%',  badgeClass: 'bg-google-emerald/10 text-google-emerald' },
-    { label: 'Pending Claims',      value: '452',    icon: 'pending_actions',  iconBg: 'bg-google-red/10',    iconColor: 'text-google-red',   badge: 'Review',  badgeClass: 'bg-google-red/10 text-google-red'   },
-    { label: 'Provider Payouts',    value: '$842k',  icon: 'output',           iconBg: 'bg-google-indigo/10', iconColor: 'text-google-indigo', badge: 'Stable',  badgeClass: 'bg-google-gray-100 text-google-gray-600' },
-  ];
+export class FinanceManagementComponent implements OnInit {
+  private paymentService = inject(PAYMENTSService);
+  private reportService = inject(REPORTSService);
+  private currencyPipe = inject(CurrencyPipe);
 
-  transactions = signal([
-    { id: 'TX-500', patient: 'John Doe',      amount: 150.00,  status: 'SUCCESS', date: 'Oct 15, 2024' },
-    { id: 'TX-501', patient: 'Jane Smith',    amount: 45.00,   status: 'SUCCESS', date: 'Oct 16, 2024' },
-    { id: 'TX-502', patient: 'Robert Wilson', amount: 2450.00, status: 'PENDING', date: 'Oct 18, 2024' },
-    { id: 'TX-503', patient: 'Sarah Parker',  amount: 320.00,  status: 'SUCCESS', date: 'Oct 22, 2024' },
-    { id: 'TX-504', patient: 'Emily Davis',   amount: 890.00,  status: 'PENDING', date: 'Oct 23, 2024' },
-  ]);
+  transactions = signal<any[]>([]);
+  stats = signal<any>(null);
+  loading = signal(false);
+
+  summary = computed(() => {
+    const s = this.stats();
+    return [
+      { 
+        label: 'Net Revenue', 
+        value: this.currencyPipe.transform(s?.totalRevenue || 0, 'USD', 'symbol', '1.0-0') || '$0', 
+        icon: 'payments', 
+        iconColor: 'text-google-blue', 
+        trend: s?.revenueTrend || 0 
+      },
+      { 
+        label: 'Pending Claims', 
+        value: String(s?.pendingClaims || 0), 
+        icon: 'pending_actions', 
+        iconColor: 'text-google-red', 
+        trend: s?.claimsTrend || 0 
+      },
+      { 
+        label: 'Audit Verified', 
+        value: this.currencyPipe.transform(s?.verifiedRevenue || 0, 'USD', 'symbol', '1.0-0') || '$0', 
+        icon: 'output', 
+        iconColor: 'text-google-indigo', 
+        trend: s?.verifyTrend || 0 
+      },
+    ];
+  });
+
+  ngOnInit() {
+    this.loadData();
+  }
+
+  loadData() {
+    this.loading.set(true);
+    // Load ledger
+    this.paymentService.getAdminPayments().subscribe({
+      next: (res: any) => {
+        const data = res?.data?.content || res?.data || [];
+        this.transactions.set(Array.isArray(data) ? data : []);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
+    });
+
+    // Load financial summary
+    this.reportService.getAdminReportsFinancial().subscribe({
+      next: (res: any) => {
+        this.stats.set(res?.data);
+      }
+    });
+  }
+
+  applyFilter(event: Event) {
+    // filter logic
+  }
 }
+

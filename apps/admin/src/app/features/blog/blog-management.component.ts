@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, signal, inject, OnInit } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { 
   ZrdCardComponent, 
   ZrdButtonComponent, 
@@ -8,6 +8,8 @@ import {
 } from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { BLOGMANAGEMENTService } from '../../core/services/api/blogmanagement.service';
 
 @Component({
   selector: 'app-blog-management',
@@ -19,7 +21,8 @@ import { MatMenuModule } from '@angular/material/menu';
     ZrdInputComponent,
     ZrdBadgeComponent,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    MatProgressBarModule
   ],
   template: `
     <div class="space-y-8 animate-in fade-in duration-500">
@@ -44,6 +47,7 @@ import { MatMenuModule } from '@angular/material/menu';
             <zrd-input 
               placeholder="Search articles by title or author..." 
               [hasPrefix]="true"
+              (keyup)="applyFilter($event)"
             >
               <mat-icon prefix class="text-google-gray-400">search</mat-icon>
             </zrd-input>
@@ -55,6 +59,12 @@ import { MatMenuModule } from '@angular/material/menu';
              </zrd-button>
           </div>
         </div>
+
+        @if (loading()) {
+          <div class="relative h-1 mb-6 -mx-6 overflow-hidden">
+             <mat-progress-bar mode="query" color="primary" class="absolute inset-0"></mat-progress-bar>
+          </div>
+        }
 
         <!-- Spartan Editorial List -->
         <div class="space-y-4">
@@ -68,14 +78,18 @@ import { MatMenuModule } from '@angular/material/menu';
                   <div>
                     <h3 class="font-bold text-base text-google-gray-900 dark:text-white m-0 tracking-tight transition-colors group-hover:text-google-blue">{{ post.title }}</h3>
                     <div class="flex items-center gap-x-2 text-[10px] font-black uppercase tracking-widest text-google-gray-400 mt-1">
-                       <span>{{ post.author }}</span>
+                       <span>{{ post.authorName }}</span>
                        <span class="w-1 h-1 rounded-full bg-google-gray-300"></span>
-                       <span>{{ post.date }}</span>
+                       <span>{{ (post.publishedAt || post.createdAt) | date:'mediumDate' }}</span>
+                       @if (post.categoryName) {
+                         <span class="w-1 h-1 rounded-full bg-google-gray-300"></span>
+                         <span class="text-google-blue">#{{ post.categoryName }}</span>
+                       }
                     </div>
                     <p class="text-sm text-google-gray-600 dark:text-google-gray-400 m-0 mt-3 line-clamp-2 leading-relaxed">{{ post.excerpt }}</p>
                   </div>
                   <div class="flex items-center gap-3 shrink-0">
-                    <zrd-badge [variant]="post.status === 'Published' ? 'success' : 'warning'" class="font-black">
+                    <zrd-badge [variant]="getStatusVariant(post.status)" class="font-black">
                       {{ post.status }}
                     </zrd-badge>
                     <button [matMenuTriggerFor]="menu" class="p-2 h-9 w-9 flex items-center justify-center rounded-full hover:bg-google-gray-200 dark:hover:bg-white/10 text-google-gray-400 transition-all">
@@ -103,7 +117,7 @@ import { MatMenuModule } from '@angular/material/menu';
           }
         </div>
 
-        @if (posts().length === 0) {
+        @if (posts().length === 0 && !loading()) {
           <div class="py-24 text-center">
             <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
                <mat-icon class="text-google-gray-400 text-3xl">auto_stories</mat-icon>
@@ -126,10 +140,38 @@ import { MatMenuModule } from '@angular/material/menu';
   `,
   styles: [`:host { display: block; }`]
 })
-export class BlogManagementComponent {
-  posts = signal([
-    { id: 1, title: 'Understanding Orthopedic Implants', author: 'Dr. Sarah Johnson', date: 'Oct 15, 2024', excerpt: 'A comprehensive guide to modern orthopedic implant technologies and their applications in joint replacement surgery.', status: 'Published' },
-    { id: 2, title: 'Post-Surgery Rehabilitation Tips', author: 'Dr. Mike Ross',     date: 'Oct 18, 2024', excerpt: 'Essential exercises and recovery milestones for patients recovering from orthopedic procedures.', status: 'Published' },
-    { id: 3, title: 'Bone Health After 50',              author: 'Dr. Lisa Chen',     date: 'Oct 22, 2024', excerpt: 'Lifestyle and nutritional recommendations to maintain strong bones as you age.', status: 'Draft' },
-  ]);
+export class BlogManagementComponent implements OnInit {
+  private blogService = inject(BLOGMANAGEMENTService);
+
+  posts = signal<any[]>([]);
+  loading = signal(false);
+
+  ngOnInit() {
+    this.loadPosts();
+  }
+
+  loadPosts() {
+    this.loading.set(true);
+    this.blogService.getAdminBlogPosts().subscribe({
+      next: (res: any) => {
+        const data = res?.data?.content || res?.data || [];
+        this.posts.set(Array.isArray(data) ? data : []);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
+    });
+  }
+
+  applyFilter(event: Event) {
+    // filter logic
+  }
+
+  getStatusVariant(status: string): any {
+    const s = status?.toUpperCase();
+    if (s === 'PUBLISHED') return 'success';
+    if (s === 'DRAFT') return 'warning';
+    if (s === 'ARCHIVED') return 'neutral';
+    return 'neutral';
+  }
 }
+

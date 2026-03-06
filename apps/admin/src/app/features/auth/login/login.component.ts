@@ -1,13 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  FormControl, 
-  FormGroupDirective, 
-  NgForm, 
-  Validators, 
-  FormsModule, 
-  ReactiveFormsModule, 
-  FormBuilder 
+import {
+  FormControl,
+  FormGroupDirective,
+  NgForm,
+  Validators,
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -22,7 +22,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
 
-/** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
@@ -51,19 +50,24 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     <div class="min-h-screen flex flex-col lg:flex-row overflow-hidden bg-white">
       <!-- Left Side: Image -->
       <div class="hidden lg:flex lg:w-1/2 relative bg-slate-100">
-        <img src="assets/images/auth-bg.png" alt="Precision Orthopedics" class="absolute inset-0 w-full h-full object-cover">
+        <img src="assets/images/auth-bg.png" alt="Dr. Ab Rahman Orthopedic" class="absolute inset-0 w-full h-full object-cover">
         <div class="absolute inset-0 bg-primary-900/10 backdrop-blur-[1px]"></div>
-        <!-- Blurry End Transition -->
         <div class="absolute inset-y-0 right-0 w-32 bg-gradient-to-r from-transparent to-white pointer-events-none"></div>
-        <div class="absolute inset-0 flex flex-col justify-end p-16 text-white bg-gradient-to-t from-slate-900/60 to-transparent">
-          <h1 class="text-5xl font-bold mb-4 tracking-tight">Precision Console</h1>
-          <p class="text-xl opacity-90 max-w-lg leading-relaxed font-light">
-            Advanced Management Interface for Orthopedic Surgeons & Clinical Excellence.
+        <div class="absolute inset-0 flex flex-col justify-end p-16 text-white bg-gradient-to-t from-slate-900/70 to-transparent">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
+              <mat-icon class="text-white text-[30px]">medical_services</mat-icon>
+            </div>
+          </div>
+          <h1 class="text-5xl font-bold mb-4 tracking-tight">Dr. Ab Rahman</h1>
+          <p class="text-xl opacity-90 font-light mb-2">Orthopedic Surgeon</p>
+          <p class="text-base opacity-70 max-w-lg leading-relaxed font-light">
+            Secure clinical management portal for patient care, appointments, and practice administration.
           </p>
         </div>
       </div>
 
-      <!-- Right Side: Form Content -->
+      <!-- Right Side: Form -->
       <div class="flex-1 flex items-center justify-center p-8 sm:p-16 bg-white overflow-y-auto">
         <div class="w-full max-w-md">
           <mat-card class="w-full border border-slate-200 shadow-xl shadow-slate-200/50 rounded-2xl">
@@ -72,10 +76,10 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
                 <mat-icon class="scale-[2]">admin_panel_settings</mat-icon>
               </div>
               <mat-card-title class="text-2xl font-medium m-0 text-center">
-                Precision Admin
+                Admin Console
               </mat-card-title>
               <mat-card-subtitle class="mt-2 text-sm text-slate-500 text-center">
-                Enter your credentials to access the console
+                Dr. Ab Rahman — Orthopedic Surgeon Practice
               </mat-card-subtitle>
             </mat-card-header>
 
@@ -95,7 +99,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
                 <mat-form-field appearance="outline" class="w-full">
                   <mat-label>Password</mat-label>
                   <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" [errorStateMatcher]="matcher" autocomplete="current-password">
-                  <button mat-icon-button matSuffix (click)="hidePassword.set(!hidePassword())" type="button" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword()">
+                  <button mat-icon-button matSuffix (click)="hidePassword.set(!hidePassword())" type="button">
                     <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
                   </button>
                   @if (loginForm.get('password')?.hasError('required')) {
@@ -109,8 +113,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
                   </a>
                 </div>
 
-                <button mat-flat-button color="primary" 
-                        class="w-full py-2" 
+                <button mat-flat-button color="primary"
+                        class="w-full py-2"
                         [disabled]="loginForm.invalid || loading()">
                   @if (loading()) {
                     <mat-spinner diameter="24" class="inline-block"></mat-spinner>
@@ -122,14 +126,14 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
             </mat-card-content>
 
             <mat-card-footer class="py-4 text-center">
-               <span class="text-xs text-slate-500">Admin Console &copy; 2026</span>
+               <span class="text-xs text-slate-500">Dr. Ab Rahman Orthopedic Clinic &copy; 2026</span>
             </mat-card-footer>
           </mat-card>
         </div>
       </div>
     </div>
   `
-  })
+})
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
@@ -152,7 +156,7 @@ export class LoginComponent {
         const { email, password } = this.loginForm.getRawValue();
         const response = await firstValueFrom(this.auth.login({ email, password }));
         if (response && response.accessToken) {
-          this.snackBar.open('Logged in successfully', 'Close', { duration: 3000, panelClass: ['success-snackbar'] });
+          this.snackBar.open('Welcome, Dr. Ab Rahman!', 'Close', { duration: 3000, panelClass: ['success-snackbar'] });
           this.router.navigate(['/dashboard']);
         } else {
           this.snackBar.open('Invalid credentials', 'Close', { duration: 5000, panelClass: ['error-snackbar'] });

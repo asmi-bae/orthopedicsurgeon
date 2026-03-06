@@ -156,7 +156,7 @@ export class AdminUserMenuComponent {
     if (!roles || roles.length === 0) return 'OPERATOR';
     const map: Record<string, string> = {
       SUPER_ADMIN: 'SYSTEM_ARCHITECT',
-      ADMIN: 'GOVERNANCE_ADMIN',
+      ADMIN: 'DOCTOR_ADMIN',
       STAFF: 'CLINICAL_STAFF',
       DOCTOR: 'MEDICAL_PRACTITIONER',
       PATIENT: 'CARE_RECIPIENT',
@@ -165,7 +165,7 @@ export class AdminUserMenuComponent {
   }
 
   onLogout() { this.close(); this.auth.logout(); }
-  onHelp()   { this.close(); window.open('mailto:support@orthosync.com', '_blank'); }
+  onHelp()   { this.close(); window.open('mailto:support@drabrahman.com', '_blank'); }
 
   @HostListener('document:keydown.escape')
   onEscape() { this.close(); }

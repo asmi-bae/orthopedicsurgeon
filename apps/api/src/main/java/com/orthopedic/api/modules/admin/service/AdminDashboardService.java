@@ -9,6 +9,7 @@ import com.orthopedic.api.modules.hospital.entity.Hospital;
 import com.orthopedic.api.modules.hospital.repository.HospitalRepository;
 import com.orthopedic.api.modules.patient.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +39,8 @@ public class AdminDashboardService {
                 .build();
     }
 
-    private DashboardStatsResponse getDashboardStats() {
+    @Transactional(readOnly = true)
+    public DashboardStatsResponse getDashboardStats() {
         BigDecimal totalRevenue = invoiceRepository.sumTotalRevenue();
         if (totalRevenue == null)
             totalRevenue = BigDecimal.ZERO;
@@ -54,11 +56,12 @@ public class AdminDashboardService {
                 .build();
     }
 
-    private List<LiveAppointmentResponse> getLiveAppointments() {
+    @Transactional(readOnly = true)
+    public List<LiveAppointmentResponse> getLiveAppointments() {
         return appointmentRepository
-                .findAllByAppointmentDateAndStatus(LocalDate.now(), Appointment.AppointmentStatus.CONFIRMED)
+                .findAllByAppointmentDateAndStatus(LocalDate.now(), Appointment.AppointmentStatus.CONFIRMED,
+                        PageRequest.of(0, 5))
                 .stream()
-                .limit(5)
                 .map(a -> LiveAppointmentResponse.builder()
                         .id(a.getId())
                         .patientName(
@@ -71,9 +74,9 @@ public class AdminDashboardService {
                 .collect(Collectors.toList());
     }
 
-    private List<TopHospitalResponse> getTopHospitals() {
-        return hospitalRepository.findAll().stream()
-                .limit(4)
+    @Transactional(readOnly = true)
+    public List<TopHospitalResponse> getTopHospitals() {
+        return hospitalRepository.findAll(PageRequest.of(0, 4)).getContent().stream()
                 .map(h -> TopHospitalResponse.builder()
                         .id(h.getId())
                         .name(h.getName())
@@ -84,7 +87,8 @@ public class AdminDashboardService {
                 .collect(Collectors.toList());
     }
 
-    private QuickStatsResponse getQuickStats() {
+    @Transactional(readOnly = true)
+    public QuickStatsResponse getQuickStats() {
         return QuickStatsResponse.builder()
                 .appointmentsToday(appointmentRepository.countByFilters(null, null, null, null, null, LocalDate.now(),
                         LocalDate.now()))

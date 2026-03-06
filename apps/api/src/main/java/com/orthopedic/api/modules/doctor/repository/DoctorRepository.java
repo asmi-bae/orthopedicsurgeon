@@ -41,6 +41,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
         @Query("SELECT COUNT(a) FROM Appointment a WHERE a.doctor.id = :doctorId AND a.status = 'COMPLETED'")
         int countTotalAppointments(UUID doctorId);
 
+        @EntityGraph(attributePaths = { "user", "hospital" })
         @Query("SELECT d FROM Doctor d JOIN d.user u WHERE " +
                         "(LOWER(u.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
                         "LOWER(u.lastName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +

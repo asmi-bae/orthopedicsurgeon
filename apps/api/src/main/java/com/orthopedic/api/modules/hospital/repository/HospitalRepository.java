@@ -21,8 +21,14 @@ public interface HospitalRepository extends JpaRepository<Hospital, UUID> {
     long countByStatus(Hospital.HospitalStatus status);
 
     @Query("SELECT COUNT(d) FROM Doctor d WHERE d.hospital.id = :id")
-    int countDoctors(UUID id);
+    int countDoctors(@org.springframework.data.repository.query.Param("id") java.util.UUID id);
 
     @Query("SELECT COUNT(s) FROM ServiceEntity s WHERE s.hospital.id = :id")
-    int countServices(UUID id);
+    int countServices(@org.springframework.data.repository.query.Param("id") java.util.UUID id);
+
+    @Query("SELECT d.hospital.id, COUNT(d) FROM Doctor d WHERE d.hospital.id IN :ids GROUP BY d.hospital.id")
+    java.util.List<Object[]> countDoctorsByHospitalIds(@org.springframework.data.repository.query.Param("ids") java.util.Collection<java.util.UUID> ids);
+
+    @Query("SELECT s.hospital.id, COUNT(s) FROM ServiceEntity s WHERE s.hospital.id IN :ids GROUP BY s.hospital.id")
+    java.util.List<Object[]> countServicesByHospitalIds(@org.springframework.data.repository.query.Param("ids") java.util.Collection<java.util.UUID> ids);
 }

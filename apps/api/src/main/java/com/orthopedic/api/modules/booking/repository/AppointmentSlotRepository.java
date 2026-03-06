@@ -14,4 +14,6 @@ public interface AppointmentSlotRepository extends JpaRepository<AppointmentSlot
 
     List<AppointmentSlot> findByDoctorIdAndSlotDateBetweenAndIsBookedFalseOrderBySlotDateAscSlotTimeAsc(
             UUID doctorId, LocalDate startDate, LocalDate endDate);
+
+    java.util.Optional<AppointmentSlot> findByAppointment(com.orthopedic.api.modules.appointment.entity.Appointment appointment);
 }

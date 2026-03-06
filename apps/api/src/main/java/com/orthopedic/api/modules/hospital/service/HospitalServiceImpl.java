@@ -44,7 +44,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "hospitals", key = "#status + #city + #pageable.pageNumber")
+    @Cacheable(value = "hospitals", key = "{#status, #city, #pageable.pageNumber}")
     public Page<HospitalResponse> getAllHospitals(Hospital.HospitalStatus status, String city, Pageable pageable) {
         Page<Hospital> hospitals;
         if (city != null) {
@@ -54,7 +54,34 @@ public class HospitalServiceImpl implements HospitalService {
         } else {
             hospitals = hospitalRepository.findAll(pageable);
         }
-        return hospitals.map(this::mapToResponse);
+
+        if (hospitals.isEmpty()) {
+            return Page.empty();
+        }
+
+        java.util.List<UUID> hospitalIds = hospitals.getContent().stream()
+                .map(Hospital::getId)
+                .collect(Collectors.toList());
+
+        // Fetch counts in bulk
+        java.util.Map<UUID, Integer> doctorCounts = hospitalRepository.countDoctorsByHospitalIds(hospitalIds).stream()
+                .collect(Collectors.toMap(
+                        row -> (UUID) row[0],
+                        row -> ((Long) row[1]).intValue(),
+                        (v1, v2) -> v1));
+
+        java.util.Map<UUID, Integer> serviceCounts = hospitalRepository.countServicesByHospitalIds(hospitalIds).stream()
+                .collect(Collectors.toMap(
+                        row -> (UUID) row[0],
+                        row -> ((Long) row[1]).intValue(),
+                        (v1, v2) -> v1));
+
+        return hospitals.map(hospital -> {
+            HospitalResponse response = hospitalMapper.toResponse(hospital);
+            response.setDoctorCount(doctorCounts.getOrDefault(hospital.getId(), 0));
+            response.setServiceCount(serviceCounts.getOrDefault(hospital.getId(), 0));
+            return response;
+        });
     }
 
     @Override

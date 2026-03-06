@@ -1,4 +1,4 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { 
@@ -10,6 +10,8 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { PATIENTSMANAGEMENTService } from '../../core/services/api/patientsmanagement.service';
 
 @Component({
   selector: 'app-patient-management',
@@ -23,7 +25,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ZrdBadgeComponent,
     MatIconModule,
     MatMenuModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatProgressBarModule
   ],
   template: `
     <div class="space-y-8 animate-in fade-in duration-500">
@@ -48,6 +51,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
             <zrd-input 
               placeholder="Search by name, ID, or phone..." 
               [hasPrefix]="true"
+              (keyup)="applyFilter($event)"
             >
               <mat-icon prefix class="text-google-gray-400">search</mat-icon>
             </zrd-input>
@@ -64,6 +68,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
           </div>
         </div>
 
+        @if (loading()) {
+          <div class="relative h-1 mb-6 -mx-6 overflow-hidden">
+             <mat-progress-bar mode="query" color="primary" class="absolute inset-0"></mat-progress-bar>
+          </div>
+        }
+
         <!-- Spartan Table -->
         <div class="overflow-x-auto -mx-6">
           <table class="w-full text-left border-collapse">
@@ -71,8 +81,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
               <tr class="border-b border-google-gray-100 dark:border-white/5 bg-google-gray-50/50 dark:bg-white/5">
                 <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest pl-10">Patient Record</th>
                 <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest">Demographics</th>
-                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest">Recent Activity</th>
-                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest">Platform Status</th>
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest">Blood Group</th>
+                <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest">Status</th>
                 <th class="px-6 py-4 text-xs font-bold text-google-gray-500 uppercase tracking-widest text-right pr-10">Actions</th>
               </tr>
             </thead>
@@ -82,24 +92,28 @@ import { MatTooltipModule } from '@angular/material/tooltip';
                   <td class="px-6 py-5 pl-10">
                     <div class="flex items-center gap-4">
                       <div class="w-11 h-11 rounded-full bg-google-blue/10 flex items-center justify-center text-sm font-black text-google-blue shrink-0">
-                        {{ row.name.charAt(0) }}
+                        {{ row.user?.firstName?.charAt(0) || 'P' }}
                       </div>
                       <div>
-                        <p class="font-bold text-sm text-google-gray-900 dark:text-white m-0 tracking-tight">{{ row.name }}</p>
-                        <p class="text-[10px] uppercase font-black tracking-widest text-google-gray-400 m-0">PT-{{ row.age }}{{ row.id.toUpperCase() }}</p>
+                        <p class="font-bold text-sm text-google-gray-900 dark:text-white m-0 tracking-tight">
+                          {{ row.user?.firstName }} {{ row.user?.lastName }}
+                        </p>
+                        <p class="text-[10px] uppercase font-black tracking-widest text-google-gray-400 m-0">
+                          ID: {{ row.id.split('-')[0].toUpperCase() }}
+                        </p>
                       </div>
                     </div>
                   </td>
                   <td class="px-6 py-5">
                     <div class="flex items-center gap-2">
-                      <zrd-badge variant="neutral">{{ row.gender }}</zrd-badge>
-                      <zrd-badge variant="info">{{ row.age }} years</zrd-badge>
+                      <zrd-badge variant="neutral">{{ row.gender || 'N/A' }}</zrd-badge>
+                      <zrd-badge variant="info">{{ row.age || 0 }} years</zrd-badge>
                     </div>
                   </td>
                   <td class="px-6 py-5">
                     <div class="flex items-center gap-2 text-google-gray-600 dark:text-google-gray-400">
-                      <mat-icon class="text-sm">history</mat-icon>
-                      <span class="text-sm font-medium">{{ row.lastVisit }}</span>
+                      <mat-icon class="text-sm">water_drop</mat-icon>
+                      <span class="text-sm font-bold">{{ row.bloodGroup || 'Not set' }}</span>
                     </div>
                   </td>
                   <td class="px-6 py-5">
@@ -136,7 +150,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
             </tbody>
           </table>
 
-          @if (patients().length === 0) {
+          @if (patients().length === 0 && !loading()) {
             <div class="py-24 text-center">
               <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
                 <mat-icon class="text-google-gray-400 text-3xl">person_search</mat-icon>
@@ -160,14 +174,35 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   `,
   styles: [`:host { display: block; }`]
 })
-export class PatientManagementComponent {
-  patients = signal([
-    { id: 'p1', name: 'John Doe',       age: 45, gender: 'Male',   lastVisit: 'Oct 15, 2024', status: 'ACTIVE' },
-    { id: 'p2', name: 'Jane Smith',     age: 32, gender: 'Female', lastVisit: 'Oct 20, 2024', status: 'ACTIVE' },
-    { id: 'p3', name: 'Robert Wilson',  age: 58, gender: 'Male',   lastVisit: 'Oct 18, 2024', status: 'ACTIVE' },
-    { id: 'p4', name: 'Sarah Parker',   age: 29, gender: 'Female', lastVisit: 'Oct 22, 2024', status: 'ACTIVE' },
-    { id: 'p5', name: 'David Martinez', age: 64, gender: 'Male',   lastVisit: 'Oct 10, 2024', status: 'INACTIVE' },
-  ]);
+export class PatientManagementComponent implements OnInit {
+  private patientService = inject(PATIENTSMANAGEMENTService);
 
-  columns = ['name', 'biometrics', 'lastVisit', 'status', 'actions'];
+  patients = signal<any[]>([]);
+  loading = signal(false);
+  columns = ['name', 'biometrics', 'bloodGroup', 'status', 'actions'];
+
+  ngOnInit() {
+    this.loadPatients();
+  }
+
+  loadPatients() {
+    this.loading.set(true);
+    this.patientService.getAdminPatients().subscribe({
+      next: (res) => {
+        // Assuming API returns ApiResponse<PageResponse<PatientResponse>>
+        const data = res?.data?.content || res?.data || [];
+        this.patients.set(Array.isArray(data) ? data : []);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to load patients', err);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  applyFilter(event: Event) {
+    // filtering logic can be added here
+  }
 }
+

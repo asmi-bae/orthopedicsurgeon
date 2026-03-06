@@ -20,6 +20,14 @@ Auth: STAFF, DOCTOR, ADMIN, SUPER_ADMIN
   }
 
   /**
+   * GET /admin/appointments/stats
+   * ID: AE-14
+   */
+  getAdminAppointmentsStats(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/admin/appointments/stats`);
+  }
+
+  /**
    * GET /admin/appointments/{id}
    * ID: AE-02
 Auth: relevant roles

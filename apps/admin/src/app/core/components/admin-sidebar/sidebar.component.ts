@@ -15,6 +15,7 @@ interface NavItem {
   route?: string;
   children?: NavItem[];
   badge?: string;
+  roles?: string[]; // if set, only show for these roles
 }
 
 @Component({
@@ -34,28 +35,36 @@ interface NavItem {
     <div class="flex flex-col h-full transition-all duration-300 overflow-hidden border-r border-white/5 shadow-2xl"
          [class.w-16]="collapsed">
 
-      <!-- ── Spartan Brand Block ── -->
+      <!-- Brand Block -->
       <div class="h-20 flex items-center shrink-0 px-4 mb-4"
            [class.justify-center]="collapsed">
         <div class="flex items-center gap-3 overflow-hidden">
           <div class="w-10 h-10 rounded-2xl bg-google-blue flex items-center justify-center shrink-0 shadow-lg shadow-google-blue/20">
-            <mat-icon class="text-white text-[20px] leading-none">terminal</mat-icon>
+            <mat-icon class="text-white text-[20px] leading-none">medical_services</mat-icon>
           </div>
           @if (!collapsed) {
             <div class="flex flex-col leading-none overflow-hidden animate-in fade-in slide-in-from-left-2">
-              <span class="text-[10px] font-black text-google-blue uppercase tracking-widest">Precision</span>
-              <span class="text-lg font-black text-white truncate tracking-tighter">Console</span>
+              <span class="text-[10px] font-black text-google-blue uppercase tracking-widest">Dr. Ab Rahman</span>
+              <span class="text-lg font-black text-white truncate tracking-tighter">Admin Console</span>
             </div>
           }
         </div>
       </div>
 
-      <!-- ── Spartan Navigation ── -->
+      <!-- Role Badge -->
+      @if (!collapsed) {
+        <div class="mx-3 mb-3">
+          <div class="px-3 py-1.5 rounded-xl bg-google-blue/10 border border-google-blue/20 text-center">
+            <span class="text-[10px] font-black text-google-blue uppercase tracking-widest">{{ getRoleLabel() }}</span>
+          </div>
+        </div>
+      }
+
+      <!-- Navigation -->
       <div class="flex-1 overflow-y-auto overflow-x-hidden py-2 custom-scrollbar">
         <div class="flex flex-col gap-1 px-2">
-          @for (item of navItems; track item.label) {
+          @for (item of getVisibleNavItems(); track item.label) {
             @if (item.children) {
-              <!-- Group logic remained for consistency but styled as Spartan -->
               @if (collapsed) {
                 <div class="flex justify-center py-1">
                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-google-gray-400 hover:text-white hover:bg-white/10 transition-all group"
@@ -73,7 +82,7 @@ interface NavItem {
                   </mat-expansion-panel-header>
                   <div class="flex flex-col gap-1 mt-1 pl-10">
                     @for (child of item.children; track child.label) {
-                      <a [routerLink]="child.route" routerLinkActive="!text-white !bg-white/10" 
+                      <a [routerLink]="child.route" routerLinkActive="!text-white !bg-white/10"
                          (click)="onNavClick()"
                          class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold text-google-gray-400 hover:text-white hover:bg-white/5 transition-all">
                         <mat-icon class="text-[14px]">{{ child.icon }}</mat-icon>
@@ -84,8 +93,6 @@ interface NavItem {
                 </mat-expansion-panel>
               }
             } @else {
-              <!-- Single Item Spartan Style -->
-              <!-- Single Item Spartan Style -->
               @if (collapsed) {
                  <div class="flex justify-center py-1">
                    <a [routerLink]="item.route" routerLinkActive="!text-white !bg-google-blue/10 !border-google-blue/20"
@@ -111,7 +118,7 @@ interface NavItem {
         </div>
       </div>
 
-      <!-- ── Identity Layer ── -->
+      <!-- Identity Layer -->
       @if (!collapsed) {
         <div class="p-4 animate-in slide-in-from-bottom-4 duration-500">
           <div class="p-4 bg-white/5 rounded-3xl border border-white/10 group hover:border-google-blue/30 transition-all cursor-pointer">
@@ -120,7 +127,7 @@ interface NavItem {
                   <mat-icon class="text-google-blue text-lg">face</mat-icon>
                </div>
                <div class="flex flex-col min-w-0">
-                  <p class="text-[10px] font-black text-google-gray-500 uppercase tracking-widest leading-none mb-1">Authenticated</p>
+                  <p class="text-[10px] font-black text-google-gray-500 uppercase tracking-widest leading-none mb-1">Signed In</p>
                   <p class="text-xs font-black text-white truncate tracking-tight">{{ getUserDisplay() }}</p>
                </div>
             </div>
@@ -128,18 +135,18 @@ interface NavItem {
         </div>
       }
 
-      <!-- ── Exit Control ── -->
+      <!-- Logout -->
       <div class="p-4 mt-2">
-         <zrd-button 
-           variant="ghost" 
-           [size]="collapsed ? 'sm' : 'md'" 
+         <zrd-button
+           variant="ghost"
+           [size]="collapsed ? 'sm' : 'md'"
            class="w-full !rounded-2xl !bg-transparent hover:!bg-google-red/10 !text-google-red hover:!text-google-red group"
            (click)="confirmLogout()"
-           [matTooltip]="collapsed ? 'Terminate Session' : ''"
+           [matTooltip]="collapsed ? 'Sign Out' : ''"
            matTooltipPosition="right"
          >
            <mat-icon leftIcon class="transition-transform group-hover:-translate-x-1">power_settings_new</mat-icon>
-           @if (!collapsed) { <span class="font-black uppercase tracking-widest text-[10px] ml-1">Terminate Session</span> }
+           @if (!collapsed) { <span class="font-black uppercase tracking-widest text-[10px] ml-1">Sign Out</span> }
          </zrd-button>
       </div>
     </div>
@@ -160,42 +167,59 @@ export class AdminSidebarComponent {
   auth = inject(AuthService);
   dialog = inject(MatDialog);
 
-  navItems: NavItem[] = [
-    { label: 'Intelligence Hub',      icon: 'insights',          route: '/dashboard' },
+  // All nav items — DOCTOR_ADMIN and SUPER_ADMIN see everything
+  // SUPER_ADMIN also sees system-level items
+  allNavItems: NavItem[] = [
+    { label: 'Dashboard',         icon: 'insights',          route: '/dashboard' },
+    { label: 'My Appointments',   icon: 'event_repeat',      route: '/appointments' },
+    { label: 'Patients',          icon: 'groups',            route: '/patients' },
+    { label: 'Prescriptions',     icon: 'medication',        route: '/records/prescriptions' },
+    { label: 'Lab Reports',       icon: 'biotech',           route: '/records/reports' },
+    { label: 'Health Records',    icon: 'monitor_heart',     route: '/health' },
+    { label: 'Payments',          icon: 'account_balance',   route: '/finance' },
     {
-      label: 'Organization', icon: 'hub',
+      label: 'Website Content',   icon: 'dynamic_feed',
       children: [
-        { label: 'Hospitals',    icon: 'domain',    route: '/hospitals' },
-        { label: 'Departments',  icon: 'view_list', route: '/departments' },
+        { label: 'Hero Section',  icon: 'auto_awesome',      route: '/content/hero' },
+        { label: 'FAQ',           icon: 'help_center',       route: '/content/faq' },
+        { label: 'Partners',      icon: 'handshake',         route: '/content/partners' },
+        { label: 'Blog',          icon: 'article',           route: '/blog' },
       ]
     },
-    { label: 'Medical Staff',  icon: 'medication_liquid',    route: '/doctors' },
-    { label: 'Patient Registry', icon: 'groups',             route: '/patients' },
-    { label: 'Clinical Flow',   icon: 'event_repeat',        route: '/appointments' },
-    { label: 'Diagnostic Vault', icon: 'inventory_2',        route: '/records/prescriptions' },
-    { label: 'Revenue Ops',     icon: 'account_balance',     route: '/finance' },
-    {
-      label: 'Content Engine', icon: 'dynamic_feed',
-      children: [
-        { label: 'Main Hero',     icon: 'auto_awesome',  route: '/content/hero' },
-        { label: 'Knowledge FAQ', icon: 'help_center',   route: '/content/faq' },
-        { label: 'Alliance Grid', icon: 'handshake',     route: '/content/partners' },
-        { label: 'Article Flux',  icon: 'article',       route: '/blog' },
-      ]
-    },
-    { label: 'Access Control',  icon: 'verified_user',      route: '/users' },
-    { label: 'System Prefs',    icon: 'tune',                route: '/settings' },
+    { label: 'Notifications',     icon: 'notifications',     route: '/notifications' },
+    { label: 'Reviews',           icon: 'star_rate',         route: '/reviews' },
+    { label: 'User Management',   icon: 'manage_accounts',   route: '/users',           roles: ['SUPER_ADMIN', 'DOCTOR_ADMIN'] },
+    { label: 'Audit Logs',        icon: 'receipt_long',      route: '/audit',           roles: ['SUPER_ADMIN'] },
+    { label: 'System Settings',   icon: 'tune',              route: '/settings',        roles: ['SUPER_ADMIN'] },
   ];
+
+  getVisibleNavItems(): NavItem[] {
+    const user = this.auth.currentUser();
+    if (!user) return [];
+    const roles: string[] = (user as any).roles ?? [];
+    const isSuperAdmin = roles.includes('SUPER_ADMIN');
+    return this.allNavItems.filter(item => {
+      if (!item.roles) return true; // visible to all admin roles
+      return item.roles.some(r => roles.includes(r)) || isSuperAdmin;
+    });
+  }
+
+  getRoleLabel(): string {
+    const user = this.auth.currentUser();
+    if (!user) return 'ADMIN';
+    const roles: string[] = (user as any).roles ?? [];
+    if (roles.includes('SUPER_ADMIN')) return 'SUPER ADMIN';
+    if (roles.includes('DOCTOR_ADMIN')) return 'DOCTOR / ADMIN';
+    return 'ADMIN';
+  }
 
   getUserDisplay(): string {
     const user = this.auth.currentUser();
-    if (!user) return 'Root Admin';
+    if (!user) return 'Dr. Ab Rahman';
     return `${user.firstName} ${user.lastName}`;
   }
 
-  onNavClick() {
-    this.closeRequested.emit();
-  }
+  onNavClick() { this.closeRequested.emit(); }
 
   confirmLogout() {
     const dialogRef = this.dialog.open(LogoutConfirmDialogComponent, {

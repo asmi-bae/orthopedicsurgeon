@@ -32,27 +32,27 @@ public class AdminDashboardController {
     @Operation(summary = "Get dashboard summary stats")
     public ResponseEntity<ApiResponse<com.orthopedic.api.modules.admin.dto.dashboard.DashboardStatsResponse>> getStats() {
         return ResponseEntity
-                .ok(ApiResponse.success("Stats retrieved", dashboardService.getDashboardData().getStats()));
+                .ok(ApiResponse.success("Stats retrieved", dashboardService.getDashboardStats()));
     }
 
     @GetMapping("/live-appointments")
     @Operation(summary = "Get live appointments for dashboard")
     public ResponseEntity<ApiResponse<java.util.List<com.orthopedic.api.modules.admin.dto.dashboard.LiveAppointmentResponse>>> getLiveAppointments() {
         return ResponseEntity.ok(ApiResponse.success("Live appointments retrieved",
-                dashboardService.getDashboardData().getLiveAppointments()));
+                dashboardService.getLiveAppointments()));
     }
 
     @GetMapping("/top-hospitals")
     @Operation(summary = "Get top hospitals for dashboard")
     public ResponseEntity<ApiResponse<java.util.List<com.orthopedic.api.modules.admin.dto.dashboard.TopHospitalResponse>>> getTopHospitals() {
         return ResponseEntity.ok(
-                ApiResponse.success("Top hospitals retrieved", dashboardService.getDashboardData().getTopHospitals()));
+                ApiResponse.success("Top hospitals retrieved", dashboardService.getTopHospitals()));
     }
 
     @GetMapping("/quick-stats")
     @Operation(summary = "Get quick stats for dashboard")
     public ResponseEntity<ApiResponse<com.orthopedic.api.modules.admin.dto.dashboard.QuickStatsResponse>> getQuickStats() {
         return ResponseEntity
-                .ok(ApiResponse.success("Quick stats retrieved", dashboardService.getDashboardData().getQuickStats()));
+                .ok(ApiResponse.success("Quick stats retrieved", dashboardService.getQuickStats()));
     }
 }

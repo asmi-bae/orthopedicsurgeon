@@ -17,4 +17,7 @@ public interface BlogCommentRepository extends JpaRepository<BlogComment, UUID> 
     Page<BlogComment> findByIsApprovedFalseOrderByCreatedAtDesc(Pageable pageable);
 
     long countByPostIdAndIsApprovedTrue(UUID postId);
+
+    @org.springframework.data.jpa.repository.Query("SELECT c.post.id, COUNT(c) FROM BlogComment c WHERE c.post.id IN :postIds AND c.isApproved = true GROUP BY c.post.id")
+    List<Object[]> countByPostIds(@org.springframework.data.repository.query.Param("postIds") List<UUID> postIds);
 }

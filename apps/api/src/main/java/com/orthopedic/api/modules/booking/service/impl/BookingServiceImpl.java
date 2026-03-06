@@ -147,9 +147,7 @@ public class BookingServiceImpl implements BookingService {
         }
 
         // Free old slot
-        slotRepository.findAll().stream()
-                .filter(s -> appt.equals(s.getAppointment()))
-                .findFirst()
+        slotRepository.findByAppointment(appt)
                 .ifPresent(oldSlot -> {
                     oldSlot.setIsBooked(false);
                     oldSlot.setAppointment(null);

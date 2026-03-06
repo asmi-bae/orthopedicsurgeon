@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { 
   ZrdCardComponent, 
@@ -7,6 +7,8 @@ import {
 } from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { WEBSITECONTROLService } from '../../../core/services/api/websitecontrol.service';
 
 @Component({
   selector: 'app-faq-management',
@@ -17,7 +19,8 @@ import { MatMenuModule } from '@angular/material/menu';
     ZrdButtonComponent, 
     ZrdInputComponent,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    MatProgressBarModule
   ],
   template: `
     <div class="space-y-8 animate-in fade-in duration-500">
@@ -42,6 +45,7 @@ import { MatMenuModule } from '@angular/material/menu';
             <zrd-input 
               placeholder="Search knowledge entries..." 
               [hasPrefix]="true"
+              (keyup)="applyFilter($event)"
             >
               <mat-icon prefix class="text-google-gray-400">help_center</mat-icon>
             </zrd-input>
@@ -53,6 +57,12 @@ import { MatMenuModule } from '@angular/material/menu';
              </zrd-button>
           </div>
         </div>
+
+        @if (loading()) {
+          <div class="relative h-1 mb-6 -mx-6 overflow-hidden">
+             <mat-progress-bar mode="query" color="primary" class="absolute inset-0"></mat-progress-bar>
+          </div>
+        }
 
         <!-- Spartan FAQ Stream -->
         <div class="space-y-6">
@@ -95,7 +105,7 @@ import { MatMenuModule } from '@angular/material/menu';
           }
         </div>
 
-        @if (faqs().length === 0) {
+        @if (faqs().length === 0 && !loading()) {
           <div class="py-24 text-center">
             <div class="w-16 h-16 bg-google-gray-100 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
                <mat-icon class="text-google-gray-400 text-3xl">question_answer</mat-icon>
@@ -114,11 +124,30 @@ import { MatMenuModule } from '@angular/material/menu';
   `,
   styles: [`:host { display: block; }`]
 })
-export class FaqManagementComponent {
-  faqs = signal([
-    { id: 1, question: 'What types of orthopedic conditions do you treat?', answer: 'We treat a wide range of conditions including joint pain, fractures, sports injuries, spine disorders, and degenerative bone diseases.' },
-    { id: 2, question: 'How do I book an appointment?', answer: 'You can book an appointment online through our portal, by calling our reception desk, or visiting any of our hospital locations.' },
-    { id: 3, question: 'What should I bring to my first consultation?', answer: 'Please bring a valid ID, any previous medical records or imaging results, and a list of current medications.' },
-    { id: 4, question: 'Do you accept insurance?', answer: 'Yes, we accept most major insurance providers. Please contact us to verify your specific coverage before your appointment.' },
-  ]);
+export class FaqManagementComponent implements OnInit {
+  private websiteService = inject(WEBSITECONTROLService);
+
+  faqs = signal<any[]>([]);
+  loading = signal(false);
+
+  ngOnInit() {
+    this.loadFaqs();
+  }
+
+  loadFaqs() {
+    this.loading.set(true);
+    this.websiteService.getAdminWebsiteFaqs().subscribe({
+      next: (res: any) => {
+        const data = res?.data || [];
+        this.faqs.set(Array.isArray(data) ? data : []);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
+    });
+  }
+
+  applyFilter(event: Event) {
+    // filter logic
+  }
 }
+
