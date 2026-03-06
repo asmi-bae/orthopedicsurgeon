@@ -1,6 +1,7 @@
 package com.orthopedic.api.config;
 
 import com.orthopedic.api.auth.security.*;
+import com.orthopedic.api.security.filter.AdminIpAllowlistFilter;
 import com.orthopedic.api.security.filter.JwtAuthenticationFilter;
 import com.orthopedic.api.security.filter.RateLimitFilter;
 import com.orthopedic.api.security.filter.SecurityHeadersFilter;
@@ -48,6 +49,7 @@ public class SecurityConfig {
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
         private final SecurityHeadersFilter securityHeadersFilter;
         private final RateLimitFilter rateLimitingFilter;
+        private final AdminIpAllowlistFilter adminIpAllowlistFilter;
         private final OAuth2UserService oauth2UserService;
         private final OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
         private final OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
@@ -56,6 +58,7 @@ public class SecurityConfig {
         public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                         SecurityHeadersFilter securityHeadersFilter,
                         RateLimitFilter rateLimitingFilter,
+                        AdminIpAllowlistFilter adminIpAllowlistFilter,
                         OAuth2UserService oauth2UserService,
                         OAuth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler,
                         OAuth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler,
@@ -63,6 +66,7 @@ public class SecurityConfig {
                 this.jwtAuthenticationFilter = jwtAuthenticationFilter;
                 this.securityHeadersFilter = securityHeadersFilter;
                 this.rateLimitingFilter = rateLimitingFilter;
+                this.adminIpAllowlistFilter = adminIpAllowlistFilter;
                 this.oauth2UserService = oauth2UserService;
                 this.oauth2AuthenticationSuccessHandler = oauth2AuthenticationSuccessHandler;
                 this.oauth2AuthenticationFailureHandler = oauth2AuthenticationFailureHandler;
@@ -101,6 +105,8 @@ public class SecurityConfig {
                 // Add Filters
                 http.addFilterBefore(securityHeadersFilter,
                                 org.springframework.security.web.header.HeaderWriterFilter.class);
+                http.addFilterBefore(adminIpAllowlistFilter,
+                                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
                 http.addFilterBefore(rateLimitingFilter,
                                 org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
                 http.addFilterBefore(jwtAuthenticationFilter,

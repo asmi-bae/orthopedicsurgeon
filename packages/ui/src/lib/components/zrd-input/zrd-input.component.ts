@@ -69,7 +69,7 @@ export class ZrdInputComponent implements ControlValueAccessor {
   onTouched: any = () => {};
 
   get inputClasses(): string {
-    const base = 'w-full rounded-pill border border-google-gray-300 dark:border-white/10 bg-white dark:bg-white/5 px-6 py-3.5 text-sm text-google-gray-900 dark:text-white placeholder-google-gray-400 transition-all duration-300 focus:border-google-blue focus:ring-4 focus:ring-google-blue/10 outline-none disabled:bg-google-gray-50 disabled:text-google-gray-400';
+    const base = 'w-full rounded-full border border-google-gray-300 dark:border-white/10 bg-white dark:bg-white/5 px-6 py-3.5 text-sm text-google-gray-900 dark:text-white placeholder-google-gray-400 transition-all duration-300 focus:border-google-blue focus:ring-4 focus:ring-google-blue/10 outline-none disabled:bg-google-gray-50 disabled:text-google-gray-400';
     const errorClass = this.error ? 'border-google-red focus:border-google-red focus:ring-google-red/10' : '';
     const paddingLeft = this.hasPrefix ? 'pl-12' : '';
     const paddingRight = this.hasSuffix || this.type === 'password' ? 'pr-12' : '';

@@ -37,8 +37,29 @@ export class AccountService {
     return this.http.post<any>(`${this.apiUrl}/password`, request);
   }
 
-  getSessions(): Observable<any> {
-    // AB-01 from Postman
-    return this.http.get<any>(`http://localhost:8080/api/v1/admin/security/my-sessions`);
+  // Session Management
+  getSessions(): Observable<any[]> {
+    return this.http.get<any[]>(`/api/v1/auth/sessions`);
+  }
+
+  revokeSession(sessionId: string): Observable<void> {
+    return this.http.delete<void>(`/api/v1/auth/sessions/${sessionId}`);
+  }
+
+  revokeOtherSessions(): Observable<void> {
+    return this.http.delete<void>(`/api/v1/auth/sessions/other`);
+  }
+
+  // 2FA Management
+  setup2fa(): Observable<any> {
+    return this.http.post<any>(`/api/v1/auth/2fa/setup`, {});
+  }
+
+  confirm2fa(code: string): Observable<void> {
+    return this.http.post<void>(`/api/v1/auth/2fa/confirm-setup`, { code });
+  }
+
+  getMe(): Observable<any> {
+    return this.http.get<any>(`/api/v1/admin/auth/me`);
   }
 }

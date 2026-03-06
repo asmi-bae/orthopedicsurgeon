@@ -9,6 +9,12 @@ app:
     login-window: 900
     search-limit: 20
     search-window: 60
+  security:
+    admin:
+      enable-ip-check: true
+      ip-allowlist:
+        - 127.0.0.1
+        - "::1"
 
 security:
   cors:

@@ -12,7 +12,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { NotificationService } from '@core/services/api/notifications.service';
-import { ZrdCardComponent } from '@repo/ui';
 import { Notification as NotificationModel, NotificationType, NotificationLevel } from '@repo/types';
 
 @Component({
@@ -43,12 +42,12 @@ import { Notification as NotificationModel, NotificationType, NotificationLevel 
     </button>
 
     <mat-menu #menu="matMenu" xPosition="before" class="notification-menu-panel !rounded-[24px] !p-0 overflow-hidden shadow-2xl">
-      <div class="w-[360px] sm:w-[400px] bg-white dark:bg-google-gray-900 border border-google-gray-200 dark:border-white/10" (click)="$event.stopPropagation()">
+      <div class="w-[calc(100vw-32px)] sm:w-[420px] max-w-[420px] bg-white dark:bg-google-gray-900 border border-google-gray-200 dark:border-white/10" (click)="$event.stopPropagation()">
           <!-- Header -->
           <div class="p-5 pb-3 border-b border-google-gray-100 dark:border-white/10 flex items-center justify-between">
-            <h3 class="text-lg font-medium text-google-gray-900 dark:text-white m-0">Notifications</h3>
+            <h3 class="text-lg font-semibold text-google-gray-900 dark:text-white m-0">Notifications</h3>
             @if (notificationService.unreadCount() > 0) {
-              <button (click)="markAllAsRead()" class="text-xs font-medium text-google-blue hover:underline bg-transparent border-none cursor-pointer p-1">
+              <button (click)="markAllAsRead()" class="text-xs font-medium text-google-blue hover:text-google-blue-700 bg-transparent border-none cursor-pointer p-1 transition-colors">
                 Mark all as read
               </button>
             }
@@ -57,34 +56,34 @@ import { Notification as NotificationModel, NotificationType, NotificationLevel 
           <!-- Notification List -->
           <div class="max-h-[480px] overflow-y-auto custom-scrollbar">
             @if (notificationService.loading()) {
-              <div class="p-8 flex flex-col items-center justify-center text-center">
-                 <div class="w-8 h-8 border-2 border-google-blue border-t-transparent rounded-full animate-spin mb-3"></div>
+              <div class="p-12 flex flex-col items-center justify-center text-center">
+                 <div class="w-8 h-8 border-2 border-google-blue border-t-transparent rounded-full animate-spin mb-4"></div>
                  <p class="text-sm text-google-gray-500">Loading notifications...</p>
               </div>
             } @else if (notificationService.notifications().length === 0) {
-              <div class="p-12 flex flex-col items-center justify-center text-center">
+              <div class="p-16 flex flex-col items-center justify-center text-center">
                 <div class="w-16 h-16 rounded-full bg-google-gray-50 dark:bg-white/5 flex items-center justify-center mb-4">
-                  <mat-icon class="text-3xl text-google-gray-300">notifications_off</mat-icon>
+                  <mat-icon class="text-4xl text-google-gray-300 dark:text-google-gray-700">notifications_off</mat-icon>
                 </div>
-                <h4 class="text-base font-medium text-google-gray-900 dark:text-white mb-1">No notifications yet</h4>
-                <p class="text-sm text-google-gray-500 max-w-[200px]">When you receive updates, they'll show up here.</p>
+                <h4 class="text-base font-semibold text-google-gray-900 dark:text-white mb-1">No notifications yet</h4>
+                <p class="text-sm text-google-gray-500 dark:text-google-gray-400 max-w-[220px] mx-auto">When you receive updates, they'll show up here.</p>
               </div>
             } @else {
               <div class="divide-y divide-google-gray-50 dark:divide-white/5">
                 @for (item of notificationService.notifications(); track item.id) {
                   <div 
-                    class="p-4 px-5 hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors cursor-pointer group relative"
+                    class="p-4 px-5 hover:bg-google-gray-50 dark:hover:bg-white/5 transition-all cursor-pointer group relative"
                     [class.bg-google-blue/5]="!item.isRead"
                     (click)="onNotificationClick(item)"
                   >
                     <div class="flex gap-4">
                       <!-- Status Dot -->
                       @if (!item.isRead) {
-                        <div class="absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-google-blue"></div>
+                        <div class="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-google-blue shadow-[0_0_0_2px_rgba(255,255,255,1)] dark:shadow-[0_0_0_2px_#1a1b1c]"></div>
                       }
 
                       <!-- Icon based on severity & type -->
-                      <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm" [ngClass]="getIconBg(item)">
+                      <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-sm transition-transform group-hover:scale-105" [ngClass]="getIconBg(item)">
                         <mat-icon class="text-white text-xl">{{ getIcon(item.type) }}</mat-icon>
                       </div>
 
@@ -103,12 +102,15 @@ import { Notification as NotificationModel, NotificationType, NotificationLevel 
                       </div>
                       
                       <!-- Delete Action -->
-                      <button 
-                        (click)="onDelete($event, item.id)"
-                        class="opacity-0 group-hover:opacity-100 p-1 hover:bg-google-gray-200 dark:hover:bg-white/10 rounded-full transition-all text-google-gray-400 hover:text-google-red"
-                      >
-                        <mat-icon class="text-sm">delete</mat-icon>
-                      </button>
+                      <div class="flex items-center">
+                        <button 
+                          (click)="onDelete($event, item.id)"
+                          class="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-google-red/10 dark:hover:bg-google-red/20 rounded-full transition-all text-google-gray-400 hover:text-google-red"
+                          matTooltip="Delete"
+                        >
+                          <mat-icon class="text-base">delete_outline</mat-icon>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 }
@@ -117,9 +119,10 @@ import { Notification as NotificationModel, NotificationType, NotificationLevel 
           </div>
 
           <!-- Footer -->
-          <div class="p-3 border-t border-google-gray-100 dark:border-white/10 text-center">
-            <a routerLink="/notifications" class="text-sm font-medium text-google-blue hover:text-google-blue/80 transition-colors">
+          <div class="p-4 border-t border-google-gray-100 dark:border-white/10 text-center bg-google-gray-50/30 dark:bg-white/2">
+            <a routerLink="/notifications" class="text-sm font-semibold text-google-blue hover:text-google-blue-700 transition-colors inline-flex items-center gap-1">
               See all notifications
+              <mat-icon class="text-sm">chevron_right</mat-icon>
             </a>
           </div>
       </div>
@@ -130,7 +133,7 @@ import { Notification as NotificationModel, NotificationType, NotificationLevel 
     .custom-scrollbar::-webkit-scrollbar { width: 4px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
     .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
-    ::ng-deep .notification-menu-panel { background: transparent !important; box-shadow: none !important; margin-top: 12px; }
+    ::ng-deep .notification-menu-panel { background: transparent !important; box-shadow: none !important; margin-top: 12px !important; }
   `]
 })
 export class NotificationMenuComponent implements OnInit {

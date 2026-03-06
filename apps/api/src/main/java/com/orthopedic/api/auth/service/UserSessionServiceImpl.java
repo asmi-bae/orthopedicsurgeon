@@ -69,6 +69,25 @@ public class UserSessionServiceImpl implements UserSessionService {
                 });
     }
 
+    @Override
+    public List<SessionDto> getLoginHistory(User user) {
+        return sessionRepository.findByUser(user)
+                .stream()
+                .map(session -> mapToDto(session, null))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void clearLoginHistory(User user) {
+        List<Session> allSessions = sessionRepository.findByUser(user);
+        List<Session> inactiveSessions = allSessions.stream()
+                .filter(s -> !s.isActive())
+                .collect(Collectors.toList());
+        
+        sessionRepository.deleteAll(inactiveSessions);
+    }
+
     private SessionDto mapToDto(Session session, String currentAccessTokenJti) {
         return SessionDto.builder()
                 .sessionId(session.getSessionId())

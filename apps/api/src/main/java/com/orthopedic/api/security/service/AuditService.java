@@ -9,12 +9,17 @@ import java.util.Map;
 import java.util.UUID;
 import com.orthopedic.api.auth.entity.User;
 
+import com.orthopedic.api.auth.entity.LoginAudit;
+import com.orthopedic.api.auth.repository.LoginAuditRepository;
+import com.orthopedic.api.auth.repository.UserRepository;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class AuditService {
 
-    // private final AuditRepository auditRepository;
+    private final LoginAuditRepository loginAuditRepository;
+    private final UserRepository userRepository;
 
     @Async
     public void logEvent(String action, String userId, String userRole, String entityType, String entityId,
@@ -36,12 +41,28 @@ public class AuditService {
     public void logFailedLogin(String email, String ipAddress, String userAgent, String reason) {
         log.warn("❌ FAILED LOGIN [{}]: email={}, ip={}, userAgent={}, reason={}",
                 UUID.randomUUID(), email, ipAddress, userAgent, reason);
+        
+        LoginAudit audit = LoginAudit.builder()
+                .user(userRepository.findByEmail(email).orElse(null))
+                .ipAddress(ipAddress)
+                .deviceInfo(userAgent)
+                .status("FAILURE")
+                .build();
+        loginAuditRepository.save(audit);
     }
 
     @Async
     public void logSuccessfulLogin(String email, String ipAddress, String userAgent, String method) {
         log.info("✅ SUCCESSFUL LOGIN [{}]: email={}, ip={}, userAgent={}, method={}",
                 UUID.randomUUID(), email, ipAddress, userAgent, method);
+        
+        LoginAudit audit = LoginAudit.builder()
+                .user(userRepository.findByEmail(email).orElse(null))
+                .ipAddress(ipAddress)
+                .deviceInfo(userAgent)
+                .status("SUCCESS")
+                .build();
+        loginAuditRepository.save(audit);
     }
 
     @Async

@@ -80,9 +80,9 @@ export const routes: Routes = [
         data: { breadcrumb: 'Blog' }
       },
       {
-        path: 'profile',
-        loadComponent: () => import('@features/profile/profile.component').then(m => m.ProfileComponent),
-        data: { breadcrumb: 'Profile Settings' }
+        path: 'account',
+        loadComponent: () => import('@features/account/account.component').then(m => m.AccountComponent),
+        data: { breadcrumb: 'Account Settings' }
       }
     ]
   },

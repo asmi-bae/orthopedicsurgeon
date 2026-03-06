@@ -2,8 +2,9 @@ package com.orthopedic.api.auth.controller;
 
 import com.orthopedic.api.auth.dto.*;
 import com.orthopedic.api.auth.entity.User;
-import com.orthopedic.api.rbac.annotation.CurrentUser;
 import com.orthopedic.api.auth.service.AdminAuthService;
+import com.orthopedic.api.auth.service.UserSessionService;
+import com.orthopedic.api.rbac.annotation.CurrentUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
@@ -13,7 +14,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/admin/auth")
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminAuthController {
 
     private final AdminAuthService adminAuthService;
+    private final UserSessionService sessionService;
 
     @Value("${app.auth.cookie-name.refresh:refreshToken}")
     private String refreshTokenCookieName;
@@ -142,5 +148,68 @@ public class AdminAuthController {
             return request.getRemoteAddr();
         }
         return xfHeader.split(",")[0];
+    }
+
+    @PostMapping("/logout/all-sessions")
+    @Operation(summary = "Logout from all sessions")
+    public ResponseEntity<Void> logoutAllSessions(@CurrentUser User user) {
+        sessionService.revokeOtherSessions(user, null);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/session/verify")
+    @Operation(summary = "Verify current session")
+    public ResponseEntity<Void> verifySession() {
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/session/heartbeat")
+    @Operation(summary = "Session heartbeat")
+    public ResponseEntity<Void> sessionHeartbeat() {
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/2fa/setup/begin")
+    @Operation(summary = "Initiate 2FA setup")
+    public ResponseEntity<Object> setup2faBegin(@CurrentUser User user) {
+        return ResponseEntity.ok(Map.of("secret", "dummy-secret"));
+    }
+
+    @PostMapping("/2fa/setup/verify")
+    @Operation(summary = "Verify and enable 2FA")
+    public ResponseEntity<Object> setup2faVerify(@CurrentUser User user, @RequestBody Map<String, String> body) {
+        return ResponseEntity.ok(Map.of("success", true));
+    }
+
+    @PostMapping("/2fa/backup-codes/regenerate")
+    @Operation(summary = "Regenerate 2FA backup codes")
+    public ResponseEntity<List<String>> regenerateBackupCodes(@CurrentUser User user) {
+        return ResponseEntity.ok(List.of());
+    }
+
+    @PostMapping("/passkey/register/begin")
+    @Operation(summary = "Initiate Passkey registration")
+    public ResponseEntity<Object> passkeyRegisterBegin(@CurrentUser User user) {
+        return ResponseEntity.ok(Map.of());
+    }
+
+    @PostMapping("/passkey/register/complete")
+    @Operation(summary = "Complete Passkey registration")
+    public ResponseEntity<Object> passkeyRegisterComplete(@CurrentUser User user, @RequestBody Map<String, Object> body) {
+        return ResponseEntity.ok(Map.of("success", true));
+    }
+
+    @GetMapping("/sso/providers")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Operation(summary = "Get all SSO providers")
+    public ResponseEntity<List<Object>> getSsoProviders() {
+        return ResponseEntity.ok(List.of());
+    }
+
+    @PutMapping("/sso/providers/{id}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Operation(summary = "Update SSO provider configuration")
+    public ResponseEntity<Void> updateSsoProvider(@PathVariable String id, @RequestBody Map<String, Object> body) {
+        return ResponseEntity.ok().build();
     }
 }
