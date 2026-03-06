@@ -32,4 +32,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Page<User> findByEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
             String email, String firstName, String lastName, Pageable pageable);
+
+    @Query("SELECT new com.orthopedic.api.auth.dto.response.RoleSummaryResponse(r.name, count(u)) FROM User u JOIN u.roles r GROUP BY r.name")
+    List<com.orthopedic.api.auth.dto.response.RoleSummaryResponse> getRolesSummary();
 }

@@ -2,7 +2,10 @@ package com.orthopedic.api.auth.service;
 
 import com.orthopedic.api.auth.dto.AdminSessionDto;
 import com.orthopedic.api.auth.dto.SessionDto;
+import com.orthopedic.api.auth.dto.response.LoginHistoryResponse;
 import com.orthopedic.api.auth.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
@@ -10,12 +13,12 @@ import java.util.UUID;
 public interface UserSessionService {
 
     /**
-     * Get all active sessions in the system (SUPER_ADMIN only).
+     * Get all active sessions for moderation (SUPER_ADMIN).
      */
     List<AdminSessionDto> getAllActiveSessions();
 
     /**
-     * Force logout a specific user by revoking all their sessions.
+     * Force logout a user (SUPER_ADMIN).
      */
     void forceLogout(UUID userId);
 
@@ -35,12 +38,11 @@ public interface UserSessionService {
     void revokeOtherSessions(User user, String currentAccessTokenJti);
 
     /**
-     * Get login history (all sessions, active and inactive) for the given user.
+     * Get login history.
      */
-    List<SessionDto> getLoginHistory(User user);
+    Page<LoginHistoryResponse> getLoginHistory(User user, Pageable pageable);
 
     /**
-     * Clear all inactive sessions for the given user.
      */
     void clearLoginHistory(User user);
 }

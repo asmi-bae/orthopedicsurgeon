@@ -40,12 +40,13 @@ import { finalize } from 'rxjs';
       </div>
 
       <!-- Main Account Area -->
-      <div class="bg-transparent overflow-hidden">
+      <div class="bg-transparent overflow-hidden no-animation">
         <mat-tab-group 
           class="profile-tabs" 
           [selectedIndex]="activeTab()" 
           (selectedIndexChange)="onTabChange($event)"
           headerPosition="above"
+          animationDuration="0ms"
         >
           <!-- Personal Info Tab -->
           <mat-tab>
@@ -68,7 +69,7 @@ import { finalize } from 'rxjs';
                     }
                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white cursor-pointer">
                       <mat-icon>camera_alt</mat-icon>
-                      <span class="text-[10px] uppercase font-bold mt-1">Change</span>
+                      <span class="text-[10px] font-bold mt-1">Change</span>
                     </div>
                   </div>
                 </div>
@@ -79,7 +80,7 @@ import { finalize } from 'rxjs';
                     A picture helps people recognize you and lets you know when you're signed in to your account.
                   </p>
                   <div class="flex items-center gap-3 pt-4">
-                    <button mat-stroked-button class="!rounded-full !px-5 !border-google-gray-300 dark:!border-white/10 !text-google-gray-700 dark:!text-google-gray-200">
+                    <button mat-stroked-button>
                       Upload new
                     </button>
                     <button class="text-xs text-google-red hover:underline font-medium ml-2">Remove</button>
@@ -107,7 +108,7 @@ import { finalize } from 'rxjs';
                 </div>
                 
                 <div class="col-span-1 md:col-span-2 flex justify-end pt-4">
-                  <button type="submit" mat-flat-button color="primary" class="!px-8 !py-6 !rounded-full !text-sm !font-medium" [disabled]="loading() || profileForm.pristine">
+                  <button type="submit" mat-flat-button color="primary" [disabled]="loading() || profileForm.pristine">
                     {{ loading() ? 'Saving...' : 'Save changes' }}
                   </button>
                 </div>
@@ -137,7 +138,7 @@ import { finalize } from 'rxjs';
                        <zrd-input label="Current password" type="password" formControlName="oldPassword"></zrd-input>
                        <zrd-input label="New password" type="password" formControlName="newPassword"></zrd-input>
                        <div class="flex justify-end pt-2">
-                          <button type="submit" mat-stroked-button class="!rounded-full !px-8 !py-6 !border-google-gray-300 dark:!border-white/10 !text-google-gray-700 dark:!text-google-gray-200" [disabled]="loading() || passwordForm.invalid">
+                          <button type="submit" mat-stroked-button [disabled]="loading() || passwordForm.invalid">
                             {{ loading() ? 'Changing...' : 'Change password' }}
                           </button>
                        </div>
@@ -149,7 +150,7 @@ import { finalize } from 'rxjs';
 
               <!-- 2FA Section -->
               <div class="space-y-6">
-                 <div class="flex items-center justify-between">
+                  <div class="flex items-center justify-between">
                     <div class="space-y-1">
                        <h3 class="text-lg font-medium text-google-gray-900 dark:text-white">2-Step Verification</h3>
                        <p class="text-sm text-google-gray-500 dark:text-google-gray-400">
@@ -157,14 +158,14 @@ import { finalize } from 'rxjs';
                        </p>
                     </div>
                     @if (auth.currentUser()?.isTwoFactorEnabled) {
-                       <span class="px-3 py-1 rounded-full bg-google-emerald/10 text-google-emerald text-xs font-bold uppercase tracking-wider">Enabled</span>
+                       <span class="px-3 py-1 rounded-full bg-google-emerald/10 text-google-emerald text-sm font-bold tracking-wider">Enabled</span>
                     } @else {
-                       <span class="px-3 py-1 rounded-full bg-google-gray-100 dark:bg-white/5 text-google-gray-500 text-xs font-bold uppercase tracking-wider">Disabled</span>
+                       <span class="px-3 py-1 rounded-full bg-google-gray-100 dark:bg-white/5 text-google-gray-500 text-sm font-bold tracking-wider">Disabled</span>
                     }
                  </div>
 
                  @if (!auth.currentUser()?.isTwoFactorEnabled && !show2faSetup()) {
-                   <button (click)="init2faSetup()" mat-flat-button color="primary" class="!rounded-full !px-8 !py-6">
+                   <button (click)="init2faSetup()" mat-flat-button color="primary">
                       Set up 2-Step Verification
                    </button>
                  }
@@ -192,7 +193,7 @@ import { finalize } from 'rxjs';
                             </ol>
                             <div class="flex items-end gap-3 max-w-sm">
                                <zrd-input label="Verification code" placeholder="000000" class="flex-1" [(ngModel)]="tfaCode" [ngModelOptions]="{standalone: true}"></zrd-input>
-                               <button (click)="confirm2fa()" mat-flat-button color="primary" class="!rounded-full !h-[42px] mb-[4px]" [disabled]="loading() || !tfaCode()">
+                               <button (click)="confirm2fa()" mat-flat-button color="primary" [disabled]="loading() || !tfaCode()">
                                  Confirm
                                </button>
                             </div>
@@ -211,7 +212,7 @@ import { finalize } from 'rxjs';
                        <h3 class="text-lg font-medium text-google-gray-900 dark:text-white">Active Sessions</h3>
                        <p class="text-sm text-google-gray-500 dark:text-google-gray-400">Manage and sign out of your active sessions on all devices.</p>
                     </div>
-                    <button (click)="revokeOtherSessions()" mat-button color="warn" class="!text-xs !bg-google-red/5 hover:!bg-google-red/10 !rounded-full !px-4">
+                    <button (click)="revokeOtherSessions()" mat-button color="warn">
                        Sign out of all other sessions
                     </button>
                  </div>
@@ -229,7 +230,7 @@ import { finalize } from 'rxjs';
                                     {{ session.os }} • {{ session.browser }}
                                   </span>
                                   @if (session.isCurrentSession) {
-                                    <span class="text-[10px] font-bold text-google-blue bg-google-blue/10 px-2 py-0.5 rounded-full uppercase tracking-tight">Active</span>
+                                    <span class="text-xs font-bold text-google-blue bg-google-blue/10 px-2 py-0.5 rounded-full tracking-tight">Active</span>
                                   }
                                </div>
                                <span class="text-xs text-google-gray-500 dark:text-google-gray-400">
@@ -251,17 +252,7 @@ import { finalize } from 'rxjs';
         </mat-tab-group>
       </div>
     </div>
-  `,
-  styles: [`
-    :host { display: block; padding-bottom: 2rem; }
-    ::ng-deep .profile-tabs .mat-mdc-tab-header {
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      padding: 0 1.5rem;
-    }
-    ::ng-deep .profile-tabs .mat-mdc-tab-labels { gap: 1rem; }
-    ::ng-deep .dark .profile-tabs .mat-mdc-tab-header { border-bottom-color: rgba(255,255,255,0.05); }
-    ::ng-deep .profile-tabs .mat-mdc-tab-label-container { height: 64px; }
-  `]
+  `
 })
 export class AccountComponent implements OnInit {
   auth = inject(AuthService);
@@ -271,7 +262,7 @@ export class AccountComponent implements OnInit {
   router = inject(Router);
   snackBar = inject(MatSnackBar);
 
-  activeTab = signal(0);
+  activeTab = signal(Number(inject(ActivatedRoute).snapshot.queryParams['tab'] || 0));
   loading = signal(false);
   sessions = signal<any[]>([]);
   

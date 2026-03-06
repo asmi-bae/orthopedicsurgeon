@@ -44,6 +44,12 @@ public class AdminUserController extends BaseController {
         return ok(adminUserService.getAllUsers(filters, pageable));
     }
 
+    @GetMapping("/roles-summary")
+    @Operation(summary = "Get user roles summary")
+    public ResponseEntity<ApiResponse<java.util.List<com.orthopedic.api.auth.dto.response.RoleSummaryResponse>>> getRolesSummary() {
+        return ok(adminUserService.getRolesSummary());
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get user details by ID")
     public ResponseEntity<ApiResponse<UserDetailResponse>> getUserById(@PathVariable UUID id) {

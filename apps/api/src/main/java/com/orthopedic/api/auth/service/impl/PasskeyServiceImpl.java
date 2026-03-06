@@ -1,5 +1,6 @@
-package com.orthopedic.api.auth.service;
+package com.orthopedic.api.auth.service.impl;
 
+import com.orthopedic.api.auth.service.PasskeyService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orthopedic.api.auth.entity.PasskeyCredential;
 import com.orthopedic.api.auth.entity.User;

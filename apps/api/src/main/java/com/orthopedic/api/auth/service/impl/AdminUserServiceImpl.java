@@ -43,6 +43,11 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
 
     @Override
+    public java.util.List<com.orthopedic.api.auth.dto.response.RoleSummaryResponse> getRolesSummary() {
+        return userRepository.getRolesSummary();
+    }
+
+    @Override
     public UserDetailResponse getUserById(UUID id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));

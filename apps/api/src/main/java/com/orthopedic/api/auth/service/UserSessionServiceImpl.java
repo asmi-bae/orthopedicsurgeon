@@ -2,14 +2,19 @@ package com.orthopedic.api.auth.service;
 
 import com.orthopedic.api.auth.dto.AdminSessionDto;
 import com.orthopedic.api.auth.dto.SessionDto;
+import com.orthopedic.api.auth.dto.response.LoginHistoryResponse;
+import com.orthopedic.api.auth.entity.LoginAudit;
 import com.orthopedic.api.auth.entity.Session;
 import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.auth.exception.AuthException;
+import com.orthopedic.api.auth.repository.LoginAuditRepository;
 import com.orthopedic.api.auth.repository.SessionRepository;
 import com.orthopedic.api.auth.repository.UserRepository;
 import com.orthopedic.api.auth.security.JwtTokenProvider;
 import com.orthopedic.api.config.JwtConfig;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +29,7 @@ public class UserSessionServiceImpl implements UserSessionService {
 
     private final SessionRepository sessionRepository;
     private final UserRepository userRepository;
+    private final LoginAuditRepository loginAuditRepository;
     private final JwtTokenProvider tokenProvider;
     private final JwtConfig jwtConfig;
 
@@ -97,22 +103,26 @@ public class UserSessionServiceImpl implements UserSessionService {
     }
 
     @Override
-    public List<SessionDto> getLoginHistory(User user) {
-        return sessionRepository.findByUser(user)
-                .stream()
-                .map(session -> mapToDto(session, null))
-                .collect(Collectors.toList());
+    public Page<LoginHistoryResponse> getLoginHistory(User user, Pageable pageable) {
+        return loginAuditRepository.findByUserOrderByTimestampDesc(user, pageable)
+                .map(this::mapToLoginHistoryResponse);
+    }
+
+    private LoginHistoryResponse mapToLoginHistoryResponse(LoginAudit audit) {
+        return LoginHistoryResponse.builder()
+                .id(audit.getId())
+                .email(audit.getUser() != null ? audit.getUser().getEmail() : "unknown")
+                .ipAddress(audit.getIpAddress())
+                .deviceInfo(audit.getDeviceInfo())
+                .status(audit.getStatus())
+                .timestamp(audit.getTimestamp())
+                .build();
     }
 
     @Override
     @Transactional
     public void clearLoginHistory(User user) {
-        List<Session> allSessions = sessionRepository.findByUser(user);
-        List<Session> inactiveSessions = allSessions.stream()
-                .filter(s -> !s.isActive())
-                .collect(Collectors.toList());
-        
-        sessionRepository.deleteAll(inactiveSessions);
+        loginAuditRepository.deleteByUser(user);
     }
 
     private SessionDto mapToDto(Session session, String currentAccessTokenJti) {

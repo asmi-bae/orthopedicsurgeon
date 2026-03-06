@@ -133,7 +133,7 @@ import { Notification as NotificationModel, NotificationType, NotificationLevel 
     .custom-scrollbar::-webkit-scrollbar { width: 4px; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
     .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
-    ::ng-deep .notification-menu-panel { background: transparent !important; box-shadow: none !important; margin-top: 12px !important; }
+    ::ng-deep .notification-menu-panel { background: transparent !important; box-shadow: none !important; margin-top: 12px !important; max-width: none !important; }
   `]
 })
 export class NotificationMenuComponent implements OnInit {

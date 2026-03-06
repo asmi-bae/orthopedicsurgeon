@@ -15,8 +15,16 @@ export class USERSROLESService {
    * ID: AO-01
 Query: role, status, search, page, size
    */
-  getAdminUsers(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/users`);
+  getAdminUsers(params?: any): Observable<any> {
+    let httpParams = new HttpParams();
+    if (params) {
+      Object.keys(params).forEach(key => {
+        if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
+          httpParams = httpParams.append(key, params[key]);
+        }
+      });
+    }
+    return this.http.get(`${this.baseUrl}/admin/users`, { params: httpParams });
   }
 
   /**
