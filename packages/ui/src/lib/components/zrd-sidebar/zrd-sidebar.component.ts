@@ -28,7 +28,7 @@ export interface ZrdNavItem {
       [class.w-20]="collapsed && !isMobile"
       [class.-translate-x-full]="isMobile && collapsed"
       [class.translate-x-0]="!isMobile || !collapsed"
-      class="h-screen bg-google-gray-100 dark:bg-sidebar-dark flex flex-col fixed left-0 top-0 z-50 transition-all duration-300 ease-in-out lg:translate-x-0"
+      class="h-screen bg-google-gray-100 dark:bg-sidebar-dark flex flex-col fixed left-0 top-0 z-50 transition-transform duration-300 ease-in-out lg:translate-x-0"
     >
       <!-- Logo Area -->
       <div class="h-16 flex items-center px-4 gap-1"

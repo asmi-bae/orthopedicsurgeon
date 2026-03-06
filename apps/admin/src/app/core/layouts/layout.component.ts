@@ -32,7 +32,7 @@ import { ThemeService } from '@core/services/theme.service';
         (onToggle)="toggleCollapsed()"
       ></zrd-sidebar>
 
-      <div class="flex-1 flex flex-col min-w-0 transition-all duration-300">
+      <div class="flex-1 flex flex-col min-w-0">
         <!-- Spartan Header -->
         <app-admin-header (toggleSidebar)="toggleCollapsed()"></app-admin-header>
 
@@ -53,8 +53,8 @@ import { ThemeService } from '@core/services/theme.service';
   `]
 })
 export class AdminLayoutComponent implements OnInit {
-  collapsed = signal(false);
-  isMobile = signal(false);
+  isMobile = signal(typeof window !== 'undefined' ? window.innerWidth < 1024 : false);
+  collapsed = signal(typeof window !== 'undefined' ? window.innerWidth < 1024 : false);
 
   navItems: ZrdNavItem[] = [
     { label: 'Dashboard', icon: 'mat-icon:home', route: '/dashboard' },
@@ -70,10 +70,13 @@ export class AdminLayoutComponent implements OnInit {
     { label: 'Users', icon: 'mat-icon:admin_panel_settings', route: '/users' }
   ];
 
-  ngOnInit() { this.checkBreakpoint(); }
+  ngOnInit() { 
+    // Initial check already done in signal initialization
+  }
 
   @HostListener('window:resize')
   checkBreakpoint() {
+    if (typeof window === 'undefined') return;
     const mobile = window.innerWidth < 1024;
     this.isMobile.set(mobile);
     if (mobile) this.collapsed.set(true);

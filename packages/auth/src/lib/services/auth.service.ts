@@ -170,6 +170,10 @@ export class AuthService {
     return this.currentUser()?.roles.includes(role) || false;
   }
 
+  updateCurrentUser(user: User) {
+    this.currentUser.set(user);
+  }
+
   private checkAuthRequest$: Observable<boolean> | null = null;
 
   checkAuth(): Observable<boolean> {

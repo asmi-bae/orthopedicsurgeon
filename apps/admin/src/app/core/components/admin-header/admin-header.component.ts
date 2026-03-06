@@ -23,7 +23,7 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
       
       <!-- Left: Logo & Breadcrumbs (Hidden on Mobile when Search is Expanded) -->
       <div 
-        class="flex items-center gap-4 transition-all duration-300 shrink-0" 
+        class="flex items-center gap-4 shrink-0" 
       >
          <button (click)="toggleSidebar.emit()" class="p-2 h-10 w-10 flex items-center justify-center rounded-full hover:bg-google-gray-200 dark:hover:bg-white/10 transition-colors">
            <mat-icon class="text-google-gray-600 dark:text-google-gray-400">menu</mat-icon>
@@ -88,8 +88,8 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
           }
         </div>
 
-        <!-- Notification & User Actions (Hidden when Search is Expanded on Mobile) -->
-        <div class="flex items-center gap-2 transition-all duration-300 shrink-0">
+        <!-- Notification & User Actions (Hidden when Search is Expanded) -->
+        <div class="flex items-center gap-2 shrink-0">
           <button (click)="themeService.toggleTheme()" 
                   class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-google-gray-100 dark:hover:bg-white/5 text-google-gray-600 dark:text-google-gray-400 transition-all"
                   matTooltip="Toggle theme">

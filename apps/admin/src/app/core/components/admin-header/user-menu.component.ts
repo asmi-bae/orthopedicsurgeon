@@ -85,7 +85,7 @@ import { ZrdButtonComponent, ZrdCardComponent } from '@repo/ui';
           <!-- Quick Navigation & Services -->
           <div class="p-2 border-t border-google-gray-100 dark:border-white/10">
              <div class="grid grid-cols-1 gap-1">
-               <a routerLink="/settings" (click)="close()" class="flex items-center gap-4 p-4 px-6 rounded-full hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors group">
+               <a routerLink="/profile" [queryParams]="{ tab: 0 }" (click)="close()" class="flex items-center gap-4 p-4 px-6 rounded-full hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors group">
                   <div class="w-6 h-6 flex items-center justify-center text-google-gray-500 group-hover:text-google-blue">
                      <mat-icon>person_outline</mat-icon>
                   </div>
@@ -94,7 +94,7 @@ import { ZrdButtonComponent, ZrdCardComponent } from '@repo/ui';
                   </div>
                </a>
 
-               <a routerLink="/settings/security" (click)="close()" class="flex items-center gap-4 p-4 px-6 rounded-full hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors group">
+               <a routerLink="/profile" [queryParams]="{ tab: 1 }" (click)="close()" class="flex items-center gap-4 p-4 px-6 rounded-full hover:bg-google-gray-50 dark:hover:bg-white/5 transition-colors group">
                   <div class="w-6 h-6 flex items-center justify-center text-google-gray-500 group-hover:text-google-emerald">
                      <mat-icon>security</mat-icon>
                   </div>

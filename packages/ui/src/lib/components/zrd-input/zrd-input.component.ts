@@ -62,8 +62,8 @@ export class ZrdInputComponent implements ControlValueAccessor {
   @Input({ transform: booleanAttribute }) hasPrefix = false;
   @Input({ transform: booleanAttribute }) hasSuffix = false;
 
-  value: any = '';
-  disabled = false;
+  @Input() value: any = '';
+  @Input({ transform: booleanAttribute }) disabled = false;
 
   onChange: any = () => {};
   onTouched: any = () => {};
