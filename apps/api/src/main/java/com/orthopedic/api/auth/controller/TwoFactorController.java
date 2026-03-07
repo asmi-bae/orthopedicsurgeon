@@ -30,7 +30,7 @@ public class TwoFactorController {
 
     @PostMapping("/setup")
     @Operation(summary = "Initiate TOTP setup for admin/doctor")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<TwoFactorSetupResponse> setup(@CurrentUser UserDetails userDetails) {
         CustomUserDetails customUser = (CustomUserDetails) userDetails;
         return ResponseEntity.ok(twoFactorService.setupTotp(customUser.getUser().getId()));
@@ -38,7 +38,7 @@ public class TwoFactorController {
 
     @PostMapping("/confirm-setup")
     @Operation(summary = "Confirm and enable TOTP after verifying first code")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Void> confirmSetup(@CurrentUser UserDetails userDetails,
             @Valid @RequestBody TwoFactorConfirmRequest request) {
         CustomUserDetails customUser = (CustomUserDetails) userDetails;

@@ -1,3 +1,4 @@
+import { ZrdCardComponent, ZrdButtonComponent, ZrdBadgeComponent } from '@ui/components';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -6,11 +7,6 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { HEALTHRECORDSAdminAccessService } from '../../../core/services/api/healthrecords-admin-access.service';
 import { RecordVitalsDialogComponent } from '@features/health/components/record-vitals-dialog/record-vitals-dialog.component';
-import { 
-  ZrdCardComponent, 
-  ZrdButtonComponent, 
-  ZrdBadgeComponent 
-} from '@repo/ui';
 
 @Component({
   selector: 'app-patient-health-detail',

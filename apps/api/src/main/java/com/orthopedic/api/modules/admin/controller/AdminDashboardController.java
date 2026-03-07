@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/admin/dashboard")
 @RequiredArgsConstructor
 @Tag(name = "Admin Dashboard", description = "Endpoints for retrieving admin dashboard data")
-@PreAuthorize("hasRole('ADMIN') or hasRole('SUPER_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class AdminDashboardController {
 
     private final AdminDashboardService dashboardService;

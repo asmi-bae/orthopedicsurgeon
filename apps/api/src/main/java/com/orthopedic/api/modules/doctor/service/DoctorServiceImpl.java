@@ -79,7 +79,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'DOCTOR_ADMIN')")
     @CacheEvict(value = "doctors", allEntries = true)
     @LogMutation(action = "CREATE_DOCTOR", entityName = "DOCTOR")
     public DoctorResponse createDoctor(CreateDoctorRequest request) {
@@ -137,7 +137,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'DOCTOR_ADMIN')")
     @CacheEvict(value = "doctors", allEntries = true)
     @LogMutation(action = "UPDATE_DOCTOR", entityName = "DOCTOR")
     public DoctorResponse updateDoctor(UUID id, CreateDoctorRequest request) {
@@ -169,7 +169,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'DOCTOR_ADMIN')")
     @CacheEvict(value = "doctors", allEntries = true)
     @LogMutation(action = "DELETE_DOCTOR", entityName = "DOCTOR")
     public void deleteDoctor(UUID id) {
@@ -180,7 +180,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'DOCTOR_ADMIN')")
     @CacheEvict(value = "doctors", allEntries = true)
     public void updateDoctorStatus(UUID id, Doctor.DoctorStatus status) {
         Doctor doctor = doctorRepository.findById(id)
@@ -190,7 +190,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'DOCTOR_ADMIN')")
     @CacheEvict(value = "doctors", allEntries = true)
     public void toggleFeaturedStatus(UUID id, boolean featured) {
         Doctor doctor = doctorRepository.findById(id)

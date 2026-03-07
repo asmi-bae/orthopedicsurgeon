@@ -80,6 +80,36 @@ export const routes: Routes = [
         data: { breadcrumb: 'Blog' }
       },
       {
+        path: 'website/about',
+        loadComponent: () => import('@features/website/about/about-editor.component').then(m => m.AboutEditorComponent),
+        data: { breadcrumb: 'Doctor About Me' }
+      },
+      {
+        path: 'website/contact',
+        loadComponent: () => import('@features/website/contact/contact-settings.component').then(m => m.ContactSettingsComponent),
+        data: { breadcrumb: 'Connect Details' }
+      },
+      {
+        path: 'website/gallery',
+        loadComponent: () => import('@features/website/gallery/gallery-management.component').then(m => m.GalleryManagementComponent),
+        data: { breadcrumb: 'Media Gallery' }
+      },
+      {
+        path: 'website/reviews',
+        loadComponent: () => import('@features/website/reviews/review-management.component').then(m => m.ReviewManagementComponent),
+        data: { breadcrumb: 'Reviews Moderation' }
+      },
+      {
+        path: 'website/theme',
+        loadComponent: () => import('@features/website/theme/theme-settings.component').then(m => m.ThemeSettingsComponent),
+        data: { breadcrumb: 'Theme Settings' }
+      },
+      {
+        path: 'website/services',
+        loadComponent: () => import('@features/website/services/service-management.component').then(m => m.ServiceManagementComponent),
+        data: { breadcrumb: 'Website Services' }
+      },
+      {
         path: 'account',
         loadComponent: () => import('@features/account/account.component').then(m => m.AccountComponent),
         data: { breadcrumb: 'Account Settings' }

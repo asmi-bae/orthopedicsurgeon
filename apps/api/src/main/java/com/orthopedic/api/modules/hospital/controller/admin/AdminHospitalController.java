@@ -29,7 +29,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/admin/hospitals")
 @Tag(name = "Admin Hospital Management", description = "Admin endpoints for managing hospitals and their services")
-@PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 @RequiredArgsConstructor
 public class AdminHospitalController extends BaseController {
 

@@ -25,7 +25,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/admin/doctors")
 @Tag(name = "Admin Doctor Management", description = "Endpoints for administrators to manage doctor profiles and registrations")
-@PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class AdminDoctorController extends BaseController {
 
     private final DoctorService doctorService;
@@ -51,6 +51,7 @@ public class AdminDoctorController extends BaseController {
 
     @PostMapping
     @Operation(summary = "Register a new doctor")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<DoctorResponse>> create(@Valid @RequestBody CreateDoctorRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Doctor registered successfully",
@@ -59,12 +60,14 @@ public class AdminDoctorController extends BaseController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get full doctor details")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.isOwnDoctorProfile(authentication, #id)")
     public ResponseEntity<ApiResponse<DoctorResponse>> getById(@PathVariable UUID id) {
         return ok(doctorService.getDoctorById(id));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update doctor profile")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.isOwnDoctorProfile(authentication, #id)")
     public ResponseEntity<ApiResponse<DoctorResponse>> update(@PathVariable UUID id,
             @Valid @RequestBody CreateDoctorRequest request) {
         return ok(doctorService.updateDoctor(id, request));
@@ -72,6 +75,7 @@ public class AdminDoctorController extends BaseController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete doctor profile")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.isOwnDoctorProfile(authentication, #id)")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
         doctorService.deleteDoctor(id);
         return ok("Doctor deleted successfully", null);
@@ -79,6 +83,7 @@ public class AdminDoctorController extends BaseController {
 
     @PatchMapping("/{id}/status")
     @Operation(summary = "Update doctor status")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.isOwnDoctorProfile(authentication, #id)")
     public ResponseEntity<ApiResponse<Void>> updateStatus(
             @PathVariable UUID id,
             @RequestBody Map<String, com.orthopedic.api.modules.doctor.entity.Doctor.DoctorStatus> body) {
@@ -92,6 +97,7 @@ public class AdminDoctorController extends BaseController {
 
     @PostMapping("/{id}/toggle-featured")
     @Operation(summary = "Toggle doctor featured status")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.isOwnDoctorProfile(authentication, #id)")
     public ResponseEntity<ApiResponse<Void>> toggleFeatured(
             @PathVariable UUID id,
             @RequestBody Map<String, Boolean> body) {

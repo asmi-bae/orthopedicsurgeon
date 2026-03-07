@@ -1,11 +1,6 @@
+import { ZrdCardComponent, ZrdButtonComponent, ZrdInputComponent, ZrdBadgeComponent } from '@ui/components';
 import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { 
-  ZrdCardComponent, 
-  ZrdButtonComponent, 
-  ZrdInputComponent,
-  ZrdBadgeComponent 
-} from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';

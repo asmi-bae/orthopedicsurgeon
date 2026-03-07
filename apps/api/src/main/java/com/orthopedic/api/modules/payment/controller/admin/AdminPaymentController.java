@@ -22,7 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/admin")
 @Tag(name = "Admin Payment Management", description = "Endpoints for administrators and staff to manage all payments and view financial data")
-@PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class AdminPaymentController extends BaseController {
 
     private final PaymentService paymentService;

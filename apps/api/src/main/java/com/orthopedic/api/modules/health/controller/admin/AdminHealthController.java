@@ -24,7 +24,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/admin/health")
 @RequiredArgsConstructor
 @Tag(name = "Admin Health", description = "Endpoints for provider-side health records management")
-@PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'DOCTOR')")
 public class AdminHealthController extends BaseController {
 
     private final HealthRecordServiceImpl healthRecordService;

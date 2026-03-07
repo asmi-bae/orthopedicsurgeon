@@ -1,11 +1,7 @@
+import { ZrdCardComponent, ZrdButtonComponent, ZrdBadgeComponent } from '@ui/components';
 import { Component, inject, computed } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { 
-  ZrdCardComponent, 
-  ZrdButtonComponent, 
-  ZrdBadgeComponent 
-} from '@repo/ui';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '@repo/auth';

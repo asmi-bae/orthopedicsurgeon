@@ -20,7 +20,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/admin/site-settings")
 @RequiredArgsConstructor
 @Tag(name = "Admin Site Settings", description = "Admin endpoints for managing website configurations")
-@PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class AdminSiteSettingController extends BaseController {
 
     private final SiteSettingService siteSettingService;

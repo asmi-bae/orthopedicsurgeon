@@ -12,28 +12,47 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OwnershipValidator {
 
-    // These would typically use repositories to check ownership
-    // private final AppointmentRepository appointmentRepo;
-    // ...
+    private final com.orthopedic.api.auth.repository.UserRepository userRepository;
+    private final com.orthopedic.api.modules.doctor.repository.DoctorRepository doctorRepository;
 
     public boolean isOwner(Authentication authentication, UUID resourceId) {
         if (authentication == null || resourceId == null)
             return false;
 
-        String currentUserId = authentication.getName();
-
-        if (hasRole(authentication, "ROLE_ADMIN") || hasRole(authentication, "ROLE_SUPER_ADMIN")) {
+        if (hasRole(authentication, "ROLE_DOCTOR_ADMIN") || hasRole(authentication, "ROLE_SUPER_ADMIN")) {
             return true;
         }
 
-        // Logic to check if resourceId belongs to currentUserId
-        // Example:
-        // return appointmentRepo.findById(resourceId)
-        // .map(a -> a.getPatientId().equals(UUID.fromString(currentUserId)))
-        // .orElse(false);
-
-        log.warn("IDOR attempt detected: User {} tried to access resource {}", currentUserId, resourceId);
+        // Base logic for generic owner checks could go here.
         return false;
+    }
+
+    // SUPER_ADMIN_SHIELD
+    public boolean protectSuperAdmin(Authentication authentication, UUID targetUserId) {
+        if (hasRole(authentication, "ROLE_SUPER_ADMIN")) return true;
+        
+        // Prevent action if target is a SUPER_ADMIN
+        return userRepository.findById(targetUserId)
+            .map(u -> u.getRoles().stream().noneMatch(r -> r.getName().equals("SUPER_ADMIN")))
+            .orElse(true);
+    }
+
+    // SINGLE_DOCTOR_SCOPE
+    public boolean isOwnDoctorProfile(Authentication authentication, UUID targetDoctorId) {
+        if (hasRole(authentication, "ROLE_SUPER_ADMIN")) return true;
+        
+        String currentUserId = authentication.getName();
+        return doctorRepository.findById(targetDoctorId)
+            .map(d -> d.getUser() != null && d.getUser().getId().toString().equals(currentUserId))
+            .orElse(false);
+    }
+
+    // PATIENT OWNERSHIP
+    public boolean isPatientOwner(Authentication authentication, UUID targetUserId) {
+        if (hasRole(authentication, "ROLE_DOCTOR_ADMIN") || hasRole(authentication, "ROLE_SUPER_ADMIN")) {
+            return true; 
+        }
+        return authentication.getName().equals(targetUserId.toString());
     }
 
     private boolean hasRole(Authentication auth, String role) {

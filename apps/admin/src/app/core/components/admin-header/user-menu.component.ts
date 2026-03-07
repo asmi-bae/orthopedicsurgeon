@@ -1,3 +1,4 @@
+import { ZrdButtonComponent, ZrdCardComponent } from '@ui/components';
 import {
   Component,
   inject,
@@ -10,7 +11,6 @@ import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
 import { AuthService } from '@repo/auth';
-import { ZrdButtonComponent, ZrdCardComponent } from '@repo/ui';
 
 @Component({
   selector: 'app-admin-user-menu',

@@ -1,12 +1,10 @@
+import { ZrdNavItem, ZrdSidebarComponent } from '@ui/components';
 import { Component, inject, signal, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { 
-  ZrdSidebarComponent, 
-  ZrdNavItem 
-} from '@repo/ui';
+
 import { AdminHeaderComponent } from '@core/components/admin-header/admin-header.component';
 import { ThemeService } from '@core/services/theme.service';
 

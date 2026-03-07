@@ -28,22 +28,33 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-        private static final String[] PUBLIC_URLS = {
-                        "/api/v1/auth/login",
-                        "/api/v1/auth/register/patient",
-                        "/api/v1/auth/refresh",
+        private static final String[] PUBLIC_GET_URLS = {
                         "/api/v1/auth/verify-email/**",
-                        "/api/v1/auth/forgot-password/**",
-                        "/api/v1/auth/reset-password/**",
-                        "/api/v1/admin/auth/login",
-                        "/api/v1/admin/auth/login/mfa",
-                        "/api/v1/admin/auth/refresh",
+                        "/api/v1/auth/login/google",
+                        "/api/v1/auth/oauth2/callback/google",
+                        "/api/v1/auth/check-email",
+                        "/api/v1/public/booking/check-slot",
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
                         "/oauth2/**",
                         "/actuator/**",
-                        "/ws/**",
-                        "/api/v1/public/**"
+                        "/ws/**"
+        };
+
+        private static final String[] PUBLIC_POST_URLS = {
+                        "/api/v1/auth/login",
+                        "/api/v1/auth/register/patient",
+                        "/api/v1/auth/refresh",
+                        "/api/v1/auth/forgot-password/**",
+                        "/api/v1/auth/reset-password/**",
+                        "/api/v1/auth/login/passkey/begin",
+                        "/api/v1/auth/login/passkey/complete",
+                        "/api/v1/auth/login/mfa-verify",
+                        "/api/v1/auth/resend-verification",
+                        "/api/v1/auth/token/verify",
+                        "/api/v1/admin/auth/login",
+                        "/api/v1/admin/auth/login/mfa",
+                        "/api/v1/admin/auth/refresh"
         };
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -82,14 +93,16 @@ public class SecurityConfig {
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
-                                                .permitAll()
-                                                .requestMatchers(PUBLIC_URLS).permitAll()
+                                                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                                                .requestMatchers(org.springframework.http.HttpMethod.GET, PUBLIC_GET_URLS).permitAll()
+                                                .requestMatchers(org.springframework.http.HttpMethod.POST, PUBLIC_POST_URLS).permitAll()
+                                                // Group B-H (except blog comments POST) are public mostly on GET
+                                                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/v1/public/**").permitAll()
+                                                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/public/contact/**", "/api/v1/public/newsletter/**").permitAll()
                                                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
                                                 .requestMatchers("/actuator/**").hasAuthority("ROLE_SUPER_ADMIN")
-                                                .requestMatchers("/api/v1/admin/**")
-                                                .hasAnyRole("ADMIN", "SUPER_ADMIN")
-                                                .requestMatchers("/api/v1/patient/**").hasAuthority("ROLE_PATIENT")
+                                                .requestMatchers("/api/v1/admin/**").hasAnyRole("DOCTOR_ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers("/api/v1/patient/**").hasAnyRole("PATIENT", "DOCTOR_ADMIN", "SUPER_ADMIN")
                                                 .anyRequest().authenticated())
                                 .oauth2Login(oauth2 -> oauth2
                                                 .userInfoEndpoint(userInfo -> userInfo.userService(oauth2UserService))
@@ -107,10 +120,10 @@ public class SecurityConfig {
                                 org.springframework.security.web.header.HeaderWriterFilter.class);
                 http.addFilterBefore(adminIpAllowlistFilter,
                                 org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
-                http.addFilterBefore(rateLimitingFilter,
-                                org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
                 http.addFilterBefore(jwtAuthenticationFilter,
                                 org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
+                // Important: RateLimitingFilter goes AFTER JwtAuthenticationFilter so it has access to the SecurityContext
+                http.addFilterAfter(rateLimitingFilter, JwtAuthenticationFilter.class);
 
                 return http.build();
         }

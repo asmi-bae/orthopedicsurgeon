@@ -18,7 +18,7 @@ import java.util.Arrays;
 @RestController
 @RequestMapping("/api/v1/audit")
 @Tag(name = "Audit Management", description = "Endpoints for viewing system mutation logs (Super Admin only)")
-@PreAuthorize("hasRole('SUPER_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class AuditController extends BaseController {
 
     private final AuditService auditService;

@@ -25,7 +25,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/admin/lab-reports")
 @Tag(name = "Admin Lab Report Management", description = "Endpoints for administrators and staff to create and manage all lab report requests")
-@PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class AdminLabReportController extends BaseController {
 
     private final LabReportService labReportService;

@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/admin/hero-slides")
 @RequiredArgsConstructor
 @Tag(name = "Admin Website Hero", description = "Admin endpoints for managing hero section")
-@PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class AdminHeroSlideController {
 
     private final HeroSlideRepository heroSlideRepository;

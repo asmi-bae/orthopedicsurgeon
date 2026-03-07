@@ -1,7 +1,8 @@
+import { ZrdInputComponent, ZrdButtonComponent, ZrdCardComponent, ZrdSelectComponent, ZrdAvatarComponent } from '@ui/components';
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ZrdInputComponent, ZrdButtonComponent, ZrdCardComponent, ZrdAvatarComponent, ZrdSelectComponent } from '@repo/ui';
+
 import { AuthService } from '@repo/auth';
 import { PublicApiService } from '../../../core/services/public-api.service';
 import { ToastService } from '../../../core/services/toast.service';

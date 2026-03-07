@@ -1,14 +1,7 @@
+import { ZrdCardComponent, ZrdBadgeComponent, ZrdPageHeaderComponent, ZrdStatComponent, ZrdTableComponent, ZrdColumnDef, ZrdSearchInputComponent } from '@ui/components';
 import { Component, signal, inject, computed, ViewChild, TemplateRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  ZrdCardComponent,
-  ZrdBadgeComponent,
-  ZrdPageHeaderComponent,
-  ZrdStatComponent,
-  ZrdTableComponent,
-  ZrdSearchInputComponent,
-  ZrdColumnDef
-} from '@repo/ui';
+
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -96,8 +89,7 @@ interface User {
                 <span class="font-medium">Global View</span>
               </button>
               <button mat-menu-item (click)="filterRole('SUPER_ADMIN')">Super Admins</button>
-              <button mat-menu-item (click)="filterRole('ADMIN')">Administrators</button>
-              <button mat-menu-item (click)="filterRole('DOCTOR')">Medical Practitioners</button>
+              <button mat-menu-item (click)="filterRole('DOCTOR_ADMIN')">Administrators & Doctors</button>
               <button mat-menu-item (click)="filterRole('PATIENT')">Platform Users</button>
             </mat-menu>
           </div>
@@ -155,8 +147,8 @@ interface User {
                   <span>Auth Reset</span>
                 </button>
                 <div class="h-px bg-secondary-100 my-1"></div>
-                <button mat-menu-item [class.text-red-600]="row.enabled" class="!text-red-600">
-                  <mat-icon class="text-red-500">{{ row.enabled ? 'block' : 'undo' }}</mat-icon>
+                <button mat-menu-item [class.text-google-red]="row.enabled" class="!text-google-red">
+                  <mat-icon class="text-google-red">{{ row.enabled ? 'block' : 'undo' }}</mat-icon>
                   <span>{{ row.enabled ? 'Suspend Access' : 'Restore Access' }}</span>
                 </button>
               </mat-menu>
@@ -279,10 +271,9 @@ export class UserManagementComponent {
   roleSummary = computed(() => {
     const apiData = this.roleSummaryData();
     const base = [
-      { role: 'Super Admins', key: 'SUPER_ADMIN', icon: 'shield', iconColor: 'text-indigo-600' },
-      { role: 'Admins', key: 'ADMIN', icon: 'admin_panel_settings', iconColor: 'text-blue-600' },
-      { role: 'Doctors', key: 'DOCTOR', icon: 'medical_services', iconColor: 'text-emerald-600' },
-      { role: 'Patients', key: 'PATIENT', icon: 'person', iconColor: 'text-amber-600' },
+      { role: 'Super Admins', key: 'SUPER_ADMIN', icon: 'shield', iconColor: 'text-google-indigo' },
+      { role: 'Doctor Admins', key: 'DOCTOR_ADMIN', icon: 'medical_services', iconColor: 'text-google-emerald' },
+      { role: 'Patients', key: 'PATIENT', icon: 'person', iconColor: 'text-google-amber' },
     ];
     
     return base.map(b => ({
@@ -300,10 +291,9 @@ export class UserManagementComponent {
   getRoleLabel(role: string): string {
     const map: Record<string, string> = {
       SUPER_ADMIN: 'Super Admin',
-      ADMIN: 'Admin',
-      DOCTOR: 'Doctor',
+      DOCTOR_ADMIN: 'Doctor Admin',
       PATIENT: 'Patient',
-      STAFF: 'Staff',
+      VISITOR: 'Visitor',
     };
     return map[role] ?? role;
   }

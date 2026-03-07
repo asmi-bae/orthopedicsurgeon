@@ -1,7 +1,9 @@
+import { ZrdCardComponent, ZrdButtonComponent, ZrdBadgeComponent, ZrdAvatarComponent, ZrdTabsComponent, ZrdTab } from '@ui/components';
 import { Component, inject, signal, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { ZrdCardComponent, ZrdButtonComponent, ZrdBadgeComponent, ZrdAvatarComponent, ZrdTabsComponent, ZrdTab } from '@repo/ui';
+
+
 import { PublicApiService } from '@core/services/public-api.service';
 import { Doctor } from '@repo/types';
 

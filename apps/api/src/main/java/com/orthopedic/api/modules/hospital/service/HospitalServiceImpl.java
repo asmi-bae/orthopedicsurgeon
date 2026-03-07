@@ -118,7 +118,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'DOCTOR_ADMIN')")
     @CacheEvict(value = "hospitals", allEntries = true)
     @LogMutation(action = "UPDATE_HOSPITAL", entityName = "HOSPITAL")
     public HospitalResponse updateHospital(UUID id, UpdateHospitalRequest request) {
@@ -149,7 +149,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'DOCTOR_ADMIN')")
     @LogMutation(action = "CREATE_SERVICE", entityName = "SERVICE")
     public ServiceResponse createService(CreateServiceRequest request) {
         Hospital hospital = hospitalRepository.findById(request.getHospitalId())
@@ -160,7 +160,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'DOCTOR_ADMIN')")
     @LogMutation(action = "UPDATE_SERVICE", entityName = "SERVICE")
     public ServiceResponse updateService(UUID serviceId, UpdateServiceRequest request) {
         ServiceEntity service = serviceRepository.findById(serviceId)
@@ -170,7 +170,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'DOCTOR_ADMIN')")
     @LogMutation(action = "DELETE_SERVICE", entityName = "SERVICE")
     public void deleteService(UUID serviceId) {
         ServiceEntity service = serviceRepository.findById(serviceId)

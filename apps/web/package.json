@@ -26,7 +26,6 @@
     "@ngrx/store-devtools": "latest",
     "@repo/auth": "workspace:*",
     "@repo/types": "workspace:*",
-    "@repo/ui": "workspace:*",
     "rxjs": "latest",
     "tslib": "latest"
   },

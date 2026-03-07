@@ -181,13 +181,13 @@ public class AdminSecurityController {
     }
  
     @GetMapping("/alerts")
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'DOCTOR_ADMIN')")
     public ResponseEntity<List<Object>> getSecurityAlerts() {
         return ResponseEntity.ok(List.of());
     }
  
     @PutMapping("/alerts/{id}/resolve")
-    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'DOCTOR_ADMIN')")
     public ResponseEntity<Void> resolveAlert(@PathVariable String id) {
         return ResponseEntity.noContent().build();
     }

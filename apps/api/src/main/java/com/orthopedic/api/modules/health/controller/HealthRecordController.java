@@ -42,7 +42,7 @@ public class HealthRecordController extends BaseController {
     }
 
     @PostMapping("/vitals")
-    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
+    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR_ADMIN')")
     @Operation(summary = "Record vital signs")
     public ResponseEntity<ApiResponse<VitalSignsResponse>> recordVitals(
             @Valid @RequestBody RecordVitalsRequest request,

@@ -26,7 +26,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/doctor/lab-reports")
 @Tag(name = "Doctor Lab Report Management", description = "Endpoints for doctors to view and update lab reports for their patients")
-@PreAuthorize("hasRole('DOCTOR')")
+@PreAuthorize("hasRole('DOCTOR_ADMIN')")
 public class DoctorLabReportController extends BaseController {
 
     private final LabReportService labReportService;

@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/admin/website/faq")
 @RequiredArgsConstructor
 @Tag(name = "Admin Website FAQ", description = "Admin endpoints for managing FAQs")
-@PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class AdminFaqController {
 
     private final FaqRepository faqRepository;

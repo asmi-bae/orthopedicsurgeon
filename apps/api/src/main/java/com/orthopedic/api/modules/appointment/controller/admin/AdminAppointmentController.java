@@ -28,7 +28,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/admin/appointments")
 @Tag(name = "Admin Appointment Management", description = "Endpoints for administrators and staff to manage all appointments")
-@PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'SUPER_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class AdminAppointmentController extends BaseController {
 
     private final AppointmentService appointmentService;

@@ -1,6 +1,6 @@
+import { ZrdTableComponent, ZrdBadgeComponent, ZrdButtonComponent, ZrdPageHeaderComponent } from '@ui/components';
 import { Component, signal, ViewChild, TemplateRef, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ZrdTableComponent, ZrdBadgeComponent, ZrdButtonComponent, ZrdPageHeaderComponent } from '@repo/ui';
 import { PublicApiService } from '../../../core/services/public-api.service';
 import { switchMap } from 'rxjs';
 

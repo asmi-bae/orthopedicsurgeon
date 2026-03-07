@@ -24,6 +24,7 @@ public class ApiControlController {
 
     @GetMapping("/maintenance")
     @Operation(summary = "Get maintenance mode status")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<Map<String, Boolean>> getMaintenanceMode() {
         return ResponseEntity.ok(Map.of("enabled", apiControlService.isMaintenanceModeEnabled()));
     }

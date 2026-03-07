@@ -31,7 +31,36 @@ public class AuditAspect {
         try {
             Method method = getMethod(joinPoint);
             LogMutation annotation = method.getAnnotation(LogMutation.class);
+            doLogEvent(annotation.action(), annotation.entityName(), joinPoint);
+        } catch (Exception e) {
+            log.error("Failed to log audit event via annotation", e);
+        }
+    }
 
+    @AfterReturning(value = "execution(* com.orthopedic.api..*Controller.*(..)) && (@annotation(org.springframework.web.bind.annotation.PostMapping) || @annotation(org.springframework.web.bind.annotation.PutMapping) || @annotation(org.springframework.web.bind.annotation.PatchMapping) || @annotation(org.springframework.web.bind.annotation.DeleteMapping))", returning = "result")
+    public void logAdminWrites(JoinPoint joinPoint, Object result) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated()) {
+                boolean isAdminWrite = auth.getAuthorities().stream()
+                        .anyMatch(a -> a.getAuthority().equals("ROLE_DOCTOR_ADMIN") || a.getAuthority().equals("ROLE_SUPER_ADMIN"));
+                if (isAdminWrite) {
+                    Method method = getMethod(joinPoint);
+                    // Skip if it already has @LogMutation to avoid double logging
+                    if (!method.isAnnotationPresent(LogMutation.class)) {
+                        String action = method.getName().toUpperCase();
+                        String entityName = joinPoint.getTarget().getClass().getSimpleName().replace("Controller", "");
+                        doLogEvent(action, entityName, joinPoint);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("Failed to log admin write event", e);
+        }
+    }
+
+    private void doLogEvent(String action, String entityName, JoinPoint joinPoint) {
+        try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             java.util.UUID userId = (auth != null && auth.getPrincipal() instanceof User)
                     ? ((User) auth.getPrincipal()).getId()
@@ -47,18 +76,18 @@ public class AuditAspect {
             }
 
             AuditEventRequest event = AuditEventRequest.builder()
-                    .action(annotation.action())
+                    .action(action)
                     .userId(userId)
                     .ipAddress(ip)
                     .userAgent(userAgent)
-                    .entityType(annotation.entityName())
-                    .details(generateDetails(annotation.action(), annotation.entityName(), joinPoint))
+                    .entityType(entityName)
+                    .details(generateDetails(action, entityName, joinPoint))
                     .status("SUCCESS")
                     .build();
 
             auditService.logEvent(event);
         } catch (Exception e) {
-            log.error("Failed to log audit event", e);
+            log.error("Failed to execute doLogEvent", e);
         }
     }
 

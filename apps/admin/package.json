@@ -28,7 +28,6 @@
     "@ngx-translate/http-loader": "^17.0.0",
     "@repo/auth": "workspace:*",
     "@repo/types": "workspace:*",
-    "@repo/ui": "workspace:*",
     "@stomp/stompjs": "^7.3.0",
     "rxjs": "latest",
     "sockjs-client": "^1.6.1",

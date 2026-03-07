@@ -1,3 +1,4 @@
+import { ZrdButtonComponent, ZrdBadgeComponent } from '@ui/components';
 import { Component, inject, signal, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -7,7 +8,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AuthService } from '@repo/auth';
 import { LogoutConfirmDialogComponent } from '@core/components/logout-confirm-dialog/logout-confirm-dialog.component';
-import { ZrdButtonComponent, ZrdBadgeComponent } from '@repo/ui';
+
+
 
 interface NavItem {
   label: string;
@@ -178,16 +180,21 @@ export class AdminSidebarComponent {
     { label: 'Health Records',    icon: 'monitor_heart',     route: '/health' },
     { label: 'Payments',          icon: 'account_balance',   route: '/finance' },
     {
-      label: 'Website Content',   icon: 'dynamic_feed',
+      label: 'Website Control',   icon: 'web',
       children: [
-        { label: 'Hero Section',  icon: 'auto_awesome',      route: '/content/hero' },
-        { label: 'FAQ',           icon: 'help_center',       route: '/content/faq' },
-        { label: 'Partners',      icon: 'handshake',         route: '/content/partners' },
-        { label: 'Blog',          icon: 'article',           route: '/blog' },
+        { label: 'Theme Identity',  icon: 'palette',           route: '/website/theme' },
+        { label: 'Hero Slider',     icon: 'auto_awesome',      route: '/content/hero' },
+        { label: 'About Profile',   icon: 'person_pin',        route: '/website/about' },
+        { label: 'Services',        icon: 'medical_services',  route: '/website/services' },
+        { label: 'Blog / News',     icon: 'article',           route: '/blog' },
+        { label: 'Media Gallery',   icon: 'collections',       route: '/website/gallery' },
+        { label: 'Reviews',         icon: 'star_rate',         route: '/website/reviews' },
+        { label: 'FAQ Builder',     icon: 'help_center',       route: '/content/faq' },
+        { label: 'Contact Info',    icon: 'contact_phone',     route: '/website/contact' },
+        { label: 'Partners',        icon: 'handshake',         route: '/content/partners' },
       ]
     },
     { label: 'Notifications',     icon: 'notifications',     route: '/notifications' },
-    { label: 'Reviews',           icon: 'star_rate',         route: '/reviews' },
     { label: 'User Management',   icon: 'manage_accounts',   route: '/users',           roles: ['SUPER_ADMIN', 'DOCTOR_ADMIN'] },
     { label: 'Audit Logs',        icon: 'receipt_long',      route: '/audit',           roles: ['SUPER_ADMIN'] },
     { label: 'System Settings',   icon: 'tune',              route: '/settings',        roles: ['SUPER_ADMIN'] },

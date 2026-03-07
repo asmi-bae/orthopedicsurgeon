@@ -33,7 +33,7 @@ public class PaymentController extends BaseController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'STAFF')")
     @Operation(summary = "Create a new payment/invoice record")
     public ResponseEntity<ApiResponse<PaymentResponse>> create(@Valid @RequestBody CreatePaymentRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -41,7 +41,7 @@ public class PaymentController extends BaseController {
     }
 
     @PostMapping("/{id}/process")
-    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'STAFF')")
     @Operation(summary = "Mark a payment as completed/processed")
     public ResponseEntity<ApiResponse<PaymentResponse>> process(
             @PathVariable UUID id,

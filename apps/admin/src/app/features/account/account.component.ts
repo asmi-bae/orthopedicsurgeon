@@ -1,3 +1,4 @@
+import { ZrdButtonComponent, ZrdInputComponent, ZrdSelectComponent, ZrdSelectItem } from '@ui/components';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -10,12 +11,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AuthService } from '@repo/auth';
 import { ADMINAUTHENTICATIONService } from '../../core/services/api/adminauthentication.service';
 import { ADMINSESSIONDEVICESECURITYService } from '../../core/services/api/adminsessiondevicesecurity.service';
-import {
-  ZrdButtonComponent,
-  ZrdInputComponent,
-  ZrdSelectComponent,
-  ZrdSelectItem
-} from '@repo/ui';
 import { finalize } from 'rxjs';
 
 @Component({
