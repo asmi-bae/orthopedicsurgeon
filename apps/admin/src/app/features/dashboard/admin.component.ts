@@ -31,7 +31,7 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
           <h1 class="text-3xl font-bold text-google-gray-900 dark:text-white tracking-tight">Dashboard Overview</h1>
-          <p class="text-google-gray-500 dark:text-google-gray-400 mt-1">Real-time health platform monitoring and analytics.</p>
+          <p class="text-google-gray-600 dark:text-google-gray-400 mt-1">Real-time health platform monitoring and analytics.</p>
         </div>
         <div class="flex items-center gap-3">
           <zrd-button variant="outline" size="md">
@@ -59,11 +59,11 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
               </zrd-badge>
             </div>
             <div class="mt-5">
-              <p class="text-sm font-medium text-google-gray-500 dark:text-google-gray-400">{{ stat.label }}</p>
+              <p class="text-sm font-medium text-google-gray-600 dark:text-google-gray-400">{{ stat.label }}</p>
               <h3 class="text-3xl font-bold text-google-gray-900 dark:text-white mt-1">{{ stat.value }}</h3>
               <div class="flex items-center gap-1.5 mt-2">
                 <div class="w-1.5 h-1.5 rounded-full bg-google-blue animate-pulse"></div>
-                <p class="text-xs text-google-gray-400 leading-none">{{ stat.description }}</p>
+                <p class="text-xs text-google-gray-500 leading-none">{{ stat.description }}</p>
               </div>
             </div>
           </zrd-card>
@@ -142,7 +142,7 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="font-bold text-sm text-google-gray-900 dark:text-white truncate m-0">{{ h.name }}</p>
-                  <p class="text-xs text-google-gray-500 m-0">{{ h.city }}</p>
+                  <p class="text-xs text-google-gray-600 m-0">{{ h.city }}</p>
                 </div>
                 <div class="text-right shrink-0">
                   <p class="text-sm font-black text-google-gray-900 dark:text-white m-0">{{ h.revenue }}</p>
@@ -169,7 +169,7 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
                <mat-icon>{{ q.icon }}</mat-icon>
             </div>
             <p class="text-2xl font-black text-google-gray-900 dark:text-white m-0 tracking-tight">{{ q.value }}</p>
-            <p class="text-xs font-bold text-google-gray-500 m-0 mt-1 uppercase tracking-widest">{{ q.label }}</p>
+            <p class="text-xs font-bold text-google-gray-600 m-0 mt-1 uppercase tracking-widest">{{ q.label }}</p>
           </zrd-card>
         }
       </div>

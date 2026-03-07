@@ -68,32 +68,37 @@ import { WEBSITECONTROLService } from '../../../core/services/api/websitecontrol
           <!-- Spartan FAQ Stream -->
           <div class="space-y-6">
             @for (faq of faqs(); track faq.id; let i = $index) {
-              <div class="p-6 rounded-3xl bg-google-gray-50/50 dark:bg-white/5 border border-google-gray-100 dark:border-white/5 hover:border-google-blue/30 transition-all group">
-                <div class="flex items-start gap-6">
+              <div class="p-8 rounded-[32px] bg-white dark:bg-white/5 border border-google-gray-100 dark:border-white/5 hover:border-google-blue/50 hover:shadow-2xl hover:shadow-google-blue/5 transition-all group relative">
+                <div class="flex items-start gap-8">
                   <!-- Ordinal Index -->
-                  <span class="w-10 h-10 rounded-2xl bg-white dark:bg-white/10 flex items-center justify-center text-xs font-black text-google-blue shadow-sm border border-google-gray-100 dark:border-white/10 shrink-0 uppercase tracking-tighter">
-                    #{{ i + 1 }}
-                  </span>
+                  <div class="shrink-0">
+                    <div class="w-12 h-12 rounded-2xl bg-google-blue/5 dark:bg-google-blue/10 flex items-center justify-center text-sm font-black text-google-blue border border-google-blue/10">
+                      {{ i + 1 }}
+                    </div>
+                  </div>
 
                   <div class="flex-1 min-w-0">
-                    <h3 class="font-bold text-base text-google-gray-900 dark:text-white m-0 tracking-tight group-hover:text-google-blue transition-colors cursor-pointer" (click)="openEditor(faq)">{{ faq.question }}</h3>
-                    <p class="text-sm text-google-gray-600 dark:text-google-gray-400 m-0 mt-3 leading-relaxed">{{ faq.answer }}</p>
+                    <h3 class="font-bold text-xl text-google-gray-900 dark:text-white m-0 tracking-tight group-hover:text-google-blue transition-colors cursor-pointer" (click)="openEditor(faq)">
+                      {{ faq.question }}
+                    </h3>
+                    <div class="mt-4 text-base text-google-gray-600 dark:text-google-gray-400 leading-relaxed font-medium">
+                      {{ faq.answer }}
+                    </div>
                   </div>
 
                   <!-- Registry Controls -->
-                  <div class="shrink-0 flex items-center gap-3">
-                    <zrd-button size="sm" variant="ghost" (click)="openEditor(faq)">Edit</zrd-button>
-                    <button [matMenuTriggerFor]="menu" class="p-2 h-9 w-9 flex items-center justify-center rounded-full hover:bg-google-gray-200 dark:hover:bg-white/10 text-google-gray-400 transition-all">
-                      <mat-icon>more_vert</mat-icon>
+                  <div class="shrink-0 flex items-center gap-2">
+                    <button [matMenuTriggerFor]="menu" class="p-2 h-10 w-10 flex items-center justify-center rounded-full hover:bg-google-gray-100 dark:hover:bg-white/10 text-google-gray-400 transition-all">
+                      <mat-icon>more_horiz</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu" class="rounded-2xl border-none shadow-google">
                       <button mat-menu-item (click)="openEditor(faq)">
-                        <mat-icon class="text-google-blue">edit_note</mat-icon>
-                        <span class="font-bold text-sm">Update Entry</span>
+                        <mat-icon class="text-google-blue">terminal</mat-icon>
+                        <span class="font-bold text-sm">Refine Entry</span>
                       </button>
                       <div class="h-px bg-google-gray-100 dark:bg-white/5 my-1 mx-2"></div>
                       <button mat-menu-item class="text-google-red" (click)="deleteFaq(faq.id)">
-                        <mat-icon class="text-google-red">delete_forever</mat-icon>
+                        <mat-icon class="text-google-red">delete_sweep</mat-icon>
                         <span class="font-bold text-sm">Purge Record</span>
                       </button>
                     </mat-menu>

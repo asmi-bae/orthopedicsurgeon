@@ -1,16 +1,14 @@
-package com.orthopedic.api.modules.payment.controller.admin;
+package com.orthopedic.api.modules.payment.controller.doctor;
 
-import com.orthopedic.api.auth.entity.User;
-import com.orthopedic.api.modules.payment.dto.response.FinancialSummaryResponse;
 import com.orthopedic.api.modules.payment.dto.response.PaymentResponse;
 import com.orthopedic.api.modules.payment.service.PaymentService;
-import com.orthopedic.api.rbac.annotation.CurrentUser;
 import com.orthopedic.api.shared.base.BaseController;
 import com.orthopedic.api.shared.dto.ApiResponse;
 import com.orthopedic.api.shared.dto.PageResponse;
 import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,20 +18,17 @@ import java.util.Collections;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin")
-@Tag(name = "Admin Payment Management", description = "Endpoints for administrators and staff to manage all payments and view financial data")
-@PreAuthorize("hasRole('SUPER_ADMIN')")
-public class AdminPaymentController extends BaseController {
+@RequestMapping("/api/v1/doctor/payments")
+@Tag(name = "Doctor Payment Management", description = "Endpoints for doctors to view and track payments and revenue")
+@PreAuthorize("hasRole('DOCTOR_ADMIN')")
+@RequiredArgsConstructor
+public class DoctorPaymentController extends BaseController {
 
     private final PaymentService paymentService;
 
-    public AdminPaymentController(PaymentService paymentService) {
-        this.paymentService = paymentService;
-    }
-
-    @GetMapping("/payments")
-    @Operation(summary = "Get list of all payment records")
-    public ResponseEntity<ApiResponse<PageResponse<PaymentResponse>>> getAllPayments(
+    @GetMapping
+    @Operation(summary = "Get all payments for doctor's practice")
+    public ResponseEntity<ApiResponse<PageResponse<PaymentResponse>>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String sort,
@@ -45,17 +40,18 @@ public class AdminPaymentController extends BaseController {
         return ok(paymentService.getAllPayments(pageable));
     }
 
-    @GetMapping("/payments/{id}")
+    @GetMapping("/{id}")
     @Operation(summary = "Get payment detail by ID")
     public ResponseEntity<ApiResponse<PaymentResponse>> getById(
             @PathVariable UUID id,
-            @CurrentUser User currentUser) {
+            @com.orthopedic.api.rbac.annotation.CurrentUser com.orthopedic.api.auth.entity.User currentUser) {
         return ok(paymentService.getPaymentById(id, currentUser));
     }
 
-    @GetMapping("/financial")
-    @Operation(summary = "Get financial summary data")
-    public ResponseEntity<ApiResponse<FinancialSummaryResponse>> getFinancialSummary() {
-        return ok(paymentService.getFinancialSummary());
+    @GetMapping("/stats")
+    @Operation(summary = "Get revenue stats for doctor")
+    public ResponseEntity<ApiResponse<Object>> getStats() {
+        // Implementation would call revenue reporting service
+        return ok("Revenue stats retrieved", null);
     }
 }

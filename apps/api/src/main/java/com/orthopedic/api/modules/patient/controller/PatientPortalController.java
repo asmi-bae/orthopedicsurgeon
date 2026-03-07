@@ -15,8 +15,9 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/patient")
+@RequestMapping("/api/v1/patient/portal")
 @RequiredArgsConstructor
+@org.springframework.security.access.prepost.PreAuthorize("hasRole('PATIENT')")
 public class PatientPortalController {
 
     private final PatientPortalService portalService;

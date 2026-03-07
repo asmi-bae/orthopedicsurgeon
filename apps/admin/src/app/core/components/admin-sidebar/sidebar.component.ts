@@ -107,7 +107,7 @@ interface NavItem {
               } @else {
                 <a [routerLink]="item.route" routerLinkActive="!text-white !bg-google-blue/10 !border-google-blue/20"
                    (click)="onNavClick()"
-                   class="flex items-center gap-3 px-3 py-3 rounded-2xl text-google-gray-400 hover:text-white hover:bg-white/5 transition-all group border border-transparent">
+                   class="flex items-center gap-3 px-3 py-3 rounded-2xl text-google-gray-500 hover:text-white hover:bg-white/5 transition-all group border border-transparent">
                   <mat-icon class="text-[20px] shrink-0">{{ item.icon }}</mat-icon>
                   <span class="text-sm font-bold tracking-tight">{{ item.label }}</span>
                   @if (item.badge) {

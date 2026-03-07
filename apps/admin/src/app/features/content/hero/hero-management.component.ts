@@ -1,5 +1,5 @@
 import { ZrdCardComponent, ZrdButtonComponent, ZrdInputComponent, ZrdBadgeComponent } from '@ui/components';
-import { Component, signal, inject, OnInit } from '@angular/core';
+import { Component, signal, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -30,12 +30,14 @@ import { WEBSITECONTROLService } from '../../../core/services/api/websitecontrol
           <h1 class="text-3xl font-bold text-google-gray-900 dark:text-white tracking-tight">Hero Slider Block</h1>
           <p class="text-google-gray-500 dark:text-google-gray-400 mt-1">Configure the primary gateway experience on the public homepage.</p>
         </div>
-        @if (!editing() && hero()) {
-          <zrd-button variant="primary" size="md" (click)="startEditing()">
-            <mat-icon leftIcon class="text-[20px]">edit_square</mat-icon>
-            Modify Gateway
-          </zrd-button>
-        }
+        <div class="flex items-center gap-3">
+          @if (!editing()) {
+            <zrd-button variant="primary" size="md" (click)="startEditing()">
+              <mat-icon leftIcon class="text-[20px]">add_photo_alternate</mat-icon>
+              New Gateway
+            </zrd-button>
+          }
+        </div>
       </div>
 
       @if (loading()) {
@@ -44,17 +46,41 @@ import { WEBSITECONTROLService } from '../../../core/services/api/websitecontrol
         </div>
       }
 
+      <!-- Slide Navigation Strip -->
+      <div class="flex items-center gap-4 overflow-x-auto pb-4 -mx-2 px-2 scrollbar-hide">
+        @for (h of heros(); track h.id) {
+          <div 
+            (click)="selectHero(h.id)"
+            class="min-w-[200px] h-24 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden group"
+            [ngClass]="selectedHeroId() === h.id ? 'border-google-blue bg-google-blue/5' : 'border-google-gray-100 dark:border-white/5 bg-white dark:bg-white/5 hover:border-google-gray-300'"
+          >
+            @if (h.imageUrl) {
+              <img [src]="h.imageUrl" class="absolute inset-0 w-full h-full object-cover opacity-20 group-hover:opacity-40 transition-opacity">
+            }
+            <div class="absolute inset-0 p-4 flex flex-col justify-between">
+              <span class="text-[10px] font-black uppercase tracking-widest text-google-gray-400 group-hover:text-google-blue">Slide #{{ h.displayOrder }}</span>
+              <h4 class="text-xs font-bold truncate text-google-gray-900 dark:text-white">{{ h.title }}</h4>
+            </div>
+            @if (!h.isActive) {
+              <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-google-gray-400"></div>
+            } @else {
+              <div class="absolute top-2 right-2 w-2 h-2 rounded-full bg-google-emerald animate-pulse"></div>
+            }
+          </div>
+        }
+      </div>
+
       <!-- Gateway Preview / Editor Card -->
       <zrd-card variant="default">
         @if (!editing()) {
           <!-- High-Fidelity Preview Interface -->
-          @if (hero()) {
+          @if (selectedHero()) {
             <div class="relative rounded-[24px] overflow-hidden bg-google-gray-900 dark:bg-google-gray-900 min-h-[400px] border border-google-gray-800 flex items-center">
                
                <!-- Background Image -->
-               @if (hero()?.imageUrl) {
+               @if (selectedHero()?.imageUrl) {
                  <div class="absolute inset-0">
-                    <img [src]="hero()?.imageUrl" alt="Hero Background" class="w-full h-full object-cover opacity-40">
+                    <img [src]="selectedHero()?.imageUrl" alt="Hero Background" class="w-full h-full object-cover opacity-40">
                  </div>
                } @else {
                  <!-- Fallback Background Texture -->
@@ -67,43 +93,56 @@ import { WEBSITECONTROLService } from '../../../core/services/api/websitecontrol
                <div class="absolute inset-0 bg-gradient-to-r from-google-gray-900/90 via-google-gray-900/50 to-transparent"></div>
 
                <div class="relative z-10 max-w-2xl p-12">
-                  @if(hero()?.subtitle) {
+                  @if(selectedHero()?.subtitle) {
                     <zrd-badge variant="info" class="font-black text-[10px] bg-google-blue/20 text-google-blue border-google-blue/30 px-3">
-                       {{ hero()?.subtitle }}
+                       {{ selectedHero()?.subtitle }}
                     </zrd-badge>
                   }
                   
                   <h2 class="text-5xl font-black text-white mt-6 leading-[1.1] tracking-tighter">
-                     {{ hero()?.title }}
+                     {{ selectedHero()?.title }}
                   </h2>
                   
                   <p class="text-lg text-google-gray-300 mt-6 leading-relaxed font-medium">
-                     {{ hero()?.description }}
+                     {{ selectedHero()?.description }}
                   </p>
                   
                   <div class="flex items-center gap-4 mt-10">
                      <button class="bg-google-blue hover:bg-google-blue/90 text-white font-bold py-3 px-8 rounded-full shadow-xl shadow-google-blue/20 transition-all">
-                        {{ hero()?.buttonText || 'Learn More' }}
+                        {{ selectedHero()?.buttonText || 'Learn More' }}
                      </button>
                   </div>
                </div>
 
                <!-- Preview Status -->
                <div class="absolute top-6 right-6 flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
-                  <div class="w-2 h-2 rounded-full" [ngClass]="hero()?.isActive ? 'bg-google-emerald animate-pulse' : 'bg-google-gray-400'"></div>
-                  <span class="text-[10px] font-black uppercase tracking-widest" [ngClass]="hero()?.isActive ? 'text-google-emerald' : 'text-google-gray-400'">
-                    {{ hero()?.isActive ? 'Active Deployment' : 'Draft' }}
+                  <div class="w-2 h-2 rounded-full" [ngClass]="selectedHero()?.isActive ? 'bg-google-emerald animate-pulse' : 'bg-google-gray-400'"></div>
+                  <span class="text-[10px] font-black uppercase tracking-widest" [ngClass]="selectedHero()?.isActive ? 'text-google-emerald' : 'text-google-gray-400'">
+                    {{ selectedHero()?.isActive ? 'Active Deployment' : 'Draft' }}
                   </span>
                </div>
             </div>
 
             <div class="flex items-center justify-between mt-8 px-2">
-               <div class="flex flex-col">
-                  <span class="text-xs font-black uppercase tracking-widest text-google-gray-400">Order Priority</span>
-                  <span class="text-sm font-bold text-google-gray-900 dark:text-white mt-1 uppercase">Order: {{ hero()?.displayOrder }}</span>
+               <div class="flex items-center gap-8">
+                  <div class="flex flex-col">
+                    <span class="text-xs font-black uppercase tracking-widest text-google-gray-400">Order Priority</span>
+                    <div class="flex items-center gap-2 mt-1">
+                       <span class="text-sm font-bold text-google-gray-900 dark:text-white uppercase">{{ selectedHero()?.displayOrder }}</span>
+                       <div class="flex items-center gap-1 ml-2">
+                          <button (click)="moveHero(selectedHero(), 'up')" class="p-1 hover:bg-google-gray-100 dark:hover:bg-white/10 rounded">
+                            <mat-icon class="text-sm scale-75">arrow_upward</mat-icon>
+                          </button>
+                          <button (click)="moveHero(selectedHero(), 'down')" class="p-1 hover:bg-google-gray-100 dark:hover:bg-white/10 rounded">
+                            <mat-icon class="text-sm scale-75">arrow_downward</mat-icon>
+                          </button>
+                       </div>
+                    </div>
+                  </div>
                </div>
-               <div class="flex items-center gap-4">
-                  <zrd-button variant="outline" size="sm" (click)="startEditing()">Configuration</zrd-button>
+               <div class="flex items-center gap-3">
+                  <zrd-button variant="outline" size="sm" (click)="startEditing(selectedHero())">Configuration</zrd-button>
+                  <zrd-button variant="ghost" size="sm" class="text-google-red" (click)="deleteHero(selectedHero().id)">Purge</zrd-button>
                </div>
             </div>
           } @else if (!loading()) {
@@ -223,7 +262,8 @@ export class HeroManagementComponent implements OnInit {
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
 
-  hero = signal<any>(null);
+  heros = signal<any[]>([]);
+  selectedHeroId = signal<string | null>(null);
   editing = signal(false);
   loading = signal(false);
   saving = signal(false);
@@ -240,20 +280,24 @@ export class HeroManagementComponent implements OnInit {
     isActive: [true]
   });
 
+  selectedHero = computed(() => {
+    const id = this.selectedHeroId();
+    const list = this.heros();
+    return list.find(h => h.id === id) || (list.length > 0 ? list[0] : null);
+  });
+
   ngOnInit() {
-    this.loadHero();
+    this.loadHeros();
   }
 
-  loadHero() {
+  loadHeros() {
     this.loading.set(true);
     this.websiteService.getAdminWebsiteHeroslides().subscribe({
       next: (res: any) => {
-        const slides = res || [];
-        if (slides.length > 0) {
-          const firstSlide = slides[0];
-          this.hero.set(firstSlide);
-        } else {
-          this.hero.set(null);
+        const slides = (res?.data || res || []).sort((a: any, b: any) => a.displayOrder - b.displayOrder);
+        this.heros.set(slides);
+        if (slides.length > 0 && !this.selectedHeroId()) {
+          this.selectedHeroId.set(slides[0].id);
         }
         this.loading.set(false);
       },
@@ -261,8 +305,15 @@ export class HeroManagementComponent implements OnInit {
     });
   }
 
-  startEditing() {
-    const h = this.hero();
+  selectHero(id: string) {
+    this.selectedHeroId.set(id);
+    if (!this.editing()) {
+      // Logic handled by computed signal
+    }
+  }
+
+  startEditing(hero?: any) {
+    const h = hero || this.selectedHero();
     if (h) {
       this.heroForm.patchValue({
         id: h.id,
@@ -276,7 +327,7 @@ export class HeroManagementComponent implements OnInit {
         isActive: h.isActive
       });
     } else {
-      this.heroForm.reset({ displayOrder: 0, isActive: true });
+      this.heroForm.reset({ displayOrder: this.heros().length, isActive: true });
     }
     this.editing.set(true);
   }
@@ -303,32 +354,63 @@ export class HeroManagementComponent implements OnInit {
       const id = payload.id;
       
       const obs = id 
-        ? this.websiteService.putAdminWebsiteHeroslidesId(id, payload)
+        ? this.websiteService.putAdminWebsiteHeroslidesId(id as string, payload)
         : this.websiteService.postAdminWebsiteHeroslides(payload);
 
       obs.subscribe({
         next: (res: any) => {
-          this.hero.set(res);
           this.saving.set(false);
           this.editing.set(false);
-          this.loadHero(); // reload to get proper server state
-          this.snackBar.open('Gateway modifications committed successfully.', 'Close', {
+          this.loadHeros();
+          this.snackBar.open('Hero slide saved successfully.', 'Close', {
             duration: 3000,
-            horizontalPosition: 'end',
-            verticalPosition: 'bottom',
             panelClass: ['bg-google-emerald', 'text-white']
           });
         },
-        error: (err) => {
+        error: () => {
           this.saving.set(false);
-          this.snackBar.open('Commit failed. Please check network connection.', 'Close', {
+          this.snackBar.open('Failed to save hero slide.', 'Close', {
             duration: 5000,
-            horizontalPosition: 'end',
-            verticalPosition: 'bottom',
             panelClass: ['bg-google-red', 'text-white']
           });
         }
       });
     }
+  }
+
+  deleteHero(id: string) {
+    if (confirm('Are you sure you want to delete this hero slide?')) {
+      this.loading.set(true);
+      this.websiteService.deleteAdminWebsiteHeroslidesId(id).subscribe({
+        next: () => {
+          this.selectedHeroId.set(null);
+          this.loadHeros();
+          this.snackBar.open('Hero slide deleted.', 'Close', { duration: 3000 });
+        },
+        error: () => this.loading.set(false)
+      });
+    }
+  }
+
+  moveHero(hero: any, direction: 'up' | 'down') {
+    const list = [...this.heros()];
+    const index = list.findIndex(h => h.id === hero.id);
+    if (index === -1) return;
+
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= list.length) return;
+
+    // Swap displayOrder
+    const targetHero = list[newIndex];
+    const tempOrder = hero.displayOrder;
+    hero.displayOrder = targetHero.displayOrder || newIndex;
+    targetHero.displayOrder = tempOrder || index;
+
+    // Batch update orders (in a real app, you might want a reorder endpoint)
+    this.websiteService.putAdminWebsiteHeroslidesId(hero.id, hero).subscribe(() => {
+      this.websiteService.putAdminWebsiteHeroslidesId(targetHero.id, targetHero).subscribe(() => {
+        this.loadHeros();
+      });
+    });
   }
 }

@@ -29,10 +29,10 @@ import java.util.List;
 public class SecurityConfig {
 
         private static final String[] PUBLIC_GET_URLS = {
-                        "/api/v1/auth/verify-email/**",
-                        "/api/v1/auth/login/google",
-                        "/api/v1/auth/oauth2/callback/google",
-                        "/api/v1/auth/check-email",
+                        "/api/v1/public/auth/verify-email/**",
+                        "/api/v1/public/auth/login/google",
+                        "/api/v1/public/auth/oauth2/callback/google",
+                        "/api/v1/public/auth/check-email",
                         "/api/v1/public/booking/check-slot",
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
@@ -42,16 +42,16 @@ public class SecurityConfig {
         };
 
         private static final String[] PUBLIC_POST_URLS = {
-                        "/api/v1/auth/login",
-                        "/api/v1/auth/register/patient",
-                        "/api/v1/auth/refresh",
-                        "/api/v1/auth/forgot-password/**",
-                        "/api/v1/auth/reset-password/**",
-                        "/api/v1/auth/login/passkey/begin",
-                        "/api/v1/auth/login/passkey/complete",
-                        "/api/v1/auth/login/mfa-verify",
-                        "/api/v1/auth/resend-verification",
-                        "/api/v1/auth/token/verify",
+                        "/api/v1/public/auth/login",
+                        "/api/v1/public/auth/register/patient",
+                        "/api/v1/public/auth/refresh",
+                        "/api/v1/public/auth/forgot-password/**",
+                        "/api/v1/public/auth/reset-password/**",
+                        "/api/v1/public/auth/login/passkey/begin",
+                        "/api/v1/public/auth/login/passkey/complete",
+                        "/api/v1/public/auth/login/mfa-verify",
+                        "/api/v1/public/auth/resend-verification",
+                        "/api/v1/public/auth/token/verify",
                         "/api/v1/admin/auth/login",
                         "/api/v1/admin/auth/login/mfa",
                         "/api/v1/admin/auth/refresh"
@@ -101,7 +101,9 @@ public class SecurityConfig {
                                                 .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/public/contact/**", "/api/v1/public/newsletter/**").permitAll()
                                                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
                                                 .requestMatchers("/actuator/**").hasAuthority("ROLE_SUPER_ADMIN")
-                                                .requestMatchers("/api/v1/admin/**").hasAnyRole("DOCTOR_ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers("/api/v1/admin/website/**").hasAnyRole("SUPER_ADMIN", "DOCTOR_ADMIN")
+                                                .requestMatchers("/api/v1/admin/**").hasRole("SUPER_ADMIN")
+                                                .requestMatchers("/api/v1/doctor/**").hasRole("DOCTOR_ADMIN")
                                                 .requestMatchers("/api/v1/patient/**").hasAnyRole("PATIENT", "DOCTOR_ADMIN", "SUPER_ADMIN")
                                                 .anyRequest().authenticated())
                                 .oauth2Login(oauth2 -> oauth2

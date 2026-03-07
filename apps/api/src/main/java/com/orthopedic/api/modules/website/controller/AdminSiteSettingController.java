@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin/site-settings")
+@RequestMapping("/api/v1/admin/website/settings")
 @RequiredArgsConstructor
 @Tag(name = "Admin Site Settings", description = "Admin endpoints for managing website configurations")
 @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")

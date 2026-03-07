@@ -26,7 +26,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/admin/patients")
 @Tag(name = "Admin Patient Management", description = "Endpoints for administrators to manage patient records and medical history")
-@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
+@PreAuthorize("hasRole('SUPER_ADMIN')")
 public class AdminPatientController extends BaseController {
 
     private final PatientService patientService;

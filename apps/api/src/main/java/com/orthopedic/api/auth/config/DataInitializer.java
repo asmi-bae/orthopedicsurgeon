@@ -42,12 +42,12 @@ public class DataInitializer implements CommandLineRunner {
         Role doctorAdminRole = createRoleIfNotFound("DOCTOR_ADMIN");
         createRoleIfNotFound("PATIENT");
 
-        // 2. Seed MD Shoaib (Original Super Admin)
-        String superAdminEmail = "khan23105101484@diu.edu.bd";
+        // 2.1 . Seed MD Shoaib (Original Super Admin)
+        String superAdminEmail = "admin@orthopedicsurgeon.com";
         if (userRepository.findByEmail(superAdminEmail).isEmpty()) {
             User superAdmin = User.builder()
                     .email(superAdminEmail)
-                    .password(passwordEncoder.encode("khan23105101484@"))
+                    .password(passwordEncoder.encode("admin@orthopedicsurgeon"))
                     .firstName("MD Shoaib")
                     .lastName("Khan")
                     .roles(Set.of(superAdminRole))
@@ -59,13 +59,14 @@ public class DataInitializer implements CommandLineRunner {
             log.info("Super Admin user already exists: {}", superAdminEmail);
         }
 
-        // 3. Seed Dr. Abdur Rahman Miah (Super Doctor Admin)
-        String drEmail = "abrmc49@gmail.com";
+       
+        // 2.2 . Seed Dr. Abdur Rahman Miah (Super Doctor Admin)
+        String drEmail = "doctor@orthopedicsurgeon.com";
         User drUser = userRepository.findByEmail(drEmail).orElse(null);
         if (drUser == null) {
             drUser = User.builder()
                     .email(drEmail)
-                    .password(passwordEncoder.encode("abrmc49@gmail.com")) // Use email as default pass for demo
+                    .password(passwordEncoder.encode("doctor@orthopedicsurgeon.com")) // Use email as default pass for demo
                     .firstName("Dr. Abdur Rahman")
                     .lastName("Miah")
                     .phone("+8801885995293")
@@ -81,9 +82,35 @@ public class DataInitializer implements CommandLineRunner {
             drUser = userRepository.save(drUser);
         }
 
+         // 2.3 Seed Admin User as Patient
+        String adminAsPatientEmail = "patient@orthopedicsurgeon.com";
+        Role patientRole = roleRepository.findByName("PATIENT").orElseThrow();
+        if (userRepository.findByEmail(adminAsPatientEmail).isEmpty()) {
+            User adminPatient = User.builder()
+                    .email(adminAsPatientEmail)
+                    .password(passwordEncoder.encode("patient@orthopedicsurgeon"))
+                    .firstName("Admin")
+                    .lastName("User")
+                    .roles(Set.of(patientRole))
+                    .enabled(true)
+                    .build();
+            userRepository.save(adminPatient);
+            log.info("Admin User as Patient created: {}", adminAsPatientEmail);
+        } else {
+            User existing = userRepository.findByEmail(adminAsPatientEmail).get();
+            existing.setRoles(Set.of(patientRole));
+            userRepository.save(existing);
+            log.info("Admin User role updated to PATIENT: {}", adminAsPatientEmail);
+        }
+
+
         // 4. Seed Hospital (Trauma Specialized Hospital)
-        Hospital hospital = null;
-        if (hospitalRepository.count() == 0) {
+        Hospital hospital = hospitalRepository.findAll().stream()
+                .filter(h -> "LIC-TRAUMA-001".equals(h.getLicenseNumber()))
+                .findFirst()
+                .orElse(null);
+
+        if (hospital == null) {
             hospital = new Hospital();
             hospital.setName("Trauma Specialized Hospital");
             hospital.setAddress("Saleha X-ray Clinic (Second Floor), Thana Mor");
@@ -92,12 +119,10 @@ public class DataInitializer implements CommandLineRunner {
             hospital.setLicenseNumber("LIC-TRAUMA-001");
             hospital = hospitalRepository.save(hospital);
             log.info("Hospital created: {}", hospital.getName());
-        } else {
-            hospital = hospitalRepository.findAll().get(0);
         }
 
         // 5. Seed Doctor Profile
-        if (doctorRepository.findByUserId(drUser.getId()).isEmpty()) {
+        if (doctorRepository.findByUserId(drUser.getId()).isEmpty() && !doctorRepository.existsByLicenseNumber("DOC-ABR-001")) {
             Doctor doctor = new Doctor();
             doctor.setUser(drUser);
             doctor.setHospital(hospital);
@@ -110,6 +135,8 @@ public class DataInitializer implements CommandLineRunner {
             doctor.setIsFeatured(true);
             doctorRepository.save(doctor);
             log.info("Doctor profile created for: {}", drUser.getEmail());
+        } else {
+            log.info("Doctor profile already exists for: {}", drUser.getEmail());
         }
     }
 

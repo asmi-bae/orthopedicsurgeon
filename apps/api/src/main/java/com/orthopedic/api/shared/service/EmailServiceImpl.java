@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.core.env.Environment;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
@@ -22,10 +23,12 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
+    private final Environment environment;
 
-    public EmailServiceImpl(JavaMailSender mailSender, TemplateEngine templateEngine) {
+    public EmailServiceImpl(JavaMailSender mailSender, TemplateEngine templateEngine, Environment environment) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
+        this.environment = environment;
     }
 
     @Value("${spring.mail.from:${spring.mail.username}}")
@@ -50,6 +53,16 @@ public class EmailServiceImpl implements EmailService {
             helper.setSubject(subject);
             helper.setText(html, true);
 
+            if (isLocalProfile()) {
+                log.info("\n" + "=".repeat(50) + "\n" +
+                        "DEV MODE EMAIL LOG\n" +
+                        "To: {}\n" +
+                        "Subject: {}\n" +
+                        "Body: \n{}\n" +
+                        "=".repeat(50), to, subject, html);
+                return;
+            }
+
             mailSender.send(message);
             log.info("HTML Email sent to: {} with template: {}", to, templateName);
         } catch (MessagingException e) {
@@ -66,9 +79,29 @@ public class EmailServiceImpl implements EmailService {
             message.setTo(to);
             message.setSubject(subject);
             message.setText(content);
+
+            if (isLocalProfile()) {
+                log.info("\n" + "=".repeat(50) + "\n" +
+                        "DEV MODE EMAIL LOG (SIMPLE)\n" +
+                        "To: {}\n" +
+                        "Subject: {}\n" +
+                        "Body: \n{}\n" +
+                        "=".repeat(50), to, subject, content);
+                return;
+            }
+
             mailSender.send(message);
         } catch (Exception e) {
             log.error("CRITICAL: Failed to send simple email to {}. Error: {}", to, e.getMessage());
         }
+    }
+
+    private boolean isLocalProfile() {
+        for (String profile : environment.getActiveProfiles()) {
+            if ("local".equals(profile)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

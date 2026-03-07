@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin/hero-slides")
+@RequestMapping("/api/v1/admin/website/hero-slides")
 @RequiredArgsConstructor
 @Tag(name = "Admin Website Hero", description = "Admin endpoints for managing hero section")
 @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")

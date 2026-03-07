@@ -41,8 +41,8 @@ export class ZrdButtonComponent {
     const variants: Record<ZrdButtonVariant, string> = {
       primary: 'bg-google-blue text-white hover:bg-google-blue/90 focus:ring-google-blue/50 shadow-sm shadow-google-blue/20',
       secondary: 'bg-google-gray-100 text-google-gray-900 hover:bg-google-gray-200 dark:bg-white/5 dark:text-google-gray-100 dark:hover:bg-white/10 focus:ring-google-gray-500',
-      outline: 'border border-google-gray-300 bg-transparent text-google-gray-700 hover:bg-google-gray-50 dark:border-white/20 dark:text-google-gray-300 dark:hover:bg-white/5 focus:ring-google-gray-500',
-      ghost: 'bg-transparent text-google-gray-600 hover:bg-google-gray-100 dark:text-google-gray-400 dark:hover:bg-white/5 focus:ring-google-gray-500',
+      outline: 'border border-google-gray-300 bg-transparent text-google-gray-800 hover:bg-google-gray-50 dark:border-white/20 dark:text-google-gray-300 dark:hover:bg-white/5 focus:ring-google-gray-500',
+      ghost: 'bg-transparent text-google-gray-700 hover:bg-google-gray-100 dark:text-google-gray-400 dark:hover:bg-white/5 focus:ring-google-gray-500',
       danger: 'bg-google-red text-white hover:bg-google-red/90 focus:ring-google-red/50 shadow-sm shadow-google-red/20'
     };
 

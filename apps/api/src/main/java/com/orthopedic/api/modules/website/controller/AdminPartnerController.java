@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin/website/partner")
+@RequestMapping("/api/v1/admin/website/partners")
 @RequiredArgsConstructor
 @Tag(name = "Admin Website Partner", description = "Admin endpoints for managing partners")
 @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")

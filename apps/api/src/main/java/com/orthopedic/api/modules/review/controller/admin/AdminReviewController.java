@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/admin/reviews")
 @RequiredArgsConstructor
 @Tag(name = "Admin Review Management", description = "Endpoints for administrators to moderate doctor reviews")
-@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
+@PreAuthorize("hasRole('SUPER_ADMIN')")
 public class AdminReviewController extends BaseController {
 
     private final ReviewServiceImpl reviewService;

@@ -38,12 +38,12 @@ export class ZrdBadgeComponent {
     const base = 'inline-flex items-center font-medium rounded-full transition-colors';
     
     const variants: Record<ZrdBadgeVariant, string> = {
-      default: 'bg-google-gray-100 text-google-gray-700 dark:bg-white/10 dark:text-google-gray-300',
+      default: 'bg-google-gray-100 text-google-gray-800 dark:bg-white/10 dark:text-google-gray-300',
       success: 'bg-google-green/10 text-google-green border border-google-green/20 dark:bg-google-green/20',
       warning: 'bg-google-amber/10 text-google-amber border border-google-amber/20 dark:bg-google-amber/20',
       danger: 'bg-google-red/10 text-google-red border border-google-red/20 dark:bg-google-red/20',
       info: 'bg-google-blue/10 text-google-blue border border-google-blue/20 dark:bg-google-blue/20',
-      neutral: 'bg-google-gray-100 text-google-gray-600 dark:bg-white/5 dark:text-google-gray-400'
+      neutral: 'bg-google-gray-100 text-google-gray-700 dark:bg-white/5 dark:text-google-gray-400'
     } as any;
 
     const sizes: Record<ZrdBadgeSize, string> = {

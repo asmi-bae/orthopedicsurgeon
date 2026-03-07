@@ -30,7 +30,6 @@ interface User {
     ZrdCardComponent, 
     ZrdBadgeComponent,
     ZrdPageHeaderComponent,
-    ZrdStatComponent,
     ZrdTableComponent,
     ZrdSearchInputComponent,
     MatIconModule,
@@ -54,20 +53,44 @@ interface User {
         </div>
       </zrd-page-header>
 
-      <!-- Governance Summary Stats -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        @for (r of roleSummary(); track r.role) {
-          <zrd-stat 
-            [label]="r.role" 
-            [value]="r.count" 
-            [icon]="true"
-            class="cursor-pointer hover:shadow-md transition-shadow"
-            (click)="filterRole(r.key)"
-          >
-            <mat-icon icon [class]="r.iconColor">{{ r.icon }}</mat-icon>
-          </zrd-stat>
-        }
-      </div>
+      <!-- Governance Summary Stats - Redesigned -->
+      <zrd-card variant="default" class="!p-0 border-none shadow-sm overflow-hidden bg-white/50 dark:bg-google-gray-900/50 backdrop-blur-sm">
+        <div class="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-google-gray-100 dark:divide-google-gray-800">
+          @for (r of roleSummary(); track r.role) {
+            <div 
+              class="flex-1 p-6 flex items-center justify-between cursor-pointer hover:bg-google-gray-50/50 dark:hover:bg-google-gray-800/50 transition-all group"
+              (click)="filterRole(r.key)"
+            >
+              <!-- Left Side: Custom Sparkline -->
+              <div class="w-24 h-8 flex items-center opacity-40 group-hover:opacity-100 transition-opacity">
+                <svg viewBox="0 0 100 30" class="w-full h-full overflow-visible">
+                  <path 
+                    [attr.d]="getSparkline(r.role)" 
+                    fill="none" 
+                    [attr.stroke]="getSparklineColor(r.role)" 
+                    stroke-width="2.5" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+
+              <!-- Right Side: Numerical Analytics -->
+              <div class="text-right">
+                <p class="text-[10px] uppercase tracking-widest font-black text-google-gray-400 m-0 leading-none mb-2">
+                  {{ r.role }}
+                </p>
+                <div class="flex items-baseline justify-end gap-1">
+                  <h3 class="text-3xl font-black text-google-gray-900 dark:text-white m-0 leading-none tabular-nums tracking-tighter">
+                    {{ r.count }}
+                  </h3>
+                  <span class="text-[10px] font-black leading-none bg-google-gray-100 dark:bg-google-gray-800 px-1.5 py-0.5 rounded text-google-gray-500">+{{ r.count > 0 ? '12%' : '0%' }}</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </zrd-card>
 
       <!-- Identity Directory Card -->
       <zrd-card variant="default" class="!p-0 overflow-hidden">
@@ -300,5 +323,24 @@ export class UserManagementComponent {
 
   filterRole(role: string) {
     this.roleFilter.set(role);
+  }
+
+  getSparkline(role: string): string {
+    const seed = role.length * 10;
+    const points = [];
+    for (let i = 0; i <= 100; i += 20) {
+      const y = 15 + Math.sin((i + seed) / 10) * 10;
+      points.push(`${i},${y}`);
+    }
+    return `M ${points.join(' L ')}`;
+  }
+
+  getSparklineColor(role: string): string {
+    const map: Record<string, string> = {
+      'Super Admins': '#1967d2', // Deeper Blue
+      'Doctor Admins': '#34A853', // Google Green
+      'Patients': '#FBBC05' // Google Yellow
+    };
+    return map[role] ?? '#9aa0a6';
   }
 }

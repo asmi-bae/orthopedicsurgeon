@@ -33,7 +33,7 @@
                                 "value": "application/json"
                             }
                         ],
-                        "url": "{{base_url}}/auth/register",
+                        "url": "{{base_url}}/public/auth/register",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+1234567890\",\n  \"role\": \"ROLE_PATIENT\"\n}"
@@ -64,7 +64,7 @@
                                 "value": "application/json"
                             }
                         ],
-                        "url": "{{base_url}}/auth/login",
+                        "url": "{{base_url}}/public/auth/login",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
@@ -81,7 +81,7 @@
                                 "value": "application/json"
                             }
                         ],
-                        "url": "{{base_url}}/auth/login/google",
+                        "url": "{{base_url}}/public/auth/login/google",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"idToken\": \"your-google-id-token\"\n}"
@@ -112,7 +112,7 @@
                                 "value": "application/json"
                             }
                         ],
-                        "url": "{{base_url}}/auth/refresh",
+                        "url": "{{base_url}}/public/auth/refresh",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
@@ -133,7 +133,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/auth/logout",
+                        "url": "{{base_url}}/public/auth/logout",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
@@ -150,7 +150,7 @@
                                 "value": "application/json"
                             }
                         ],
-                        "url": "{{base_url}}/auth/forgot-password",
+                        "url": "{{base_url}}/public/auth/forgot-password",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"email\": \"john.doe@example.com\"\n}"
@@ -167,7 +167,7 @@
                                 "value": "application/json"
                             }
                         ],
-                        "url": "{{base_url}}/auth/reset-password",
+                        "url": "{{base_url}}/public/auth/reset-password",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"token\": \"reset-token-here\",\n  \"newPassword\": \"newpassword123\"\n}"
@@ -184,7 +184,7 @@
                                 "value": "application/json"
                             }
                         ],
-                        "url": "{{base_url}}/auth/verify-2fa",
+                        "url": "{{base_url}}/public/auth/verify-2fa",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"tempToken\": \"your-temp-token\",\n  \"totpCode\": \"123456\"\n}"
@@ -206,7 +206,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/auth/2fa/setup"
+                        "url": "{{base_url}}/public/auth/2fa/setup"
                     }
                 },
                 {
@@ -223,7 +223,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/auth/2fa/confirm-setup",
+                        "url": "{{base_url}}/public/auth/2fa/confirm-setup",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"totpCode\": \"123456\"\n}"
@@ -244,7 +244,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/auth/2fa/verify",
+                        "url": "{{base_url}}/public/auth/2fa/verify",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"totpCode\": \"123456\"\n}"
@@ -265,7 +265,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/auth/2fa/disable",
+                        "url": "{{base_url}}/public/auth/2fa/disable",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"totpCode\": \"123456\"\n}"
@@ -1581,7 +1581,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/profile"
+                        "url": "{{base_url}}/patient/portal/profile"
                     }
                 },
                 {
@@ -1598,7 +1598,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/profile",
+                        "url": "{{base_url}}/patient/portal/profile",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"bloodGroup\": \"B_POSITIVE\",\n  \"dateOfBirth\": \"1990-01-15\",\n  \"gender\": \"MALE\",\n  \"address\": \"456 Patient Lane\",\n  \"city\": \"Dhaka\",\n  \"emergencyContactName\": \"Jane Doe\",\n  \"emergencyContactPhone\": \"+8801234567890\",\n  \"insuranceProvider\": \"Health Shield\",\n  \"insuranceNumber\": \"INS-9876543\"\n}"
@@ -1619,7 +1619,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/profile",
+                        "url": "{{base_url}}/patient/portal/profile",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"city\": \"Chittagong\",\n  \"address\": \"New Address\"\n}"
@@ -1642,7 +1642,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/patient/appointments?page=0&size=20",
+                            "raw": "{{base_url}}/patient/portal/appointments?page=0&size=20",
                             "query": [
                                 {
                                     "key": "page",
@@ -1670,7 +1670,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/appointments",
+                        "url": "{{base_url}}/patient/portal/appointments",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"doctorId\": \"doctor-uuid\",\n  \"serviceId\": \"service-uuid\",\n  \"hospitalId\": \"hospital-uuid\",\n  \"appointmentDate\": \"2026-03-10\",\n  \"startTime\": \"10:00\",\n  \"type\": \"IN_PERSON\",\n  \"chiefComplaint\": \"Knee pain for 3 weeks\"\n}"
@@ -1687,7 +1687,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/appointments/:id",
+                        "url": "{{base_url}}/patient/portal/appointments/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -1710,7 +1710,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/appointments/:id/cancel",
+                        "url": "{{base_url}}/patient/portal/appointments/:id/cancel",
                         "variable": [
                             {
                                 "key": "id",
@@ -1739,7 +1739,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/patient/prescriptions?page=0&size=20",
+                            "raw": "{{base_url}}/patient/portal/prescriptions?page=0&size=20",
                             "query": [
                                 {
                                     "key": "page",
@@ -1763,7 +1763,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/prescriptions/:id",
+                        "url": "{{base_url}}/patient/portal/prescriptions/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -1788,7 +1788,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/patient/lab-reports?page=0&size=20",
+                            "raw": "{{base_url}}/patient/portal/lab-reports?page=0&size=20",
                             "query": [
                                 {
                                     "key": "page",
@@ -1812,7 +1812,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/lab-reports/:id",
+                        "url": "{{base_url}}/patient/portal/lab-reports/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -1836,7 +1836,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/health/vitals"
+                        "url": "{{base_url}}/patient/portal/health/vitals"
                     }
                 },
                 {
@@ -1849,7 +1849,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/health/history"
+                        "url": "{{base_url}}/patient/portal/health/history"
                     }
                 }
             ]
@@ -1868,7 +1868,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/patient/doctors?page=0&size=20",
+                            "raw": "{{base_url}}/patient/portal/doctors?page=0&size=20",
                             "query": [
                                 {
                                     "key": "page",
@@ -1892,7 +1892,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/doctors/:id",
+                        "url": "{{base_url}}/patient/portal/doctors/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -1912,7 +1912,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/patient/doctors/:id/slots?date=2026-03-10",
+                            "raw": "{{base_url}}/patient/portal/doctors/:id/slots?date=2026-03-10",
                             "query": [
                                 {
                                     "key": "date",
@@ -1938,7 +1938,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/doctors/:id/reviews",
+                        "url": "{{base_url}}/patient/portal/doctors/:id/reviews",
                         "variable": [
                             {
                                 "key": "id",
@@ -1961,7 +1961,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/patient/reviews",
+                        "url": "{{base_url}}/patient/portal/reviews",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"doctorId\": \"doctor-uuid\",\n  \"appointmentId\": \"appointment-uuid\",\n  \"rating\": 5,\n  \"comment\": \"Excellent doctor, very knowledgeable!\"\n}"
