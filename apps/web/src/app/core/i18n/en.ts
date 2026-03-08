@@ -4,7 +4,8 @@ export const EN = {
     LOCATION_HUB: 'Clinical Hub, Ortho City',
     PORTAL: 'Portal',
     SIGN_IN: 'Sign In',
-    GET_STARTED: 'Get Started'
+    GET_STARTED: 'Get Started',
+    SCROLL_DISCOVER: 'Scroll to Discover'
   },
   NAV: {
     HOME: 'Home',
@@ -16,10 +17,22 @@ export const EN = {
   },
   HOME: {
     HERO: {
-      SUBTITLE: 'JOIN THE COLLECTIVE',
-      TITLE_PART1: 'ENGINEERING THE FUTURE',
-      TITLE_PART2: 'OF ORTHOPEDIC CARE',
-      DESCRIPTION: 'Experience the pinnacle of orthopedic excellence. Our specialized teams integrate cutting-edge technology with compassionate clinical expertise.',
+      TITLE_PART1: 'EXPERT ORTHOPEDIC CARE FOR',
+      TITLE_PART2: 'STRONGER BONES & JOINTS',
+      SUBTITLE: 'Professional diagnosis and treatment for bone, joint, and spine problems. Specialized in fracture treatment, joint replacement, sports injury care, and advanced orthopedic surgery.',
+      DESCRIPTION: 'Providing trusted orthopedic medical care with modern techniques and patient-focused treatment. Dedicated to helping patients recover mobility and live pain-free lives.',
+      DOCTOR: {
+        NAME: 'Dr. Rahman',
+        TITLE: 'Orthopedic Surgeon',
+        EXP: '15+ Years',
+        LOC: 'Dhaka, Bangladesh',
+        HOURS: '5 PM – 9 PM',
+        SPECIALIZATIONS: ['Fracture Treatment', 'Joint Replacement', 'Sports Injury Care', 'Advanced Orthopedic Surgery']
+      },
+      CTA: {
+        BOOK: 'Book Appointment',
+        CONTACT: 'Contact Doctor'
+      },
       AVAILABILITY: 'AVAILABILITY NODE',
       SLOT: 'SLOT: TODAY, 4:30 PM'
     },
@@ -28,8 +41,9 @@ export const EN = {
       SPECIALISTS: 'Elite Specialists',
       SUCCESS: 'Success Rate',
       AWARDS: 'Global Awards',
-      OPS: '10,000+ Operations',
       VERIFIED: 'Verified Success Stories',
+      SUCCESSFUL_TREATMENTS: 'Successful Treatments',
+      SPECIALIZATION: 'Specialization',
       DATA: {
         DESC1: 'Board-certified specialists',
         DESC2: 'Modern hubs across sectors',

@@ -20,7 +20,9 @@ module.exports = {
                 secondary: {
                     50: '#f8fafc',
                     900: '#050e39ff',
-                }
+                },
+                'soft-blue': '#f0f9ff',
+                'medical-teal': '#0d9488',
             },
             fontFamily: {
                 ...(baseConfig.theme?.extend?.fontFamily || {}),

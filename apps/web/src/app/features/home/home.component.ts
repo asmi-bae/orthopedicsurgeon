@@ -28,67 +28,103 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
     TranslatePipe
   ],
   template: `
-    <div class="flex flex-col bg-white">
+    <div class="flex flex-col">
       <!-- Hero Section -->
-      <section class="relative pt-20 pb-32 overflow-hidden bg-secondary-900">
+      <section class="relative min-h-[500px] lg:min-h-[70vh] flex items-center pt-40 pb-20 lg:pb-32 overflow-hidden bg-soft-blue -mt-[136px] -mx-6 sm:-mx-10 lg:-mx-12">
         <div class="app-container relative z-10">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div class="animate-in fade-in slide-in-from-left duration-1000">
-               <mat-chip-set class="mb-8 font-typography">
-                 <mat-chip class="premium-chip">{{ 'HOME.HERO.SUBTITLE' | translate }}</mat-chip>
-               </mat-chip-set>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <!-- Text Content -->
+            <div class="animate-in fade-in slide-in-from-left duration-1000 order-2 lg:order-1">
+               <div class="inline-flex items-center gap-2 px-4 py-2 bg-medical-teal/10 rounded-full mb-8">
+                 <mat-icon class="text-medical-teal scale-75">medical_services</mat-icon>
+                 <span class="text-[10px] font-black text-medical-teal uppercase tracking-[0.2em]">{{ 'HOME.HERO.DOCTOR.TITLE' | translate }}</span>
+               </div>
                
-               <h1 class="text-6xl md:text-7xl font-black text-white leading-[0.9] mb-8 tracking-tighter uppercase transition-all">
-                 {{ 'HOME.HERO.TITLE_PART1' | translate }} <br/><span class="text-primary tracking-normal">{{ 'HOME.HERO.TITLE_PART2' | translate }}</span>
+               <h1 class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-secondary-900 leading-[0.95] mb-8 tracking-tighter uppercase">
+                 {{ 'HOME.HERO.TITLE_PART1' | translate }} <br/>
+                 <span class="text-primary">{{ 'HOME.HERO.TITLE_PART2' | translate }}</span>
                </h1>
                
-               <p class="text-xl text-white/60 mb-10 max-w-lg leading-relaxed font-medium">
+               <p class="text-lg text-secondary-500 mb-6 max-w-xl leading-relaxed font-medium capitalize">
+                 {{ 'HOME.HERO.SUBTITLE' | translate }}
+               </p>
+
+               <p class="text-sm text-secondary-400 mb-10 max-w-lg leading-relaxed font-medium">
                  {{ 'HOME.HERO.DESCRIPTION' | translate }}
                </p>
                
                <div class="flex flex-wrap gap-5">
-                 <a mat-flat-button color="primary" routerLink="/auth/register" 
-                         class="h-16 px-10 rounded-2xl text-lg font-bold uppercase shadow-2xl shadow-primary/30 hover:scale-105 transition-transform">
-                   {{ 'COMMON.GET_STARTED' | translate }}
+                 <a mat-flat-button color="primary" href="https://www.facebook.com/Ab.rahman49" target="_blank"
+                          class="h-16 px-10 rounded-2xl text-lg font-bold uppercase shadow-2xl shadow-primary/30 hover:scale-105 transition-transform">
+                   {{ 'HOME.HERO.CTA.BOOK' | translate }}
                  </a>
-                 <a mat-tonal-button color="primary" routerLink="/about"
-                         class="h-16 px-10 rounded-2xl text-lg font-bold uppercase transition-all">
-                   {{ 'HOME.HERO.SUBTITLE' | translate }}
+                 <a mat-stroked-button color="primary" href="https://www.facebook.com/orthopedicsurgeonrahmanbd" target="_blank"
+                          class="h-16 px-10 rounded-2xl text-lg font-bold uppercase hover:bg-primary/5 transition-all border-2">
+                   {{ 'HOME.HERO.CTA.CONTACT' | translate }}
                  </a>
                </div>
 
-               <div class="mt-16 flex items-center gap-10">
-                 <div class="flex -space-x-4">
-                    @for (i of [1,2,3,4,5]; track i) {
-                      <img class="w-12 h-12 rounded-full border-4 border-secondary-900 shadow-lg" [src]="'https://i.pravatar.cc/150?img=' + (i+10)" />
-                    }
-                 </div>
-                 <div class="flex flex-col">
-                   <p class="text-sm font-black text-white uppercase tracking-widest leading-none mb-1">
-                     {{ 'HOME.STATS.OPS' | translate }}
-                   </p>
-                   <p class="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">{{ 'HOME.STATS.VERIFIED' | translate }}</p>
-                 </div>
+               <!-- Specializations List -->
+               <div class="mt-12 grid grid-cols-2 gap-4">
+                  @for (spec of 'HOME.HERO.DOCTOR.SPECIALIZATIONS' | translate; track spec) {
+                    <div class="flex items-center gap-3">
+                      <div class="w-6 h-6 rounded-full bg-medical-teal/10 flex items-center justify-center">
+                        <mat-icon class="text-medical-teal !text-sm">check</mat-icon>
+                      </div>
+                      <span class="text-xs font-bold text-secondary-600 uppercase tracking-tight">{{spec}}</span>
+                    </div>
+                  }
                </div>
             </div>
 
-            <div class="relative animate-in fade-in slide-in-from-right duration-1000">
-               <div class="relative z-10 rounded-[40px] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] border-[12px] border-white/5">
-                  <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=1000" alt="Surgeon" class="w-full h-full object-cover grayscale transition-all duration-1000 brightness-75" />
-               </div>
-               <mat-card class="absolute -bottom-12 -left-12 z-20 w-80 p-6 rounded-[30px] shadow-2xl border-none bg-white/90 backdrop-blur-xl animate-bounce-subtle">
-                  <div class="flex items-center gap-5">
-                     <div class="w-14 h-14 bg-green-500/10 text-green-600 rounded-2xl flex items-center justify-center">
-                       <mat-icon class="scale-125">verified_user</mat-icon>
-                     </div>
-                     <div>
-                       <p class="text-[10px] text-secondary-400 font-black uppercase tracking-widest mb-1">{{ 'HOME.HERO.AVAILABILITY' | translate }}</p>
-                       <p class="text-lg font-black text-secondary-900 tracking-tight leading-none uppercase">{{ 'HOME.HERO.SLOT' | translate }}</p>
-                     </div>
+            <!-- Profile Image & Info Card -->
+            <div class="relative animate-in fade-in slide-in-from-right duration-1000 order-1 lg:order-2 mb-12 lg:mb-0 lg:-mt-20">
+               <div class="relative z-10 overflow-hidden aspect-[4/5] max-w-[320px] sm:max-w-md lg:max-w-xl mx-auto group">
+                  <img src="assets/images/Dr. Rahman.svg" [alt]="'HOME.HERO.DOCTOR.NAME' | translate" 
+                       class="w-full h-full object-cover grayscale-0 group-hover:scale-105 transition-transform duration-1000" />
+                  
+                  <!-- Blurry Fade Transition at bottom - smoothed with mask -->
+                  <div class="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-soft-blue via-soft-blue/40 to-transparent backdrop-blur-[10px] pointer-events-none z-10 [mask-image:linear-gradient(to_top,black_20%,transparent)]"></div>
+
+                  <!-- Floating Info Elements -->
+                  <div class="absolute bottom-0 left-0 right-0 p-8 text-secondary-900 z-20">
+                    <h2 class="text-2xl font-black uppercase tracking-tight mb-1">{{ 'HOME.HERO.DOCTOR.NAME' | translate }}</h2>
+                    <p class="text-xs font-bold text-secondary-500 uppercase tracking-widest mb-4 opacity-80">{{ 'HOME.HERO.DOCTOR.TITLE' | translate }}</p>
+                    
+                    <div class="flex items-center gap-4 text-[10px] font-bold uppercase tracking-widest">
+                      <div class="flex items-center gap-1.5">
+                        <mat-icon class="scale-50 text-medical-teal">history</mat-icon>
+                        <span class="text-secondary-600 font-bold uppercase">{{ 'HOME.HERO.DOCTOR.EXP' | translate }}</span>
+                      </div>
+                      <div class="flex items-center gap-1.5">
+                        <mat-icon class="scale-50 text-medical-teal">location_on</mat-icon>
+                        <span class="text-secondary-600 font-bold uppercase">{{ 'HOME.HERO.DOCTOR.LOC' | translate }}</span>
+                      </div>
+                    </div>
                   </div>
-               </mat-card>
-               <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/10 rounded-full blur-[100px] -z-10"></div>
+               </div>
+
+               <!-- Visiting Hours Card -->
+               <div class="absolute -top-10 -right-4 z-20 bg-white p-6 rounded-[32px] shadow-2xl border border-slate-100 animate-bounce-subtle hidden lg:block">
+                  <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-medical-teal/10 rounded-2xl flex items-center justify-center text-medical-teal">
+                      <mat-icon>schedule</mat-icon>
+                    </div>
+                    <div>
+                      <p class="text-[9px] font-black text-secondary-400 uppercase tracking-widest mb-0.5">{{ 'DOCTORS.DETAIL.WAIT_TIME' | translate }}</p>
+                      <p class="text-sm font-black text-secondary-900 uppercase">{{ 'HOME.HERO.DOCTOR.HOURS' | translate }}</p>
+                    </div>
+                  </div>
+               </div>
+
+               <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-primary/20 rounded-full blur-[80px] -z-10"></div>
             </div>
+          </div>
+
+          <!-- Interaction Hint -->
+          <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-20 hover:opacity-100 transition-opacity cursor-pointer">
+            <span class="text-[9px] font-black uppercase tracking-[0.3em] text-secondary-900">{{ 'COMMON.SCROLL_DISCOVER' | translate }}</span>
+            <mat-icon class="text-primary">expand_more</mat-icon>
           </div>
         </div>
       </section>
@@ -99,7 +135,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
                @for (stat of stats; track stat.label) {
                  <div class="flex flex-col group items-center">
-                    <div class="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center text-primary mb-6 transition-all duration-500 group-hover:bg-primary group-hover:text-white">
+                    <div class="w-16 h-16 rounded-2xl bg-medical-teal/5 flex items-center justify-center text-medical-teal mb-6 transition-all duration-500 group-hover:bg-medical-teal group-hover:text-white">
                       <mat-icon>{{stat.icon}}</mat-icon>
                     </div>
                     <h3 class="text-4xl font-black text-secondary-900 tracking-tighter uppercase mb-2">{{stat.value}}</h3>
@@ -312,9 +348,9 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
 })
 export class HomeComponent {
   stats = [
-    { label: 'HOME.STATS.SPECIALISTS', value: '150+', description: 'HOME.STATS.DATA.DESC1', icon: 'groups' },
-    { label: 'HOME.STATS.FACILITIES', value: '25', description: 'HOME.STATS.DATA.DESC2', icon: 'apartment' },
-    { label: 'HOME.STATS.SATISFACTION', value: '4.9/5', description: 'HOME.STATS.DATA.DESC3', icon: 'auto_awesome' },
+    { label: 'HOME.HERO.DOCTOR.EXP', value: '15+', description: 'HOME.STATS.DATA.DESC1', icon: 'history' },
+    { label: 'HOME.STATS.SUCCESSFUL_TREATMENTS', value: '5000+', description: 'HOME.STATS.DATA.DESC3', icon: 'task_alt' },
+    { label: 'HOME.STATS.SPECIALIZATION', value: 'Knee, Hip, & Spine', description: 'HOME.STATS.DATA.DESC4', icon: 'accessibility_new' },
     { label: 'HOME.STATS.PRECISION', value: '98%', description: 'HOME.STATS.DATA.DESC4', icon: 'biotech' },
   ];
 
