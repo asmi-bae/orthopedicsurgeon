@@ -1,9 +1,11 @@
 package com.orthopedic.api.auth.service.impl;
 
 import com.orthopedic.api.auth.dto.request.UserFilterRequest;
+import com.orthopedic.api.auth.dto.request.UserUpdateDto;
 import com.orthopedic.api.auth.dto.response.UserDetailResponse;
 import com.orthopedic.api.auth.dto.response.UserSummaryResponse;
 import com.orthopedic.api.auth.entity.User;
+import com.orthopedic.api.auth.repository.RoleRepository;
 import com.orthopedic.api.auth.repository.UserRepository;
 import com.orthopedic.api.auth.service.AdminUserService;
 import com.orthopedic.api.shared.dto.PageResponse;
@@ -23,6 +25,7 @@ import java.util.UUID;
 public class AdminUserServiceImpl implements AdminUserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -103,6 +106,36 @@ public class AdminUserServiceImpl implements AdminUserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         user.setEnabled(enabled);
         userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    @org.springframework.cache.annotation.CacheEvict(value = "users", allEntries = true)
+    public UserDetailResponse updateUser(UUID id, UserUpdateDto updateDto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+
+        // Email uniqueness check
+        if (!user.getEmail().equalsIgnoreCase(updateDto.getEmail())) {
+            if (userRepository.existsByEmail(updateDto.getEmail())) {
+                throw new com.orthopedic.api.shared.exception.BusinessException("Email already in use: " + updateDto.getEmail());
+            }
+        }
+
+        user.setFirstName(updateDto.getFirstName());
+        user.setLastName(updateDto.getLastName());
+        user.setEmail(updateDto.getEmail());
+        user.setEnabled(updateDto.isEnabled());
+
+        if (updateDto.getRoleId() != null) {
+            com.orthopedic.api.auth.entity.Role role = roleRepository.findById(updateDto.getRoleId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Role not found with id: " + updateDto.getRoleId()));
+            user.getRoles().clear();
+            user.getRoles().add(role);
+        }
+
+        userRepository.save(user);
+        return mapToDetail(user);
     }
 
     private UserSummaryResponse mapToSummary(User user) {

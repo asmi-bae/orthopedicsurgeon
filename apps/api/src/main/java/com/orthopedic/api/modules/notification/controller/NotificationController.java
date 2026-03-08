@@ -2,12 +2,12 @@ package com.orthopedic.api.modules.notification.controller;
 
 import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.modules.notification.dto.request.SendNotificationRequest;
+import com.orthopedic.api.modules.notification.dto.response.NotificationListResponse;
 import com.orthopedic.api.modules.notification.dto.response.NotificationResponse;
 import com.orthopedic.api.modules.notification.service.NotificationService;
 import com.orthopedic.api.rbac.annotation.CurrentUser;
 import com.orthopedic.api.shared.base.BaseController;
 import com.orthopedic.api.shared.dto.ApiResponse;
-import com.orthopedic.api.shared.dto.PageResponse;
 import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,8 +33,8 @@ public class NotificationController extends BaseController {
     }
 
     @GetMapping
-    @Operation(summary = "Get current user's notifications")
-    public ResponseEntity<ApiResponse<PageResponse<NotificationResponse>>> getMyNotifications(
+    @Operation(summary = "Get current user's notifications and unread count")
+    public ResponseEntity<ApiResponse<NotificationListResponse>> getMyNotifications(
             @CurrentUser User currentUser,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -45,12 +45,6 @@ public class NotificationController extends BaseController {
                 Arrays.asList("createdAt", "status"));
 
         return ok(notificationService.getMyNotifications(currentUser, pageable));
-    }
-
-    @GetMapping("/unread-count")
-    @Operation(summary = "Get count of unread notifications")
-    public ResponseEntity<ApiResponse<Long>> getUnreadCount(@CurrentUser User currentUser) {
-        return ok(notificationService.getUnreadCount(currentUser));
     }
 
     @PutMapping("/{id}/read")

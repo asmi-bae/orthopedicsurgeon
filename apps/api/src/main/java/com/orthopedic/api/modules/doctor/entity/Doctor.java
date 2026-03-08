@@ -13,7 +13,8 @@ import java.util.List;
 @Table(name = "doctors", indexes = {
         @Index(name = "idx_doctors_hospital_id", columnList = "hospital_id"),
         @Index(name = "idx_doctors_status", columnList = "status"),
-        @Index(name = "idx_doctors_specialization", columnList = "specialization")
+        @Index(name = "idx_doctors_specialization", columnList = "specialization"),
+        @Index(name = "idx_doctors_deleted", columnList = "deleted")
 })
 public class Doctor extends BaseEntity {
 

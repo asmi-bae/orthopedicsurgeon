@@ -11,7 +11,9 @@ import java.util.List;
 @Table(name = "patients", indexes = {
         @Index(name = "idx_patients_user_id", columnList = "user_id"),
         @Index(name = "idx_patients_status", columnList = "status"),
-        @Index(name = "idx_patients_blood_group", columnList = "blood_group")
+        @Index(name = "idx_patients_blood_group", columnList = "blood_group"),
+        @Index(name = "idx_patients_city", columnList = "city"),
+        @Index(name = "idx_patients_deleted", columnList = "deleted")
 })
 public class Patient extends BaseEntity {
 

@@ -4,44 +4,45 @@ import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { TranslatePipe } from '@core/pipes/translate.pipe';
 
 @Component({
   selector: 'app-about',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatButtonModule, MatIconModule, MatCardModule],
+  imports: [CommonModule, RouterModule, MatButtonModule, MatIconModule, MatCardModule, TranslatePipe],
   template: `
     <div class="bg-white min-h-screen">
       <!-- Hero -->
       <section class="relative py-24 bg-secondary-900 overflow-hidden text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <h1 class="text-xs font-black text-primary uppercase tracking-[0.5em] mb-4">Our Methodology</h1>
+        <div class="app-container relative z-10">
+          <h1 class="text-xs font-black text-primary uppercase tracking-[0.5em] mb-4">{{ 'ABOUT.HERO.SUBTITLE' | translate }}</h1>
           <h2 class="text-6xl font-black tracking-tighter uppercase leading-none mb-8">
-            Engineering <br/><span class="text-primary tracking-normal">Human Mobility</span>
+            {{ 'ABOUT.HERO.TITLE_PART1' | translate }} <br/><span class="text-primary tracking-normal">{{ 'ABOUT.HERO.TITLE_PART2' | translate }}</span>
           </h2>
           <p class="text-lg text-white/60 max-w-2xl font-medium leading-relaxed">
-            OrthoSync is at the intersection of clinical excellence and technological innovation, redefined for the modern orthopedic patient.
+            {{ 'ABOUT.HERO.DESCRIPTION' | translate }}
           </p>
         </div>
       </section>
 
       <!-- Mission -->
       <section class="py-32 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="app-container">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div>
-              <h3 class="text-xs font-black text-primary uppercase tracking-[0.4em] mb-6">The Mission</h3>
-              <h4 class="text-4xl font-black text-secondary-900 uppercase tracking-tight mb-8">Restoring Function <br/>Through Precision</h4>
+              <h3 class="text-xs font-black text-primary uppercase tracking-[0.4em] mb-6">{{ 'ABOUT.MISSION.SUBTITLE' | translate }}</h3>
+              <h4 class="text-4xl font-black text-secondary-900 uppercase tracking-tight mb-8">{{ 'ABOUT.MISSION.TITLE_PART1' | translate }} <br/>{{ 'ABOUT.MISSION.TITLE_PART2' | translate }}</h4>
               <p class="text-lg text-secondary-600 font-medium leading-relaxed mb-10">
-                Our objective is simple: to provide a seamless, technologically advanced path from diagnosis to full functional restoration. We believe that every patient deserves a tailored recovery protocol backed by data and executed by specialists.
+                {{ 'ABOUT.MISSION.DESCRIPTION' | translate }}
               </p>
               <div class="grid grid-cols-2 gap-8">
                  <div>
                     <p class="text-3xl font-black text-primary mb-2">98%</p>
-                    <p class="text-[10px] font-black uppercase tracking-widest text-secondary-400">Success Rate</p>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-secondary-400">{{ 'ABOUT.MISSION.SUCCESS_RATE' | translate }}</p>
                  </div>
                  <div>
                     <p class="text-3xl font-black text-primary mb-2">15k+</p>
-                    <p class="text-[10px] font-black uppercase tracking-widest text-secondary-400">Procedures</p>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-secondary-400">{{ 'ABOUT.MISSION.PROCEDURES' | translate }}</p>
                  </div>
               </div>
             </div>

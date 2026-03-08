@@ -1182,6 +1182,86 @@
             ]
         },
         {
+            "name": "📂 Admin - Media",
+            "item": [
+                {
+                    "name": "Upload Media (Admin)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": "{{base_url}}/admin/media/upload"
+                    }
+                },
+                {
+                    "name": "Delete Media (Admin)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/admin/media/delete?publicId=public-id-here",
+                            "query": [
+                                {
+                                    "key": "publicId",
+                                    "value": "public-id-here"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Replace Media (Admin)",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": []
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/admin/media/replace?publicId=public-id-here",
+                            "query": [
+                                {
+                                    "key": "publicId",
+                                    "value": "public-id-here"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
             "name": "👨‍⚕️ Doctor - Profile",
             "item": [
                 {
@@ -1251,6 +1331,55 @@
                             "raw": "[\n  { \"dayOfWeek\": \"MONDAY\", \"startTime\": \"09:00\", \"endTime\": \"17:00\", \"available\": true },\n  { \"dayOfWeek\": \"TUESDAY\", \"startTime\": \"09:00\", \"endTime\": \"17:00\", \"available\": true },\n  { \"dayOfWeek\": \"WEDNESDAY\", \"startTime\": \"09:00\", \"endTime\": \"17:00\", \"available\": true },\n  { \"dayOfWeek\": \"THURSDAY\", \"startTime\": \"09:00\", \"endTime\": \"17:00\", \"available\": true },\n  { \"dayOfWeek\": \"FRIDAY\", \"startTime\": \"09:00\", \"endTime\": \"13:00\", \"available\": true },\n  { \"dayOfWeek\": \"SATURDAY\", \"available\": false },\n  { \"dayOfWeek\": \"SUNDAY\", \"available\": false }\n]"
                         }
                     }
+                },
+                {
+                    "name": "📂 Doctor - Media",
+                    "item": [
+                        {
+                            "name": "Upload Media (Doctor)",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": []
+                                        }
+                                    ]
+                                },
+                                "url": "{{base_url}}/doctor/media/upload"
+                            }
+                        },
+                        {
+                            "name": "Delete Media (Doctor)",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/doctor/media/delete?publicId=public-id-here",
+                                    "query": [
+                                        {
+                                            "key": "publicId",
+                                            "value": "public-id-here"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
                 }
             ]
         },
@@ -1625,6 +1754,55 @@
                             "raw": "{\n  \"city\": \"Chittagong\",\n  \"address\": \"New Address\"\n}"
                         }
                     }
+                },
+                {
+                    "name": "📂 Patient - Media",
+                    "item": [
+                        {
+                            "name": "Upload Media (Patient)",
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "file",
+                                            "type": "file",
+                                            "src": []
+                                        }
+                                    ]
+                                },
+                                "url": "{{base_url}}/patient/media/upload"
+                            }
+                        },
+                        {
+                            "name": "Delete Media (Patient)",
+                            "request": {
+                                "method": "DELETE",
+                                "header": [
+                                    {
+                                        "key": "Authorization",
+                                        "value": "Bearer {{access_token}}"
+                                    }
+                                ],
+                                "url": {
+                                    "raw": "{{base_url}}/patient/media/delete?publicId=public-id-here",
+                                    "query": [
+                                        {
+                                            "key": "publicId",
+                                            "value": "public-id-here"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    ]
                 }
             ]
         },

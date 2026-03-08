@@ -34,7 +34,7 @@ public class MaintenanceModeFilter extends OncePerRequestFilter {
         String isMaintenance = redisTemplate.opsForValue().get("maintenance:mode");
         if ("true".equals(isMaintenance)) {
             String clientIp = getClientIp(request);
-            Boolean isAllowed = redisTemplate.opsForSet().isMember("maintenance:allowed:ips", clientIp);
+            Boolean isAllowed = redisTemplate.opsForSet().isMember("maintenance:allowedIps", clientIp);
 
             if (Boolean.FALSE.equals(isAllowed)) {
                 String resumeTime = redisTemplate.opsForValue().get("maintenance:resume");

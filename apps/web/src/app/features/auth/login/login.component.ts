@@ -20,6 +20,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { AuthService } from '@repo/auth';
 import { ToastService } from '../../../core/services/toast.service';
+import { TranslatePipe } from '@core/pipes/translate.pipe';
+import { TranslationService } from '@core/services/translation.service';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -42,40 +44,41 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatButtonModule, 
     MatIconModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslatePipe
   ],
   template: `
     <div>
       <div class="mb-10">
-         <h1 class="text-3xl font-bold tracking-tight text-slate-900 mb-2">Welcome Back</h1>
-         <p class="text-slate-500 font-medium">Sign in to your patient account</p>
+         <h1 class="text-3xl font-bold tracking-tight text-slate-900 mb-2">{{ 'AUTH.LOGIN.TITLE' | translate }}</h1>
+         <p class="text-slate-500 font-medium">{{ 'AUTH.LOGIN.SUBTITLE' | translate }}</p>
       </div>
 
       <mat-card class="!shadow-none !border-none !bg-transparent !p-0">
           <mat-card-content class="!p-0">
             <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Email Address</mat-label>
+                <mat-label>{{ 'AUTH.LOGIN.EMAIL' | translate }}</mat-label>
                 <input matInput type="email" formControlName="email" [errorStateMatcher]="matcher" autocomplete="username">
                 <mat-error>
-                  @if (loginForm.get('email')?.hasError('required')) { Email is required }
-                  @else if (loginForm.get('email')?.hasError('email')) { Invalid email format }
+                  @if (loginForm.get('email')?.hasError('required')) { {{ 'AUTH.LOGIN.ERRORS.EMAIL_REQ' | translate }} }
+                  @else if (loginForm.get('email')?.hasError('email')) { {{ 'AUTH.LOGIN.ERRORS.EMAIL_INVALID' | translate }} }
                 </mat-error>
               </mat-form-field>
 
               <div class="space-y-1">
                 <mat-form-field appearance="outline" class="w-full">
-                  <mat-label>Password</mat-label>
+                  <mat-label>{{ 'AUTH.LOGIN.PASSWORD' | translate }}</mat-label>
                   <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" [errorStateMatcher]="matcher" autocomplete="current-password">
                   <button mat-icon-button matSuffix (click)="hidePassword.set(!hidePassword())" type="button">
                     <mat-icon>{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
                   </button>
                   @if (loginForm.get('password')?.hasError('required')) {
-                    <mat-error>Password is required</mat-error>
+                    <mat-error>{{ 'AUTH.LOGIN.ERRORS.PASS_REQ' | translate }}</mat-error>
                   }
                 </mat-form-field>
                 <div class="flex justify-end pr-1">
-                  <a routerLink="/auth/forgot-password" class="text-xs font-semibold text-primary-600 hover:text-primary-700 transition-colors">Forgot password?</a>
+                  <a routerLink="/auth/forgot-password" class="text-xs font-semibold text-primary-600 hover:text-primary-700 transition-colors">{{ 'AUTH.LOGIN.FORGOT' | translate }}</a>
                 </div>
               </div>
 
@@ -83,7 +86,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
                       [disabled]="loading() || loginForm.invalid"
                       class="w-full h-12 rounded-xl text-base font-semibold transition-all mt-2">
                 @if (!loading()) {
-                  <span>Sign In</span>
+                  <span>{{ 'AUTH.LOGIN.ACTION' | translate }}</span>
                 } @else {
                   <mat-spinner diameter="24" class="inline-block"></mat-spinner>
                 }
@@ -93,9 +96,9 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
       </mat-card>
 
       <div class="mt-12 text-center bg-slate-50 p-8 rounded-3xl border border-slate-100">
-        <p class="text-sm font-medium text-slate-500 mb-4 tracking-tight">Don't have an account yet?</p>
+        <p class="text-sm font-medium text-slate-500 mb-4 tracking-tight">{{ 'AUTH.LOGIN.REGISTER_PROMPT' | translate }}</p>
         <button mat-stroked-button color="primary" routerLink="/auth/register" class="w-full h-12 rounded-xl font-bold border-2 hover:bg-white transition-colors">
-          Create Patient Profile
+          {{ 'AUTH.LOGIN.REGISTER_ACTION' | translate }}
         </button>
       </div>
     </div>
@@ -109,6 +112,7 @@ export class LoginComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
   private toast = inject(ToastService);
+  private ts = inject(TranslationService);
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -127,12 +131,12 @@ export class LoginComponent {
     this.auth.login(this.loginForm.value).subscribe({
       next: () => {
         this.loading.set(false);
-        this.toast.success('Welcome back! Syncing your data...');
+        this.toast.success(this.ts.translate('AUTH.LOGIN.ERRORS.SUCCESS')());
         this.router.navigate(['/portal/dashboard']);
       },
       error: (err) => {
         this.loading.set(false);
-        this.toast.error(err.error?.message || 'Invalid email or password.');
+        this.toast.error(err.error?.message || this.ts.translate('AUTH.LOGIN.ERRORS.LOGIN_FAILED')());
       }
     });
   }

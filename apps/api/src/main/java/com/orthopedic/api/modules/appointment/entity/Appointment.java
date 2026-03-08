@@ -17,7 +17,9 @@ import java.time.LocalTime;
         @Index(name = "idx_appointments_doctor_id", columnList = "doctor_id"),
         @Index(name = "idx_appointments_date", columnList = "appointment_date"),
         @Index(name = "idx_appointments_status", columnList = "status"),
-        @Index(name = "idx_appointments_hospital_id", columnList = "hospital_id")
+        @Index(name = "idx_appointments_hospital_id", columnList = "hospital_id"),
+        @Index(name = "idx_appointments_deleted", columnList = "deleted"),
+        @Index(name = "idx_appointments_created_at", columnList = "createdAt")
 }, uniqueConstraints = {
         @UniqueConstraint(name = "unique_doctor_slot", columnNames = { "doctor_id", "appointment_date", "start_time" })
 })

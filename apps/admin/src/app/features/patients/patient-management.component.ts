@@ -87,14 +87,14 @@ import { PATIENTSMANAGEMENTService } from '../../core/services/api/patientsmanag
                   <td class="px-6 py-5 pl-10">
                     <div class="flex items-center gap-4">
                       <div class="w-11 h-11 rounded-full bg-google-blue/10 flex items-center justify-center text-sm font-black text-google-blue shrink-0">
-                        {{ row.user?.firstName?.charAt(0) || 'P' }}
+                        {{ row.fullName?.charAt(0) || 'P' }}
                       </div>
                       <div>
                         <p class="font-bold text-sm text-google-gray-900 dark:text-white m-0 tracking-tight">
-                          {{ row.user?.firstName }} {{ row.user?.lastName }}
+                          {{ row.fullName }}
                         </p>
                         <p class="text-[10px] uppercase font-black tracking-widest text-google-gray-400 m-0">
-                          ID: {{ row.id.split('-')[0].toUpperCase() }}
+                          ID: {{ row.id.toString().split('-')[0].toUpperCase() }}
                         </p>
                       </div>
                     </div>

@@ -1,16 +1,28 @@
 package com.orthopedic.api.modules.notification.entity;
 
 import com.orthopedic.api.auth.entity.User;
-import com.orthopedic.api.shared.base.BaseEntity;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "notifications", indexes = {
         @Index(name = "idx_notifications_user_id", columnList = "user_id"),
         @Index(name = "idx_notifications_status", columnList = "status"),
-        @Index(name = "idx_notifications_type", columnList = "type")
+        @Index(name = "idx_notifications_type", columnList = "type"),
+        @Index(name = "idx_notifications_created_at", columnList = "createdAt"),
+        @Index(name = "idx_notifications_recipient_role", columnList = "recipient_role")
 })
-public class Notification extends BaseEntity {
+public class Notification {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -145,4 +157,10 @@ public class Notification extends BaseEntity {
     public enum NotificationLevel {
         INFO, WARNING, SUCCESS, ERROR
     }
+
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
+    
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

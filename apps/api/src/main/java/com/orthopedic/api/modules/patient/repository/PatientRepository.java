@@ -24,6 +24,7 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
 
        @EntityGraph(attributePaths = { "user" })
        @Query("SELECT p FROM Patient p JOIN p.user u WHERE " +
+                     "p.deleted = false AND " +
                      "(:bloodGroup IS NULL OR p.bloodGroup = :bloodGroup) AND " +
                      "(:gender IS NULL OR p.gender = :gender) AND " +
                      "(:city IS NULL OR p.city = :city) AND " +

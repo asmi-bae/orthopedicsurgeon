@@ -13,9 +13,11 @@ import java.util.UUID;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, UUID> {
-    Page<Notification> findAllByRecipientId(UUID recipientId, Pageable pageable);
+    @Query("SELECT n FROM Notification n WHERE n.recipient.id = :recipientId")
+    Page<Notification> findAllByRecipientId(@Param("recipientId") UUID recipientId, Pageable pageable);
 
-    long countByRecipientIdAndStatus(UUID recipientId, Notification.NotificationStatus status);
+    @Query("SELECT COUNT(n) FROM Notification n WHERE n.recipient.id = :recipientId AND n.status = :status")
+    long countByRecipientIdAndStatus(@Param("recipientId") UUID recipientId, @Param("status") Notification.NotificationStatus status);
 
     @Modifying
     @Query("UPDATE Notification n SET n.status = 'READ', n.isRead = true WHERE n.recipient.id = :recipientId AND n.status = 'UNREAD'")

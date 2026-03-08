@@ -17,7 +17,7 @@ import { FooterComponent } from '@core/components/footer/footer.component';
     <div class="min-h-screen flex flex-col bg-gray-50/30">
       <app-navbar></app-navbar>
       
-      <main class="flex-1 pt-[136px] max-w-7xl mx-auto w-full px-6 sm:px-10 lg:px-12">
+      <main class="flex-1 pt-[136px] app-container px-6 sm:px-10 lg:px-12">
         <router-outlet></router-outlet>
       </main>
 

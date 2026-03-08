@@ -1,33 +1,35 @@
-import { Component } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { TranslatePipe } from '@core/pipes/translate.pipe';
+import { TranslationService } from '@core/services/translation.service';
 
 @Component({
   selector: 'app-departments',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule, MatIconModule, MatDividerModule],
+  imports: [CommonModule, RouterModule, MatCardModule, MatButtonModule, MatIconModule, MatDividerModule, TranslatePipe],
   template: `
     <div class="bg-gray-50 min-h-screen">
       <!-- Header -->
       <section class="relative py-24 bg-secondary-900 overflow-hidden text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <h1 class="text-xs font-black text-primary uppercase tracking-[0.5em] mb-4">Clinical Infrastructure</h1>
+        <div class="app-container relative z-10">
+          <h1 class="text-xs font-black text-primary uppercase tracking-[0.5em] mb-4">{{ 'DEPARTMENTS.HERO.SUBTITLE' | translate }}</h1>
           <h2 class="text-6xl font-black tracking-tighter uppercase leading-none mb-8">
-            Specialized <br/><span class="text-primary tracking-normal">Medical Centres</span>
+            {{ 'DEPARTMENTS.HERO.TITLE' | translate | slice:0:11 }} <br/><span class="text-primary tracking-normal">{{ 'DEPARTMENTS.HERO.TITLE' | translate | slice:11 }}</span>
           </h2>
           <p class="text-lg text-white/60 max-w-2xl font-medium leading-relaxed">
-            Our specialized centers are strictly focused on specific musculoskeletal domains, ensuring that every patient receives care from the most qualified specialists.
+            {{ 'DEPARTMENTS.HERO.DESCRIPTION' | translate }}
           </p>
         </div>
       </section>
 
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div class="app-container py-20">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          @for (dept of departments; track dept.name) {
+          @for (dept of departments; track dept.nameKey) {
             <mat-card class="rounded-[40px] border border-gray-100 shadow-none overflow-hidden bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
               <div class="h-64 relative overflow-hidden bg-gray-100">
                  <img [src]="dept.image" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" />
@@ -40,8 +42,8 @@ import { MatDividerModule } from '@angular/material/divider';
               </div>
 
               <div class="p-10">
-                <h3 class="text-2xl font-black text-secondary-900 uppercase tracking-tight mb-4">{{ dept.name }}</h3>
-                <p class="text-secondary-600 text-sm leading-relaxed mb-8 font-medium">{{ dept.description }}</p>
+                <h3 class="text-2xl font-black text-secondary-900 uppercase tracking-tight mb-4">{{ dept.nameKey | translate }}</h3>
+                <p class="text-secondary-600 text-sm leading-relaxed mb-8 font-medium">{{ dept.descKey | translate }}</p>
 
                 <mat-divider class="mb-8 opacity-50"></mat-divider>
 
@@ -49,15 +51,15 @@ import { MatDividerModule } from '@angular/material/divider';
                    @for (feat of dept.features; track feat) {
                      <div class="flex items-center gap-3 text-secondary-500">
                         <mat-icon class="text-primary scale-75">check_circle</mat-icon>
-                        <span class="text-[10px] font-black uppercase tracking-widest">{{feat}}</span>
+                        <span class="text-[10px] font-black uppercase tracking-widest">{{feat | translate}}</span>
                      </div>
                    }
                 </div>
 
                 <div class="mt-10">
-                  <a mat-flat-button color="primary" routerLink="/doctors" [queryParams]="{ department: dept.name }" 
+                  <a mat-flat-button color="primary" routerLink="/doctors" [queryParams]="{ department: dept.nameKey | translate }" 
                           class="h-14 px-8 rounded-xl font-bold uppercase w-full shadow-xl shadow-primary/20">
-                    Access Specialists
+                    {{ 'DEPARTMENTS.CARDS.BUTTON' | translate }}
                   </a>
                 </div>
               </div>
@@ -70,27 +72,41 @@ import { MatDividerModule } from '@angular/material/divider';
   styles: [`:host { display: block; }`]
 })
 export class DepartmentsComponent {
+  private translation = inject(TranslationService);
+
   departments = [
     { 
-      name: 'Joint Replacement', 
+      nameKey: 'DEPARTMENTS.CARDS.JOINT.NAME', 
       icon: 'rebase_edit', 
       image: 'https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=800',
-      description: 'Advanced surgical protocols for total and partial joint restoration using robotic precision.',
-      features: ['MAKO ROBOTIC SYSTEM', 'MINIMALLY INVASIVE', 'RAPID RECOVERY']
+      descKey: 'DEPARTMENTS.CARDS.JOINT.DESC',
+      features: [
+        'DEPARTMENTS.CARDS.JOINT.FEATURES.0', 
+        'DEPARTMENTS.CARDS.JOINT.FEATURES.1', 
+        'DEPARTMENTS.CARDS.JOINT.FEATURES.2'
+      ]
     },
     { 
-      name: 'Sports Medicine', 
+      nameKey: 'DEPARTMENTS.CARDS.SPORTS.NAME', 
       icon: 'sports_scores', 
       image: 'https://images.unsplash.com/photo-1571019623518-e71de96e28da?auto=format&fit=crop&q=80&w=800',
-      description: 'High-performance care for athletes, focusing on ligament repair and bio-restorative therapy.',
-      features: ['ACL RECONSTRUCTION', 'STEM CELL THERAPY', 'MOTION SCANNING']
+      descKey: 'DEPARTMENTS.CARDS.SPORTS.DESC',
+      features: [
+        'DEPARTMENTS.CARDS.SPORTS.FEATURES.0', 
+        'DEPARTMENTS.CARDS.SPORTS.FEATURES.1', 
+        'DEPARTMENTS.CARDS.SPORTS.FEATURES.2'
+      ]
     },
     { 
-      name: 'Spine Center', 
+      nameKey: 'DEPARTMENTS.CARDS.SPINE.NAME', 
       icon: 'accessibility', 
       image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=800',
-      description: 'Complex spinal structural restoration addressing discs, alignment, and nerve decompression.',
-      features: ['MICRODISKECTOMY', 'FUSION PROTOCOLS', 'PAIN MANAGEMENT']
+      descKey: 'DEPARTMENTS.CARDS.SPINE.DESC',
+      features: [
+        'DEPARTMENTS.CARDS.SPINE.FEATURES.0', 
+        'DEPARTMENTS.CARDS.SPINE.FEATURES.1', 
+        'DEPARTMENTS.CARDS.SPINE.FEATURES.2'
+      ]
     }
   ];
 }

@@ -9,185 +9,66 @@ import { environment } from '@env/environment';
 export class SUPERADMINAPICONTROLService {
   private http = inject(HttpClient);
   private baseUrl = environment.apiUrl || 'http://localhost:8080/api/v1';
+  private apiControlUrl = `${this.baseUrl}/admin/api-controls`;
 
   /**
-   * GET /admin/api-control/endpoints
-   * ID: AC-01
-Returns: ApiEndpoint[]
-   */
-  getAdminApicontrolEndpoints(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/api-control/endpoints`);
-  }
-
-  /**
-   * PUT /admin/api-control/endpoints/{id}/disable
-   * ID: AC-02
-Body: { reason, disableUntil? (null=permanent) }
-   */
-  putAdminApicontrolEndpointsIdDisable(id: string, payload: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/admin/api-control/endpoints/${id}/disable`, payload);
-  }
-
-  /**
-   * PUT /admin/api-control/endpoints/{id}/enable
-   * ID: AC-03
-Body: { reason }
-   */
-  putAdminApicontrolEndpointsIdEnable(id: string, payload: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/admin/api-control/endpoints/${id}/enable`, payload);
-  }
-
-  /**
-   * PUT /admin/api-control/endpoints/bulk-disable
-   * ID: AC-04
-Body: { ids: [], reason }
-   */
-  putAdminApicontrolEndpointsBulkdisable(payload: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/admin/api-control/endpoints/bulk-disable`, payload);
-  }
-
-  /**
-   * PUT /admin/api-control/endpoints/bulk-enable
-   * ID: AC-05
-Body: { ids: [] }
-   */
-  putAdminApicontrolEndpointsBulkenable(payload: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/admin/api-control/endpoints/bulk-enable`, payload);
-  }
-
-  /**
-   * GET /admin/api-control/groups
-   * ID: AC-06
-Returns: ApiGroup[]
-   */
-  getAdminApicontrolGroups(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/api-control/groups`);
-  }
-
-  /**
-   * PUT /admin/api-control/groups/{group}/disable
-   * ID: AC-07
-Body: { reason }
-   */
-  putAdminApicontrolGroupsGroupDisable(group: string, payload: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/admin/api-control/groups/${group}/disable`, payload);
-  }
-
-  /**
-   * PUT /admin/api-control/groups/{group}/enable
-   * ID: AC-08
-Returns: { enabled: count }
-   */
-  putAdminApicontrolGroupsGroupEnable(group: string, payload: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/admin/api-control/groups/${group}/enable`, payload);
-  }
-
-  /**
-   * POST /admin/api-control/maintenance-mode
-   * ID: AC-09
-Body: { enabled, message, allowedIps: [] }
-   */
-  postAdminApicontrolMaintenancemode(payload: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/admin/api-control/maintenance-mode`, payload);
-  }
-
-  /**
-   * GET /admin/api-control/maintenance-mode
-   * ID: AC-10
-Returns: MaintenanceStatus
+   * --- Maintenance Mode ---
    */
   getAdminApicontrolMaintenancemode(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/api-control/maintenance-mode`);
+    return this.http.get(`${this.apiControlUrl}/maintenance`);
+  }
+
+  postAdminApicontrolMaintenancemode(enabled: boolean): Observable<any> {
+    return this.http.post(`${this.apiControlUrl}/maintenance`, { enabled });
+  }
+
+  getAdminApicontrolAllowedIps(): Observable<any> {
+    return this.http.get(`${this.apiControlUrl}/maintenance/allowed-ips`);
+  }
+
+  postAdminApicontrolAllowedIp(ip: string): Observable<any> {
+    return this.http.post(`${this.apiControlUrl}/maintenance/allowed-ips`, { ip });
+  }
+
+  deleteAdminApicontrolAllowedIp(ip: string): Observable<any> {
+    return this.http.delete(`${this.apiControlUrl}/maintenance/allowed-ips/${ip}`);
   }
 
   /**
-   * GET /admin/api-control/rate-limits
-   * ID: AC-11
-Returns: RateLimitConfig[]
-   */
-  getAdminApicontrolRatelimits(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/api-control/rate-limits`);
-  }
-
-  /**
-   * PUT /admin/api-control/rate-limits/{endpoint}
-   * ID: AC-12
-Body: { limit, windowSeconds }
-   */
-  putAdminApicontrolRatelimitsEndpoint(endpoint: string, payload: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/admin/api-control/rate-limits/${endpoint}`, payload);
-  }
-
-  /**
-   * POST /admin/api-control/rate-limits/reset/{ip}
-   * ID: AC-13
-Body: { reason }
-   */
-  postAdminApicontrolRatelimitsResetIp(ip: string, payload: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/admin/api-control/rate-limits/reset/${ip}`, payload);
-  }
-
-  /**
-   * GET /admin/api-control/blocked-ips
-   * ID: AC-14
-Returns: BlockedIp[]
+   * --- Blocked IPs ---
    */
   getAdminApicontrolBlockedips(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/api-control/blocked-ips`);
+    return this.http.get(`${this.apiControlUrl}/blocked-ips`);
   }
 
-  /**
-   * POST /admin/api-control/blocked-ips
-   * ID: AC-15
-Body: { ip, reason, expiresAt? }
-   */
-  postAdminApicontrolBlockedips(payload: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/admin/api-control/blocked-ips`, payload);
+  postAdminApicontrolBlockedip(ip: string): Observable<any> {
+    return this.http.post(`${this.apiControlUrl}/blocked-ips`, { ip });
   }
 
-  /**
-   * DELETE /admin/api-control/blocked-ips/{ip}
-   * ID: AC-16
-Returns: { success }
-   */
   deleteAdminApicontrolBlockedipsIp(ip: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/admin/api-control/blocked-ips/${ip}`);
+    return this.http.delete(`${this.apiControlUrl}/blocked-ips/${ip}`);
   }
 
   /**
-   * GET /admin/api-control/metrics
-   * ID: AC-17
-Returns: ApiMetrics
+   * --- Disabled Endpoints ---
    */
-  getAdminApicontrolMetrics(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/api-control/metrics`);
+  getAdminApicontrolDisabledEndpoints(): Observable<any> {
+    return this.http.get(`${this.apiControlUrl}/disabled-endpoints`);
+  }
+
+  postAdminApicontrolDisableEndpoint(method: string, path: string, reason: string): Observable<any> {
+    return this.http.post(`${this.apiControlUrl}/disabled-endpoints`, { method, path, reason });
+  }
+
+  deleteAdminApicontrolEnableEndpoint(method: string, path: string): Observable<any> {
+    const params = new HttpParams().set('method', method).set('path', path);
+    return this.http.delete(`${this.apiControlUrl}/disabled-endpoints`, { params });
   }
 
   /**
-   * POST /admin/api-control/circuit-breaker/{group}
-   * ID: AC-18
-Body: { action: OPEN/CLOSE/HALF_OPEN }
+   * --- Legacy / Remaining Endpoints (If any still exist on backend) ---
    */
-  postAdminApicontrolCircuitbreakerGroup(group: string, payload: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/admin/api-control/circuit-breaker/${group}`, payload);
+  getAdminApicontrolEndpoints(): Observable<any> {
+    return this.http.get(`${this.apiControlUrl}/endpoints`);
   }
-
-  /**
-   * GET /admin/api-control/circuit-breakers
-   * ID: AC-19
-Returns: CircuitBreakerStatus[]
-   */
-  getAdminApicontrolCircuitbreakers(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/api-control/circuit-breakers`);
-  }
-
-  /**
-   * POST /admin/api-control/cache/flush
-   * ID: AC-20
-Body: { cacheNames: [] OR "all" }
-   */
-  postAdminApicontrolCacheFlush(payload: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/admin/api-control/cache/flush`, payload);
-  }
-
 }

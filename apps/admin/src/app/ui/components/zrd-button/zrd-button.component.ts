@@ -36,7 +36,7 @@ export class ZrdButtonComponent {
   @Input({ transform: booleanAttribute }) disabled = false;
 
   get classes(): string {
-    const base = 'inline-flex items-center justify-center font-medium transition-all duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+    const base = 'inline-flex items-center justify-center font-medium transition-all duration-200 rounded-full cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
     
     const variants: Record<ZrdButtonVariant, string> = {
       primary: 'bg-google-blue text-white hover:bg-google-blue/90 focus:ring-google-blue/50 shadow-sm shadow-google-blue/20',

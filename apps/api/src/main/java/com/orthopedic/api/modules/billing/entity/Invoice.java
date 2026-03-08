@@ -15,7 +15,9 @@ import java.util.List;
 @Entity
 @Table(name = "invoices", indexes = {
         @Index(name = "idx_invoices_patient_id", columnList = "patient_id"),
-        @Index(name = "idx_invoices_appointment_id", columnList = "appointment_id")
+        @Index(name = "idx_invoices_appointment_id", columnList = "appointment_id"),
+        @Index(name = "idx_invoices_deleted", columnList = "deleted"),
+        @Index(name = "idx_invoices_created_at", columnList = "createdAt")
 })
 @Data
 @EqualsAndHashCode(callSuper = true)

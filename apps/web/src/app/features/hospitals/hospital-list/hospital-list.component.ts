@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { PublicApiService } from '@core/services/public-api.service';
+import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { HospitalSummary } from '@repo/types';
 
 @Component({
@@ -19,25 +20,26 @@ import { HospitalSummary } from '@repo/types';
     MatButtonModule, 
     MatIconModule, 
     MatChipsModule,
-    MatDividerModule
+    MatDividerModule,
+    TranslatePipe
   ],
   template: `
     <div class="bg-gray-50 min-h-screen">
       <!-- Header -->
       <section class="relative py-24 bg-secondary-900 overflow-hidden text-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <h1 class="text-xs font-black text-primary uppercase tracking-[0.5em] mb-4">Strategic Assets</h1>
+        <div class="app-container relative z-10">
+          <h1 class="text-xs font-black text-primary uppercase tracking-[0.5em] mb-4">{{ 'HOSPITALS.LIST.HERO.SUBTITLE' | translate }}</h1>
           <h2 class="text-6xl font-black tracking-tighter uppercase leading-none mb-8">
-            Partner <br/><span class="text-primary tracking-normal">Medical Facilities</span>
+            {{ 'HOSPITALS.LIST.HERO.TITLE_PART1' | translate }} <br/><span class="text-primary tracking-normal">{{ 'HOSPITALS.LIST.HERO.TITLE_PART2' | translate }}</span>
           </h2>
           <p class="text-lg text-white/60 max-w-2xl font-medium leading-relaxed">
-            Explore our network of state-of-the-art clinical hubs and specialized hospitals designed for orthopedic excellence and patient restoration.
+            {{ 'HOSPITALS.LIST.HERO.DESCRIPTION' | translate }}
           </p>
         </div>
         <div class="absolute right-0 top-0 w-1/3 h-full bg-primary/5 -skew-x-12"></div>
       </section>
 
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div class="app-container py-20">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           @for (hospital of hospitals(); track hospital.id) {
             <mat-card class="rounded-[40px] border border-gray-100 shadow-none overflow-hidden hover:shadow-2xl transition-all duration-700 bg-white group">
@@ -60,23 +62,23 @@ import { HospitalSummary } from '@repo/types';
                       <span class="text-[10px] font-black uppercase tracking-widest">{{ hospital.city }}</span>
                     </div>
                   </div>
-                  <mat-chip class="premium-badge">Active</mat-chip>
+                  <mat-chip class="premium-badge">{{ 'HOSPITALS.LIST.CARD.STATUS' | translate }}</mat-chip>
                 </div>
 
-                <p class="text-secondary-600 text-sm leading-relaxed mb-10 font-medium">Standard of excellence in patient care and clinical innovation across the orthopedic spectrum.</p>
+                <p class="text-secondary-600 text-sm leading-relaxed mb-10 font-medium">{{ 'HOSPITALS.LIST.CARD.DESCRIPTION' | translate }}</p>
 
                 <div class="p-6 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between mb-10">
-                   <div class="text-[9px] font-black uppercase tracking-widest text-secondary-400">Node Status</div>
+                   <div class="text-[9px] font-black uppercase tracking-widest text-secondary-400">{{ 'HOSPITALS.LIST.CARD.NODE_STATUS' | translate }}</div>
                    <div class="flex items-center gap-2">
-                      <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                      <span class="text-xs font-black text-green-600 uppercase tracking-tighter">Open 24/7</span>
+                       <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                       <span class="text-xs font-black text-green-600 uppercase tracking-tighter">{{ 'HOSPITALS.LIST.CARD.HOURS' | translate }}</span>
                    </div>
                 </div>
 
                 <div class="flex gap-4">
                   <a mat-flat-button color="primary" [routerLink]="['/doctors']" [queryParams]="{ hospitalId: hospital.id }" 
                      class="h-14 px-8 rounded-xl font-bold uppercase w-full shadow-xl shadow-primary/20">
-                    Access Specialists
+                    {{ 'HOSPITALS.LIST.CARD.ACCESS' | translate }}
                   </a>
                 </div>
               </div>

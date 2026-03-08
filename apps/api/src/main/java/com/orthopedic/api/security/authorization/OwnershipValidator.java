@@ -27,6 +27,15 @@ public class OwnershipValidator {
         return false;
     }
 
+    // SELF_PROTECTION
+    public boolean isNotSelf(Authentication authentication, UUID targetUserId) {
+        if (authentication == null || targetUserId == null)
+            return false;
+        
+        String currentUserId = authentication.getName();
+        return !currentUserId.equals(targetUserId.toString());
+    }
+
     // SUPER_ADMIN_SHIELD
     public boolean protectSuperAdmin(Authentication authentication, UUID targetUserId) {
         if (hasRole(authentication, "ROLE_SUPER_ADMIN")) return true;

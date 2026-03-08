@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { 
@@ -22,6 +22,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { AuthService } from '@repo/auth';
 import { ToastService } from '../../../core/services/toast.service';
+import { TranslatePipe } from '@core/pipes/translate.pipe';
+import { TranslationService } from '@core/services/translation.service';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -46,13 +48,14 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatSelectModule,
     MatIconModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslatePipe
   ],
   template: `
     <div>
       <div class="mb-8">
-        <h2 class="text-2xl font-bold text-slate-900 mb-1 tracking-tight ">Create Patient Account</h2>
-        <p class="text-sm text-slate-500 font-medium tracking-tight">Complete your registration for patient portal access.</p>
+        <h2 class="text-2xl font-bold text-slate-900 mb-1 tracking-tight ">{{ 'AUTH.REGISTER.TITLE' | translate }}</h2>
+        <p class="text-sm text-slate-500 font-medium tracking-tight">{{ 'AUTH.REGISTER.SUBTITLE' | translate }}</p>
       </div>
 
       <mat-card class="!shadow-none !border-none !bg-transparent !p-0">
@@ -60,56 +63,56 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
             <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-5">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                  <mat-form-field appearance="outline">
-                   <mat-label>First Name</mat-label>
+                   <mat-label>{{ 'AUTH.REGISTER.FIRST_NAME' | translate }}</mat-label>
                    <input matInput formControlName="firstName" [errorStateMatcher]="matcher">
-                   <mat-error>Required</mat-error>
+                   <mat-error>{{ 'AUTH.REGISTER.ERRORS.REQ' | translate }}</mat-error>
                  </mat-form-field>
                  <mat-form-field appearance="outline">
-                   <mat-label>Last Name</mat-label>
+                   <mat-label>{{ 'AUTH.REGISTER.LAST_NAME' | translate }}</mat-label>
                    <input matInput formControlName="lastName" [errorStateMatcher]="matcher">
-                   <mat-error>Required</mat-error>
+                   <mat-error>{{ 'AUTH.REGISTER.ERRORS.REQ' | translate }}</mat-error>
                  </mat-form-field>
               </div>
 
               <mat-form-field appearance="outline">
-                <mat-label>Email Address</mat-label>
+                <mat-label>{{ 'AUTH.REGISTER.EMAIL' | translate }}</mat-label>
                 <input matInput type="email" formControlName="email" [errorStateMatcher]="matcher">
-                <mat-error>Enter a valid email</mat-error>
+                <mat-error>{{ 'AUTH.REGISTER.ERRORS.EMAIL_INVALID' | translate }}</mat-error>
               </mat-form-field>
               
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                  <mat-form-field appearance="outline">
-                   <mat-label>Gender</mat-label>
+                   <mat-label>{{ 'AUTH.REGISTER.GENDER' | translate }}</mat-label>
                     <mat-select formControlName="gender">
-                      @for (opt of genderOptions; track opt.value) {
-                        <mat-option [value]="opt.value">{{opt.label}}</mat-option>
+                      @for (opt of translatedGenderOptions(); track opt.value) {
+                        <mat-option [value]="opt.value">{{opt.label()}}</mat-option>
                       }
                     </mat-select>
                  </mat-form-field>
                  <mat-form-field appearance="outline">
-                   <mat-label>Phone Number</mat-label>
+                   <mat-label>{{ 'AUTH.REGISTER.PHONE' | translate }}</mat-label>
                    <input matInput formControlName="phone" [errorStateMatcher]="matcher">
-                   <mat-error>Phone is required</mat-error>
+                   <mat-error>{{ 'AUTH.REGISTER.ERRORS.PHONE_REQ' | translate }}</mat-error>
                  </mat-form-field>
               </div>
 
               <mat-form-field appearance="outline">
-                <mat-label>Password</mat-label>
+                <mat-label>{{ 'AUTH.REGISTER.PASSWORD' | translate }}</mat-label>
                 <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" [errorStateMatcher]="matcher">
                 <button mat-icon-button matSuffix (click)="hidePassword.set(!hidePassword())" type="button" class="!w-10 !h-10">
                   <mat-icon class="text-slate-400">{{hidePassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </button>
-                <mat-error>Min. 8 characters</mat-error>
+                <mat-error>{{ 'AUTH.REGISTER.ERRORS.PASS_MIN' | translate }}</mat-error>
               </mat-form-field>
 
               <mat-checkbox formControlName="terms">
-                <span class="text-[10px] font-bold text-slate-400 tracking-tight leading-tight ">Accept terms of service & privacy policy</span>
+                <span class="text-[10px] font-bold text-slate-400 tracking-tight leading-tight ">{{ 'AUTH.REGISTER.TERMS' | translate }}</span>
               </mat-checkbox>
 
               <button mat-flat-button color="primary" class="h-12 rounded-xl text-base font-bold shadow-lg shadow-primary/20 mt-2" 
                       type="submit" [disabled]="loading() || registerForm.invalid">
                 @if (!loading()) {
-                  <span>Create Account</span>
+                  <span>{{ 'AUTH.REGISTER.ACTION' | translate }}</span>
                 } @else {
                   <mat-spinner diameter="24" class="inline-block"></mat-spinner>
                 }
@@ -119,9 +122,9 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
       </mat-card>
 
       <div class="mt-12 text-center text-balance">
-        <p class="text-[10px] font-bold text-slate-400 tracking-tight mb-4 ">Already have an account?</p>
+        <p class="text-[10px] font-bold text-slate-400 tracking-tight mb-4 ">{{ 'AUTH.REGISTER.LOGIN_PROMPT' | translate }}</p>
         <button mat-stroked-button color="primary" routerLink="/auth/login" class="h-10 px-8 rounded-lg font-bold border-2 w-full hover:bg-slate-50 transition-colors">
-          Sign In
+          {{ 'AUTH.REGISTER.LOGIN_ACTION' | translate }}
         </button>
       </div>
     </div>
@@ -136,6 +139,7 @@ export class RegisterComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
   private toast = inject(ToastService);
+  private ts = inject(TranslationService);
 
   registerForm: FormGroup = this.fb.group({
     firstName: ['', Validators.required],
@@ -147,11 +151,11 @@ export class RegisterComponent {
     terms: [false, Validators.requiredTrue]
   });
 
-  genderOptions = [
-    { label: 'Male', value: 'MALE' },
-    { label: 'Female', value: 'FEMALE' },
-    { label: 'Other', value: 'OTHER' }
-  ];
+  translatedGenderOptions = computed(() => [
+    { label: this.ts.translate('AUTH.REGISTER.GENDER_OPTIONS.MALE'), value: 'MALE' },
+    { label: this.ts.translate('AUTH.REGISTER.GENDER_OPTIONS.FEMALE'), value: 'FEMALE' },
+    { label: this.ts.translate('AUTH.REGISTER.GENDER_OPTIONS.OTHER'), value: 'OTHER' }
+  ]);
 
   loading = signal(false);
   hidePassword = signal(true);
@@ -164,12 +168,12 @@ export class RegisterComponent {
     this.auth.register(this.registerForm.value).subscribe({
       next: () => {
         this.loading.set(false);
-        this.toast.success('Registration successful! Please login.');
+        this.toast.success(this.ts.translate('AUTH.REGISTER.ERRORS.SUCCESS')());
         this.router.navigate(['/auth/login']);
       },
       error: (err) => {
         this.loading.set(false);
-        this.toast.error(err.error?.message || 'Registration failed. Please try again.');
+        this.toast.error(err.error?.message || this.ts.translate('AUTH.REGISTER.ERRORS.FAILED')());
       }
     });
   }

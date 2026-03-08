@@ -1,6 +1,13 @@
+/* tailwindcss */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .app-container {
+    @apply max-w-[1400px] mx-auto w-full px-4 sm:px-6 lg:px-8;
+  }
+}
 
 .mat-mdc-form-field .mat-mdc-input-element:focus {
   outline: none !important;

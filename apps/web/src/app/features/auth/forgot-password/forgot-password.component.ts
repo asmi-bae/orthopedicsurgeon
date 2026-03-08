@@ -20,6 +20,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { AuthService } from '@repo/auth';
 import { ToastService } from '../../../core/services/toast.service';
+import { TranslatePipe } from '@core/pipes/translate.pipe';
+import { TranslationService } from '@core/services/translation.service';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class MyErrorStateMatcher implements ErrorStateMatcher {
@@ -42,7 +44,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslatePipe
   ],
   template: `
     <div class="h-full flex flex-col justify-center relative z-10">
@@ -50,8 +53,8 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
         <button mat-icon-button routerLink="/auth/login" class="mb-4 -ml-2">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 mb-2">Forgot Password?</h1>
-        <p class="text-slate-500 font-medium text-sm">Enter your email and we'll send you recovery instructions.</p>
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 mb-2">{{ 'AUTH.FORGOT.TITLE' | translate }}</h1>
+        <p class="text-slate-500 font-medium text-sm">{{ 'AUTH.FORGOT.SUBTITLE' | translate }}</p>
       </div>
 
       @if (!submitted()) {
@@ -59,11 +62,11 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
           <mat-card-content class="!p-0">
             <form [formGroup]="forgotForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
               <mat-form-field appearance="outline" class="w-full">
-                <mat-label>Email Address</mat-label>
+                <mat-label>{{ 'AUTH.FORGOT.EMAIL' | translate }}</mat-label>
                 <input matInput type="email" formControlName="email" [errorStateMatcher]="matcher">
                 <mat-error>
-                  @if (forgotForm.get('email')?.hasError('required')) { Email is required }
-                  @else if (forgotForm.get('email')?.hasError('email')) { Invalid email format }
+                  @if (forgotForm.get('email')?.hasError('required')) { {{ 'AUTH.FORGOT.ERRORS.EMAIL_REQ' | translate }} }
+                  @else if (forgotForm.get('email')?.hasError('email')) { {{ 'AUTH.FORGOT.ERRORS.EMAIL_INVALID' | translate }} }
                 </mat-error>
               </mat-form-field>
 
@@ -71,7 +74,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
                       [disabled]="loading() || forgotForm.invalid"
                       class="w-full h-12 rounded-xl text-base font-bold shadow-lg shadow-primary-500/20">
                 @if (!loading()) {
-                  <span>Send Recovery Email</span>
+                  <span>{{ 'AUTH.FORGOT.ACTION' | translate }}</span>
                 } @else {
                   <mat-spinner diameter="24" class="inline-block"></mat-spinner>
                 }
@@ -84,13 +87,13 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
           <div class="w-16 h-16 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <mat-icon class="text-3xl">email</mat-icon>
           </div>
-          <h3 class="text-xl font-bold text-slate-900 mb-2">Check your email</h3>
+          <h3 class="text-xl font-bold text-slate-900 mb-2">{{ 'AUTH.FORGOT.SUCCESS_TITLE' | translate }}</h3>
           <p class="text-slate-500 text-sm mb-8 leading-relaxed">
-            We've sent password recovery instructions to <br>
+            {{ 'AUTH.FORGOT.SUCCESS_DESC' | translate }} <br>
             <span class="font-bold text-slate-900">{{forgotForm.get('email')?.value}}</span>
           </p>
           <button mat-stroked-button class="w-full h-12 rounded-xl border-slate-200" (click)="submitted.set(false)">
-            Try another email
+            {{ 'AUTH.FORGOT.RETRY' | translate }}
           </button>
         </div>
       }
@@ -104,6 +107,7 @@ export class ForgotPasswordComponent {
   private fb = inject(FormBuilder);
   private auth = inject(AuthService);
   private toast = inject(ToastService);
+  private ts = inject(TranslationService);
 
   forgotForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]]
@@ -121,11 +125,11 @@ export class ForgotPasswordComponent {
       next: () => {
         this.loading.set(false);
         this.submitted.set(true);
-        this.toast.success('Recovery instructions sent to your email.');
+        this.toast.success(this.ts.translate('AUTH.FORGOT.ERRORS.SUCCESS_TOAST')());
       },
       error: (err) => {
         this.loading.set(false);
-        this.toast.error(err.error?.message || 'Error sending recovery email.');
+        this.toast.error(err.error?.message || this.ts.translate('AUTH.FORGOT.ERRORS.FAILED_TOAST')());
       }
     });
   }

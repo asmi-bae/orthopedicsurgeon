@@ -7,6 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { APPOINTMENTSMANAGEMENTService } from '../../core/services/api/appointmentsmanagement.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-appointment-management',
@@ -186,21 +187,23 @@ export class AppointmentManagementComponent implements OnInit {
 
   loadData() {
     this.loading.set(true);
-    // Load list
-    this.appointmentService.getAdminAppointments().subscribe({
-      next: (res) => {
-        const data = res?.data?.content || res?.data || [];
+    
+    forkJoin({
+      appointments: this.appointmentService.getAdminAppointments(),
+      stats: this.appointmentService.getAdminAppointmentsStats()
+    }).subscribe({
+      next: (res: any) => {
+        // Handle appointments
+        const apptRes = res.appointments;
+        const data = apptRes?.data?.content || apptRes?.data || [];
         this.appointments.set(Array.isArray(data) ? data : []);
+        
+        // Handle stats
+        this.stats.set(res.stats?.data);
+        
         this.loading.set(false);
       },
       error: () => this.loading.set(false)
-    });
-
-    // Load stats
-    this.appointmentService.getAdminAppointmentsStats().subscribe({
-      next: (res) => {
-        this.stats.set(res?.data);
-      }
     });
   }
 

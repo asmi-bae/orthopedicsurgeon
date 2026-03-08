@@ -34,7 +34,8 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, UUID> {
     @Query("UPDATE BlogPost p SET p.viewCount = p.viewCount + 1 WHERE p.id = :id")
     void incrementViewCount(@Param("id") UUID id);
 
-    List<BlogPost> findTop5ByStatusOrderByViewCountDesc(BlogPostStatus status);
+    @Query("SELECT p FROM BlogPost p WHERE p.status = :status ORDER BY p.viewCount DESC LIMIT 5")
+    List<BlogPost> findTop5ByStatusOrderByViewCountDesc(@Param("status") BlogPostStatus status);
 
     @Query("SELECT p FROM BlogPost p WHERE " +
             "(LOWER(p.title) LIKE LOWER(CONCAT('%', :query, '%')) OR " +

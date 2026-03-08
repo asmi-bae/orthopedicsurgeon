@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
         @Index(name = "idx_payments_patient_id", columnList = "patient_id"),
         @Index(name = "idx_payments_appointment_id", columnList = "appointment_id"),
         @Index(name = "idx_payments_status", columnList = "status"),
-        @Index(name = "idx_payments_transaction_id", columnList = "transaction_id")
+        @Index(name = "idx_payments_transaction_id", columnList = "transaction_id"),
+        @Index(name = "idx_payments_payment_date", columnList = "payment_date")
 })
 public class Payment extends BaseEntity {
 

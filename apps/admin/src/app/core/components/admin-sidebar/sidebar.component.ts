@@ -169,8 +169,7 @@ export class AdminSidebarComponent {
   auth = inject(AuthService);
   dialog = inject(MatDialog);
 
-  // All nav items — DOCTOR_ADMIN and SUPER_ADMIN see everything
-  // SUPER_ADMIN also sees system-level items
+  // All nav items — DOCTOR_ADMIN sees everything
   allNavItems: NavItem[] = [
     { label: 'Dashboard',         icon: 'insights',          route: '/dashboard' },
     { label: 'My Appointments',   icon: 'event_repeat',      route: '/appointments' },
@@ -179,35 +178,19 @@ export class AdminSidebarComponent {
     { label: 'Lab Reports',       icon: 'biotech',           route: '/records/reports' },
     { label: 'Health Records',    icon: 'monitor_heart',     route: '/health' },
     { label: 'Payments',          icon: 'account_balance',   route: '/finance' },
-    {
-      label: 'Website Control',   icon: 'web',
-      children: [
-        { label: 'Theme Identity',  icon: 'palette',           route: '/website/theme' },
-        { label: 'Hero Slider',     icon: 'auto_awesome',      route: '/content/hero' },
-        { label: 'About Profile',   icon: 'person_pin',        route: '/website/about' },
-        { label: 'Services',        icon: 'medical_services',  route: '/website/services' },
-        { label: 'Blog / News',     icon: 'article',           route: '/blog' },
-        { label: 'Media Gallery',   icon: 'collections',       route: '/website/gallery' },
-        { label: 'Reviews',         icon: 'star_rate',         route: '/website/reviews' },
-        { label: 'FAQ Builder',     icon: 'help_center',       route: '/content/faq' },
-        { label: 'Contact Info',    icon: 'contact_phone',     route: '/website/contact' },
-        { label: 'Partners',        icon: 'handshake',         route: '/content/partners' },
-      ]
-    },
     { label: 'Notifications',     icon: 'notifications',     route: '/notifications' },
-    { label: 'User Management',   icon: 'manage_accounts',   route: '/users',           roles: ['SUPER_ADMIN', 'DOCTOR_ADMIN'] },
-    { label: 'Audit Logs',        icon: 'receipt_long',      route: '/audit',           roles: ['SUPER_ADMIN'] },
-    { label: 'System Settings',   icon: 'tune',              route: '/settings',        roles: ['SUPER_ADMIN'] },
+    { label: 'Users',             icon: 'manage_accounts',   route: '/users',           roles: ['DOCTOR_ADMIN'] },
+    { label: 'Audit Logs',        icon: 'receipt_long',      route: '/audit',           roles: ['DOCTOR_ADMIN'] },
+    { label: 'System Settings',   icon: 'tune',              route: '/settings',        roles: ['DOCTOR_ADMIN'] },
   ];
 
   getVisibleNavItems(): NavItem[] {
     const user = this.auth.currentUser();
     if (!user) return [];
     const roles: string[] = (user as any).roles ?? [];
-    const isSuperAdmin = roles.includes('SUPER_ADMIN');
     return this.allNavItems.filter(item => {
       if (!item.roles) return true; // visible to all admin roles
-      return item.roles.some(r => roles.includes(r)) || isSuperAdmin;
+      return item.roles.some(r => roles.includes(r));
     });
   }
 
@@ -215,7 +198,6 @@ export class AdminSidebarComponent {
     const user = this.auth.currentUser();
     if (!user) return 'ADMIN';
     const roles: string[] = (user as any).roles ?? [];
-    if (roles.includes('SUPER_ADMIN')) return 'SUPER ADMIN';
     if (roles.includes('DOCTOR_ADMIN')) return 'DOCTOR / ADMIN';
     return 'ADMIN';
   }

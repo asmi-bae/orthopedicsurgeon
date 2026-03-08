@@ -11,39 +11,45 @@ export class AUDITLOGSService {
   private baseUrl = environment.apiUrl || 'http://localhost:8080/api/v1';
 
   /**
-   * GET /admin/audit/logs
-   * ID: AP-01
-Auth: SUPER_ADMIN, ADMIN
+   * GET /audit
+   * Fetch all system audit logs with pagination
    */
-  getAdminAuditLogs(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/audit/logs`);
+  getAdminAuditLogs(page: number = 0, size: number = 10, sort?: string, direction: string = 'DESC'): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('direction', direction);
+    
+    if (sort) {
+      params = params.set('sort', sort);
+    }
+
+    return this.http.get(`${this.baseUrl}/audit`, { params });
   }
 
   /**
-   * GET /admin/audit/logs/{id}
-   * ID: AP-02
-Returns: AuditLog (with JSON diff old→new)
+   * GET /audit/entity/{name}/{id}
+   * Get audit logs for a specific entity instance
    */
-  getAdminAuditLogsId(id: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/audit/logs/${id}`);
+  getAdminAuditLogsId(name: string, id: string, page: number = 0, size: number = 10): Observable<any> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    return this.http.get(`${this.baseUrl}/audit/entity/${name}/${id}`, { params });
   }
 
   /**
-   * GET /admin/audit/logs/export
-   * ID: AP-03
-Auth: SUPER_ADMIN only
+   * GET /audit/export (Placeholder)
    */
   getAdminAuditLogsExport(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/audit/logs/export`);
+    return this.http.get(`${this.baseUrl}/audit/export`);
   }
 
   /**
-   * GET /admin/audit/stats
-   * ID: AP-04
-Returns: { totalToday, byAction, byEntity,
+   * GET /audit/stats (Placeholder)
    */
   getAdminAuditStats(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/admin/audit/stats`);
+    return this.http.get(`${this.baseUrl}/audit/stats`);
   }
-
 }

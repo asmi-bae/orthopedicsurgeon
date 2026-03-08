@@ -60,59 +60,29 @@ export const routes: Routes = [
         data: { breadcrumb: 'Hospitals' }
       },
       {
-        path: 'content/hero',
-        loadComponent: () => import('@features/content/hero/hero-management.component').then(m => m.HeroManagementComponent),
-        data: { breadcrumb: 'Hero Section' }
-      },
-      {
-        path: 'content/faq',
-        loadComponent: () => import('@features/content/faq/faq-management.component').then(m => m.FaqManagementComponent),
-        data: { breadcrumb: 'FAQ' }
-      },
-      {
-        path: 'content/partners',
-        loadComponent: () => import('@features/content/partners/partner-management.component').then(m => m.PartnerManagementComponent),
-        data: { breadcrumb: 'Partners' }
-      },
-      {
-        path: 'blog',
-        loadComponent: () => import('@features/blog/blog-management.component').then(m => m.BlogManagementComponent),
-        data: { breadcrumb: 'Blog' }
-      },
-      {
-        path: 'website/about',
-        loadComponent: () => import('@features/website/about/about-editor.component').then(m => m.AboutEditorComponent),
-        data: { breadcrumb: 'Doctor About Me' }
-      },
-      {
-        path: 'website/contact',
-        loadComponent: () => import('@features/website/contact/contact-settings.component').then(m => m.ContactSettingsComponent),
-        data: { breadcrumb: 'Connect Details' }
-      },
-      {
-        path: 'website/gallery',
-        loadComponent: () => import('@features/website/gallery/gallery-management.component').then(m => m.GalleryManagementComponent),
-        data: { breadcrumb: 'Media Gallery' }
-      },
-      {
-        path: 'website/reviews',
-        loadComponent: () => import('@features/website/reviews/review-management.component').then(m => m.ReviewManagementComponent),
-        data: { breadcrumb: 'Reviews Moderation' }
-      },
-      {
-        path: 'website/theme',
-        loadComponent: () => import('@features/website/theme/theme-settings.component').then(m => m.ThemeSettingsComponent),
-        data: { breadcrumb: 'Theme Settings' }
-      },
-      {
-        path: 'website/services',
-        loadComponent: () => import('@features/website/services/service-management.component').then(m => m.ServiceManagementComponent),
-        data: { breadcrumb: 'Website Services' }
-      },
-      {
         path: 'account',
         loadComponent: () => import('@features/account/account.component').then(m => m.AccountComponent),
         data: { breadcrumb: 'Account Settings' }
+      },
+      {
+        path: 'system/api-control',
+        loadComponent: () => import('@features/system/api-control/api-control.component').then(m => m.ApiControlComponent),
+        data: { breadcrumb: 'API Control' }
+      },
+      {
+        path: 'system/audit-logs',
+        loadComponent: () => import('@features/system/audit-logs/audit-logs.component').then(m => m.AuditLogsComponent),
+        data: { breadcrumb: 'Audit Logs' }
+      },
+      {
+        path: 'system/health',
+        loadComponent: () => import('@features/system/health/system-health.component').then(m => m.SystemHealthComponent),
+        data: { breadcrumb: 'System Health' }
+      },
+      {
+        path: 'system/settings',
+        loadComponent: () => import('@features/system/settings/system-settings.component').then(m => m.SystemSettingsComponent),
+        data: { breadcrumb: 'System Settings' }
       }
     ]
   },

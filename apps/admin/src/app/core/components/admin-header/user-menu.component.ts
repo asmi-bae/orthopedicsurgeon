@@ -155,7 +155,7 @@ export class AdminUserMenuComponent {
   getRoleLabel(roles: string[]): string {
     if (!roles || roles.length === 0) return 'OPERATOR';
     const map: Record<string, string> = {
-      SUPER_ADMIN: 'SYSTEM_ARCHITECT',
+      DOCTOR_ADMIN: 'ADMINISTRATOR',
       ADMIN: 'DOCTOR_ADMIN',
       STAFF: 'CLINICAL_STAFF',
       DOCTOR: 'MEDICAL_PRACTITIONER',

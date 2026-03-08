@@ -2,7 +2,7 @@ import { Injectable, inject, signal, OnDestroy } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap, shareReplay, finalize } from 'rxjs';
 import { environment } from '@env/environment';
-import { ApiResponse, PageResponse, Notification as NotificationModel } from '@repo/types';
+import { ApiResponse, PageResponse, Notification as NotificationModel, NotificationListResponse } from '@repo/types';
 import { AuthService } from '@repo/auth';
 
 @Injectable({
@@ -19,7 +19,6 @@ export class NotificationService implements OnDestroy {
   unreadCount = signal<number>(0);
   notifications = signal<NotificationModel[]>([]);
   loading = signal<boolean>(false);
-  private unreadCountRequest$: Observable<ApiResponse<number>> | null = null;
 
   constructor() {
     this.connectSse();
@@ -38,7 +37,7 @@ export class NotificationService implements OnDestroy {
 
     this.eventSource.addEventListener('CONNECT', (event: any) => {
       console.log('SSE Connected:', event.data);
-      this.getUnreadCount().subscribe();
+      this.getNotifications().subscribe();
     });
 
     this.eventSource.addEventListener('NOTIFICATION', (event: any) => {
@@ -76,7 +75,7 @@ export class NotificationService implements OnDestroy {
     }
   }
 
-  getNotifications(page = 0, size = 10): Observable<ApiResponse<PageResponse<NotificationModel>>> {
+  getNotifications(page = 0, size = 10): Observable<ApiResponse<NotificationListResponse>> {
     const params = new HttpParams()
       .set('page', page)
       .set('size', size)
@@ -84,34 +83,15 @@ export class NotificationService implements OnDestroy {
       .set('direction', 'DESC');
 
     this.loading.set(true);
-    return this.http.get<ApiResponse<PageResponse<NotificationModel>>>(this.baseUrl, { params }).pipe(
+    return this.http.get<ApiResponse<NotificationListResponse>>(this.baseUrl, { params }).pipe(
       tap(res => {
         if (res.success) {
-          this.notifications.set(res.data.content);
+          this.notifications.set(res.data.notifications.content);
+          this.unreadCount.set(res.data.unreadCount);
         }
         this.loading.set(false);
       })
     );
-  }
-
-  getUnreadCount(): Observable<ApiResponse<number>> {
-    if (this.unreadCountRequest$) {
-      return this.unreadCountRequest$;
-    }
-
-    this.unreadCountRequest$ = this.http.get<ApiResponse<number>>(`${this.baseUrl}/unread-count`).pipe(
-      tap(res => {
-        if (res.success) {
-          this.unreadCount.set(res.data);
-        }
-      }),
-      finalize(() => {
-        this.unreadCountRequest$ = null;
-      }),
-      shareReplay(1)
-    );
-
-    return this.unreadCountRequest$;
   }
 
   markAsRead(id: string): Observable<ApiResponse<void>> {
@@ -145,8 +125,8 @@ export class NotificationService implements OnDestroy {
       tap(res => {
         if (res.success) {
           this.notifications.update(list => list.filter(n => n.id !== id));
-          // Update unread count if the deleted one was unread
-          this.getUnreadCount().subscribe();
+          // Update unread count and list if the deleted one was unread
+          this.getNotifications().subscribe();
         }
       })
     );

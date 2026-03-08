@@ -13,6 +13,7 @@ public class PatientSummaryResponse {
     private Patient.BloodGroup bloodGroup;
     private Patient.Gender gender;
     private Patient.PatientStatus status;
+    private int age;
 
     public UUID getId() {
         return id;
@@ -76,5 +77,13 @@ public class PatientSummaryResponse {
 
     public void setStatus(Patient.PatientStatus status) {
         this.status = status;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ContentChild, EventEmitter, Input, Output, TemplateRef, booleanAttribute } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, TemplateRef, booleanAttribute } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface ZrdColumnDef<T> {
@@ -15,13 +15,13 @@ export interface ZrdColumnDef<T> {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="relative overflow-x-auto border border-secondary-200 rounded-xl bg-white">
-      <table class="w-full text-sm text-left text-secondary-500">
-        <thead class="text-xs text-secondary-700 uppercase bg-secondary-50/50 border-b border-secondary-200">
+    <div class="w-full overflow-x-auto rounded-xl border border-google-gray-200 dark:border-google-gray-800 bg-white dark:bg-sidebar-dark transition-colors duration-300 shadow-sm">
+      <table class="w-full caption-bottom text-sm border-collapse">
+        <thead class="bg-google-gray-50/50 dark:bg-white/5 border-b border-google-gray-200 dark:border-google-gray-800">
           <tr>
             <th *ngFor="let col of columns" 
                 scope="col" 
-                class="px-6 py-4 font-semibold"
+                class="h-12 px-4 text-left align-middle font-black text-google-gray-500 dark:text-google-gray-400 uppercase tracking-widest text-[10px] whitespace-nowrap"
                 [style.width]="col.width"
                 [class.text-center]="col.align === 'center'"
                 [class.text-right]="col.align === 'right'"
@@ -30,61 +30,72 @@ export interface ZrdColumnDef<T> {
             >
               <div class="flex items-center gap-2" [class.justify-center]="col.align === 'center'" [class.justify-end]="col.align === 'right'">
                 {{ col.header }}
-                <span *ngIf="col.sortable" class="text-secondary-400">
-                  <svg *ngIf="sortKey !== col.key" class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                  </svg>
-                  <svg *ngIf="sortKey === col.key && sortDirection === 'ASC'" class="w-3 h-3 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-                  </svg>
-                  <svg *ngIf="sortKey === col.key && sortDirection === 'DESC'" class="w-3 h-3 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </span>
+                @if (col.sortable) {
+                  <span class="transition-all duration-200" [class.text-google-blue]="sortKey === col.key" [class.opacity-30]="sortKey !== col.key">
+                    <svg *ngIf="sortKey !== col.key" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+                    </svg>
+                    <svg *ngIf="sortKey === col.key && sortDirection === 'ASC'" class="w-3.5 h-3.5 animate-in zoom-in-50 duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7" />
+                    </svg>
+                    <svg *ngIf="sortKey === col.key && sortDirection === 'DESC'" class="w-3.5 h-3.5 animate-in zoom-in-50 duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </span>
+                }
               </div>
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-google-gray-100 dark:divide-google-gray-800">
           <!-- Loading State -->
-          <ng-container *ngIf="loading">
-            <tr *ngFor="let i of [1,2,3,4,5]" class="border-b border-secondary-50 last:border-0">
-              <td *ngFor="let col of columns" class="px-6 py-4">
-                <div class="h-4 bg-secondary-100 rounded animate-pulse w-full"></div>
-              </td>
-            </tr>
-          </ng-container>
+          @if (loading) {
+            @for (i of [1,2,3,4,5]; track i) {
+              <tr class="bg-white dark:bg-transparent">
+                @for (col of columns; track col.key) {
+                  <td class="p-4 align-middle">
+                    <div class="h-3 bg-google-gray-100 dark:bg-google-gray-800 rounded-lg animate-pulse w-full"></div>
+                  </td>
+                }
+              </tr>
+            }
+          }
 
           <!-- Empty State -->
-          <ng-container *ngIf="!loading && data.length === 0">
-            <tr>
-              <td [attr.colspan]="columns.length" class="px-6 py-12 text-center text-secondary-400">
-                <div class="flex flex-col items-center gap-2">
-                  <svg class="w-12 h-12 text-secondary-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414a1 1 0 00-.707-.293H4" />
-                  </svg>
-                  <span class="text-sm">No data found</span>
+          @if (!loading && data.length === 0) {
+            <tr class="bg-white dark:bg-transparent">
+              <td [attr.colspan]="columns.length" class="p-4 align-middle text-center py-32 animate-in fade-in zoom-in duration-500">
+                <div class="flex flex-col items-center gap-3">
+                  <div class="w-12 h-12 rounded-full bg-google-gray-100 dark:bg-google-gray-800 flex items-center justify-center mb-2">
+                    <svg class="w-6 h-6 text-google-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <span class="text-sm font-black text-google-gray-500 dark:text-google-gray-400 tracking-tight uppercase">Registry is currently empty</span>
+                  <p class="text-xs text-google-gray-400 dark:text-google-gray-500 font-medium tracking-tight">No resulting records match your current constraints.</p>
                 </div>
               </td>
             </tr>
-          </ng-container>
+          }
 
           <!-- Data -->
-          <ng-container *ngIf="!loading">
-            <tr *ngFor="let item of data" class="border-b border-secondary-100 last:border-0 hover:bg-secondary-50/50 transition-colors">
-              <td *ngFor="let col of columns" class="px-6 py-4 text-secondary-800"
-                  [class.text-center]="col.align === 'center'"
-                  [class.text-right]="col.align === 'right'"
-              >
-                <ng-container *ngIf="col.cellTemplate; else defaultValue">
-                  <ng-container *ngTemplateOutlet="col.cellTemplate; context: { $implicit: getCellValue(item, col.key), row: item }"></ng-container>
-                </ng-container>
-                <ng-template #defaultValue>
-                  {{ getCellValue(item, col.key) }}
-                </ng-template>
-              </td>
-            </tr>
-          </ng-container>
+          @if (!loading) {
+            @for (item of data; track item) {
+              <tr class="transition-colors hover:bg-google-gray-50/50 dark:hover:bg-white/5 group bg-white dark:bg-transparent border-none">
+                <td *ngFor="let col of columns" class="p-4 align-middle text-google-gray-900 dark:text-google-gray-100 font-medium tracking-tight"
+                    [class.text-center]="col.align === 'center'"
+                    [class.text-right]="col.align === 'right'"
+                >
+                  <ng-container *ngIf="col.cellTemplate; else defaultValue">
+                    <ng-container *ngTemplateOutlet="col.cellTemplate; context: { $implicit: getCellValue(item, col.key), row: item }"></ng-container>
+                  </ng-container>
+                  <ng-template #defaultValue>
+                    <span class="tabular-nums transition-colors group-hover:text-google-blue">{{ getCellValue(item, col.key) || '—' }}</span>
+                  </ng-template>
+                </td>
+              </tr>
+            }
+          }
         </tbody>
       </table>
     </div>
@@ -113,6 +124,13 @@ export class ZrdTableComponent<T> {
   }
 
   getCellValue(item: any, key: any): any {
-    return item[key];
+    if (!key || !item) return '';
+    try {
+      return key.toString().split('.').reduce((acc: any, part: string) => {
+        return acc && acc[part] != null ? acc[part] : null;
+      }, item);
+    } catch (e) {
+      return '';
+    }
   }
 }

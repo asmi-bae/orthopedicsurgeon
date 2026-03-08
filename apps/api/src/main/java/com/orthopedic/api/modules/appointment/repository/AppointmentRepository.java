@@ -19,13 +19,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
 
     @EntityGraph(attributePaths = { "doctor", "patient", "hospital", "service" })
     @Query("SELECT a FROM Appointment a WHERE " +
-            "a.doctor.id = COALESCE(:doctorId, a.doctor.id) AND " +
-            "a.patient.id = COALESCE(:patientId, a.patient.id) AND " +
-            "a.hospital.id = COALESCE(:hospitalId, a.hospital.id) AND " +
-            "a.status = COALESCE(:status, a.status) AND " +
-            "a.type = COALESCE(:type, a.type) AND " +
-            "a.appointmentDate >= COALESCE(:dateFrom, a.appointmentDate) AND " +
-            "a.appointmentDate <= COALESCE(:dateTo, a.appointmentDate)")
+            "a.deleted = false AND " +
+            "(:doctorId IS NULL OR a.doctor.id = :doctorId) AND " +
+            "(:patientId IS NULL OR a.patient.id = :patientId) AND " +
+            "(:hospitalId IS NULL OR a.hospital.id = :hospitalId) AND " +
+            "(:status IS NULL OR a.status = :status) AND " +
+            "(:type IS NULL OR a.type = :type) AND " +
+            "(:dateFrom IS NULL OR a.appointmentDate >= :dateFrom) AND " +
+            "(:dateTo IS NULL OR a.appointmentDate <= :dateTo)")
     Page<Appointment> findAppointments(
             @Param("doctorId") UUID doctorId,
             @Param("patientId") UUID patientId,
@@ -46,21 +47,23 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
                         List<Appointment.AppointmentStatus> statuses);
 
     @Query("SELECT a.status as status, COUNT(a) as count FROM Appointment a WHERE " +
-            "a.doctor.id = COALESCE(:doctorId, a.doctor.id) AND " +
-            "a.patient.id = COALESCE(:patientId, a.patient.id) " +
+            "a.deleted = false AND " +
+            "(:doctorId IS NULL OR a.doctor.id = :doctorId) AND " +
+            "(:patientId IS NULL OR a.patient.id = :patientId) " +
             "GROUP BY a.status")
     List<Object[]> countAppointmentsByStatus(
             @Param("doctorId") UUID doctorId,
             @Param("patientId") UUID patientId);
 
     @Query("SELECT COUNT(a) FROM Appointment a WHERE " +
-            "a.doctor.id = COALESCE(:doctorId, a.doctor.id) AND " +
-            "a.patient.id = COALESCE(:patientId, a.patient.id) AND " +
-            "a.hospital.id = COALESCE(:hospitalId, a.hospital.id) AND " +
-            "a.status = COALESCE(:status, a.status) AND " +
-            "a.type = COALESCE(:type, a.type) AND " +
-            "a.appointmentDate >= COALESCE(:dateFrom, a.appointmentDate) AND " +
-            "a.appointmentDate <= COALESCE(:dateTo, a.appointmentDate)")
+            "a.deleted = false AND " +
+            "(:doctorId IS NULL OR a.doctor.id = :doctorId) AND " +
+            "(:patientId IS NULL OR a.patient.id = :patientId) AND " +
+            "(:hospitalId IS NULL OR a.hospital.id = :hospitalId) AND " +
+            "(:status IS NULL OR a.status = :status) AND " +
+            "(:type IS NULL OR a.type = :type) AND " +
+            "(:dateFrom IS NULL OR a.appointmentDate >= :dateFrom) AND " +
+            "(:dateTo IS NULL OR a.appointmentDate <= :dateTo)")
     long countByFilters(
             @Param("doctorId") UUID doctorId,
             @Param("patientId") UUID patientId,

@@ -9,7 +9,8 @@ import java.util.List;
 @Entity
 @Table(name = "hospitals", indexes = {
         @Index(name = "idx_hospitals_status", columnList = "status"),
-        @Index(name = "idx_hospitals_city", columnList = "city")
+        @Index(name = "idx_hospitals_city", columnList = "city"),
+        @Index(name = "idx_hospitals_deleted", columnList = "deleted")
 })
 public class Hospital extends BaseEntity {
 

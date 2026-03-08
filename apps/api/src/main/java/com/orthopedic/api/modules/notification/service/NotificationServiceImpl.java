@@ -3,6 +3,7 @@ package com.orthopedic.api.modules.notification.service;
 import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.auth.repository.UserRepository;
 import com.orthopedic.api.modules.notification.dto.request.SendNotificationRequest;
+import com.orthopedic.api.modules.notification.dto.response.NotificationListResponse;
 import com.orthopedic.api.modules.notification.dto.response.NotificationResponse;
 import com.orthopedic.api.modules.notification.entity.Notification;
 import com.orthopedic.api.modules.notification.mapper.NotificationMapper;
@@ -86,9 +87,15 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<NotificationResponse> getMyNotifications(User currentUser, Pageable pageable) {
+    public NotificationListResponse getMyNotifications(User currentUser, Pageable pageable) {
         Page<Notification> page = notificationRepository.findAllByRecipientId(currentUser.getId(), pageable);
-        return PageResponse.fromPage(page.map(notificationMapper::toResponse));
+        long unreadCount = notificationRepository.countByRecipientIdAndStatus(currentUser.getId(),
+                Notification.NotificationStatus.UNREAD);
+
+        return NotificationListResponse.builder()
+                .notifications(PageResponse.fromPage(page.map(notificationMapper::toResponse)))
+                .unreadCount(unreadCount)
+                .build();
     }
 
     @Override

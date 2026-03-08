@@ -1,8 +1,11 @@
 import { ZrdButtonComponent, ZrdCardComponent, ZrdSelectComponent, ZrdInputComponent, ZrdBadgeComponent, ZrdStepperComponent, ZrdStep, ZrdDatePickerComponent, ZrdTextareaComponent, ZrdToastComponent } from '@ui/components';
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { TranslatePipe } from '@core/pipes/translate.pipe';
+import { ReplacePipe } from '@core/pipes/replace.pipe';
+import { TranslationService } from '@core/services/translation.service';
 
 
 
@@ -16,7 +19,7 @@ import { Doctor, AppointmentType, ApiResponse } from '@repo/types';
     CommonModule, RouterModule, FormsModule, ReactiveFormsModule,
     ZrdButtonComponent, ZrdCardComponent, ZrdStepperComponent,
     ZrdDatePickerComponent, ZrdSelectComponent, ZrdInputComponent,
-    ZrdBadgeComponent, ZrdTextareaComponent
+    ZrdBadgeComponent, ZrdTextareaComponent, TranslatePipe, ReplacePipe
   ],
   template: `
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -27,15 +30,15 @@ import { Doctor, AppointmentType, ApiResponse } from '@repo/types';
                <i class="pi pi-arrow-left text-secondary-500"></i>
              </button>
              <div>
-               <h1 class="text-xl font-bold text-secondary-900">Book Appointment</h1>
-               <p class="text-xs text-secondary-500">Step {{ currentStep() + 1 }} of 4</p>
+               <h1 class="text-xl font-bold text-secondary-900">{{ 'BOOKING.TITLE' | translate }}</h1>
+               <p class="text-xs text-secondary-500">{{ 'BOOKING.STEP_OF' | translate }} {{ currentStep() + 1 }} {{ 'BOOKING.OF' | translate }} 4</p>
              </div>
           </div>
         </div>
 
         <!-- Stepper -->
         <div class="px-8 pt-4 pb-8 border-b border-secondary-100 bg-secondary-50/30">
-          <zrd-stepper [steps]="bookingSteps" [currentStep]="currentStep()"></zrd-stepper>
+          <zrd-stepper [steps]="bookingSteps$()" [currentStep]="currentStep()"></zrd-stepper>
         </div>
 
         <!-- Step Content -->
@@ -46,13 +49,13 @@ import { Doctor, AppointmentType, ApiResponse } from '@repo/types';
              <div *ngIf="currentStep() === 0" class="space-y-6 animate-in fade-in duration-300">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                    <zrd-select 
-                     label="Appointment Type" 
-                     [options]="appointmentTypes" 
+                     [label]="'BOOKING.FORM.TYPE' | translate" 
+                     [options]="appointmentTypes()" 
                      formControlName="type"
                      [required]="true"
                    ></zrd-select>
                    <zrd-datepicker 
-                     label="Preferred Date" 
+                     [label]="'BOOKING.FORM.DATE' | translate" 
                      formControlName="date"
                      [min]="todayStr"
                      [required]="true"
@@ -60,13 +63,13 @@ import { Doctor, AppointmentType, ApiResponse } from '@repo/types';
                 </div>
                 <div class="p-4 bg-primary-50 rounded-xl border border-primary-100 flex gap-4">
                    <i class="pi pi-info-circle text-primary-600 mt-1"></i>
-                   <p class="text-sm text-primary-700">Available time slots will be fetched based on your selected date. We only show dates where the doctor is active.</p>
+                   <p class="text-sm text-primary-700">{{ 'BOOKING.INFO.SLOTS' | translate }}</p>
                 </div>
              </div>
 
              <!-- Step 2: Select Time Slot -->
              <div *ngIf="currentStep() === 1" class="space-y-6 animate-in fade-in duration-300">
-                <h3 class="text-sm font-bold text-secondary-900 uppercase tracking-widest mb-4">Select an Available Slot</h3>
+                <h3 class="text-sm font-bold text-secondary-900 uppercase tracking-widest mb-4">{{ 'BOOKING.SLOTS_TITLE' | translate }}</h3>
                 <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                    <button 
                      *ngFor="let slot of availableSlots"
@@ -86,14 +89,14 @@ import { Doctor, AppointmentType, ApiResponse } from '@repo/types';
              <div *ngIf="currentStep() === 2" class="space-y-6 animate-in fade-in duration-300">
                 <div class="space-y-4">
                    <zrd-textarea 
-                     label="Reason for Visit" 
-                     placeholder="Briefly describe your symptoms or concern..."
+                     [label]="'BOOKING.FORM.REASON' | translate" 
+                     [placeholder]="'BOOKING.FORM.REASON_PLACEHOLDER' | translate"
                      formControlName="reason"
                      [rows]="4"
                      [required]="true"
                    ></zrd-textarea>
                    <zrd-input 
-                     label="Notes for Doctor (Optional)" 
+                     [label]="'BOOKING.FORM.NOTES' | translate" 
                      formControlName="notes"
                    ></zrd-input>
                 </div>
@@ -103,19 +106,19 @@ import { Doctor, AppointmentType, ApiResponse } from '@repo/types';
              <div *ngIf="currentStep() === 3" class="space-y-6 animate-in fade-in duration-300">
                 <div class="bg-secondary-50 rounded-2xl p-6 border border-secondary-100 space-y-4">
                    <div class="flex justify-between items-center pb-4 border-b border-secondary-200">
-                      <span class="text-secondary-500 text-sm">Consultation with</span>
+                      <span class="text-secondary-500 text-sm">{{ 'BOOKING.CONFIRM.CONSULTATION' | translate }}</span>
                       <span class="font-bold text-secondary-900">Dr. {{ doctor()?.user?.firstName }} {{ doctor()?.user?.lastName }}</span>
                    </div>
                    <div class="flex justify-between items-center pb-4 border-b border-secondary-200">
-                      <span class="text-secondary-500 text-sm">Type</span>
+                      <span class="text-secondary-500 text-sm">{{ 'BOOKING.CONFIRM.TYPE' | translate }}</span>
                       <zrd-badge variant="info">{{ bookingForm.get('type')?.value }}</zrd-badge>
                    </div>
                    <div class="flex justify-between items-center pb-4 border-b border-secondary-200">
-                      <span class="text-secondary-500 text-sm">Date & Time</span>
+                      <span class="text-secondary-500 text-sm">{{ 'BOOKING.CONFIRM.DATE_TIME' | translate }}</span>
                       <span class="font-bold text-secondary-900">{{ bookingForm.get('date')?.value }} at {{ bookingForm.get('timeSlot')?.value }}</span>
                    </div>
                    <div class="flex justify-between items-center">
-                      <span class="text-secondary-500 text-sm">Total Fee</span>
+                      <span class="text-secondary-500 text-sm">{{ 'BOOKING.CONFIRM.TOTAL_FEE' | translate }}</span>
                       <span class="text-xl font-black text-primary-600">$\{{ doctor()?.consultationFee }}</span>
                    </div>
                 </div>
@@ -125,17 +128,17 @@ import { Doctor, AppointmentType, ApiResponse } from '@repo/types';
         </div>
 
         <div footer class="flex justify-between items-center p-8 bg-secondary-50/50">
-           <button zrdButton variant="ghost" (click)="prevStep()" [disabled]="currentStep() === 0">Previous</button>
+           <button zrdButton variant="ghost" (click)="prevStep()" [disabled]="currentStep() === 0">{{ 'BOOKING.BUTTONS.PREVIOUS' | translate }}</button>
            
            <div class="flex gap-3">
-              <button zrdButton variant="outline" (click)="cancel()">Cancel</button>
+              <button zrdButton variant="outline" (click)="cancel()">{{ 'BOOKING.BUTTONS.CANCEL' | translate }}</button>
               <button 
                 *ngIf="currentStep() < 3"
                 zrdButton 
                 [disabled]="!isStepValid()"
                 (click)="nextStep()"
               >
-                Continue
+                {{ 'BOOKING.BUTTONS.CONTINUE' | translate }}
               </button>
               <button 
                 *ngIf="currentStep() === 3"
@@ -144,7 +147,7 @@ import { Doctor, AppointmentType, ApiResponse } from '@repo/types';
                 [loading]="submitting()"
                 (click)="submit()"
               >
-                Confirm & Book
+                {{ 'BOOKING.BUTTONS.CONFIRM' | translate }}
               </button>
            </div>
         </div>
@@ -157,18 +160,19 @@ import { Doctor, AppointmentType, ApiResponse } from '@repo/types';
           <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
              <i class="pi pi-check text-4xl"></i>
           </div>
-          <h2 class="text-2xl font-bold text-secondary-900 mb-2">Booking Confirmed!</h2>
-          <p class="text-secondary-500 mb-8">Your appointment with Dr. {{ doctor()?.user?.firstName }} has been successfully scheduled. Check your portal for details.</p>
-          <button zrdButton class="w-full" (click)="finish()">Go to Portal</button>
+          <h2 class="text-2xl font-bold text-secondary-900 mb-2">{{ 'BOOKING.SUCCESS.TITLE' | translate }}</h2>
+          <p class="text-secondary-500 mb-8">{{ 'BOOKING.SUCCESS.TEXT' | translate | replace:'{{name}}':(doctor()?.user?.firstName || 'Doctor') }}</p>
+          <button zrdButton class="w-full" (click)="finish()">{{ 'BOOKING.SUCCESS.PORTAL' | translate }}</button>
        </div>
     </div>
   `
 })
-export class BookingComponent {
+export class BookingComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private fb = inject(FormBuilder);
   private api = inject(PublicApiService);
+  private translation = inject(TranslationService);
 
   doctor = signal<Doctor | null>(null);
   currentStep = signal(0);
@@ -185,19 +189,14 @@ export class BookingComponent {
     notes: ['']
   });
 
-  bookingSteps: ZrdStep[] = [
-    { label: 'Schedule', description: 'Type & Date' },
-    { label: 'Time', description: 'Select Slot' },
-    { label: 'Reason', description: 'Details' },
-    { label: 'Finish', description: 'Confirmation' }
-  ];
+  bookingSteps: ZrdStep[] = [];
 
-  appointmentTypes = [
-    { label: 'First Consultation', value: 'FIRST_CONSULTATION' },
-    { label: 'Follow Up', value: 'FOLLOW_UP' },
-    { label: 'Surgery Consultation', value: 'SURGERY_CONSULTATION' },
-    { label: 'Emergency', value: 'EMERGENCY' }
-  ];
+  appointmentTypes = computed(() => [
+    { label: this.translation.translate('BOOKING.TYPES.FIRST_CONSULTATION')(), value: 'FIRST_CONSULTATION' },
+    { label: this.translation.translate('BOOKING.TYPES.FOLLOW_UP')(), value: 'FOLLOW_UP' },
+    { label: this.translation.translate('BOOKING.TYPES.SURGERY_CONSULTATION')(), value: 'SURGERY_CONSULTATION' },
+    { label: this.translation.translate('BOOKING.TYPES.EMERGENCY')(), value: 'EMERGENCY' }
+  ]);
 
   availableSlots = [
     '09:00 AM', '09:30 AM', '10:00 AM', '10:30 AM', 
@@ -210,7 +209,18 @@ export class BookingComponent {
     if (id) {
       this.api.getDoctorById(id).subscribe((res: ApiResponse<Doctor>) => this.doctor.set(res.data));
     }
+
+    // For bookingSteps, we can use a computed but ZrdStepperComponent might not react to internal array changes easily
+    // OR we can just use a normal effect or computed and pass it down.
+    // Let's use computed for bookingSteps as well to be safe
   }
+
+  bookingSteps$ = computed<ZrdStep[]>(() => [
+    { label: this.translation.translate('BOOKING.SCHEDULE.TITLE')(), description: this.translation.translate('BOOKING.SCHEDULE.DESC')() },
+    { label: this.translation.translate('BOOKING.TIME.TITLE')(), description: this.translation.translate('BOOKING.TIME.DESC')() },
+    { label: this.translation.translate('BOOKING.REASON.TITLE')(), description: this.translation.translate('BOOKING.REASON.DESC')() },
+    { label: this.translation.translate('BOOKING.FINISH.TITLE')(), description: this.translation.translate('BOOKING.FINISH.DESC')() }
+  ]);
 
   isStepValid(): boolean {
     const s = this.currentStep();

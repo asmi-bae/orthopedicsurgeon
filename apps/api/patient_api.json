@@ -21,6 +21,16 @@
       "path": "/portal/health/vitals/latest",
       "method": "GET",
       "description": "View Personal Health Records"
+    },
+    {
+      "path": "/media/upload",
+      "method": "POST",
+      "description": "Upload Personal Profile Image/Document"
+    },
+    {
+      "path": "/media/delete",
+      "method": "DELETE",
+      "description": "Delete Personal Media"
     }
   ]
 }

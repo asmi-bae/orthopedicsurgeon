@@ -19,7 +19,7 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
     AdminBreadcrumbComponent
   ],
   template: `
-    <header class="h-16 flex items-center justify-between px-6 shrink-0 z-20 bg-google-gray-100 dark:bg-sidebar-dark sticky top-0 border-b border-google-gray-200 dark:border-white/5">
+    <header class="h-16 flex items-center justify-between px-6 shrink-0 z-20 bg-google-gray-50 dark:bg-sidebar-dark sticky top-0 border-0 border-google-gray-200 dark:border-white/5">
       
       <!-- Left: Logo & Breadcrumbs (Hidden on Mobile when Search is Expanded) -->
       <div 

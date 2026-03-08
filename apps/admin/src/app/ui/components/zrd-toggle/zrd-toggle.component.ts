@@ -40,7 +40,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZrdToggleComponent implements ControlValueAccessor {
-  @Input() id = `zrd-toggle-${Math.random().toString(36).substr(2, 9)}`;
+  @Input() id = `zrd-toggle-${Math.random().toString(36).substring(2, 11)}`;
   @Input() label?: string;
 
   value = false;

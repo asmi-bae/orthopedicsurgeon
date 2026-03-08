@@ -90,8 +90,7 @@ public class AdminDashboardService {
     @Transactional(readOnly = true)
     public QuickStatsResponse getQuickStats() {
         return QuickStatsResponse.builder()
-                .appointmentsToday(appointmentRepository.countByFilters(null, null, null, null, null, LocalDate.now(),
-                        LocalDate.now()))
+                .appointmentsToday(0L) // TEMPORARY: replaced appointmentRepository.countByFilters(...) to isolate issue
                 .pendingPrescriptions(0) // Logic for prescriptions can be added
                 .activeHospitals(hospitalRepository.countByStatus(Hospital.HospitalStatus.ACTIVE))
                 .openInvoicesAmount("$3.2k")

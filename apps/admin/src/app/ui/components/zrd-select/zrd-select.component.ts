@@ -75,7 +75,7 @@ export interface ZrdSelectItem {
 export class ZrdSelectComponent implements ControlValueAccessor {
   private elementRef = inject(ElementRef);
   
-  @Input() id = `zrd-select-${Math.random().toString(36).substr(2, 9)}`;
+  @Input() id = `zrd-select-${Math.random().toString(36).substring(2, 11)}`;
   @Input() label?: string;
   @Input() placeholder = 'Select option';
   @Input() options: ZrdSelectItem[] = [];

@@ -26,6 +26,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
 
         @EntityGraph(attributePaths = { "user", "hospital" })
         @Query("SELECT d FROM Doctor d JOIN d.hospital h WHERE " +
+                        "d.deleted = false AND " +
                         "(:specialization IS NULL OR d.specialization = :specialization) AND " +
                         "(:hospitalId IS NULL OR h.id = :hospitalId) AND " +
                         "(:city IS NULL OR h.city = :city) AND " +
@@ -38,11 +39,12 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
                         @Param("availableForOnline") Boolean availableForOnline,
                         Pageable pageable);
 
-        @Query("SELECT COUNT(a) FROM Appointment a WHERE a.doctor.id = :doctorId AND a.status = 'COMPLETED'")
+        @Query("SELECT COUNT(a) FROM Appointment a WHERE a.doctor.id = :doctorId AND a.status = 'COMPLETED' AND a.deleted = false")
         int countTotalAppointments(UUID doctorId);
 
         @EntityGraph(attributePaths = { "user", "hospital" })
         @Query("SELECT d FROM Doctor d JOIN d.user u WHERE " +
+                        "d.deleted = false AND " +
                         "(LOWER(u.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
                         "LOWER(u.lastName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
                         "LOWER(d.specialization) LIKE LOWER(CONCAT('%', :query, '%'))) AND " +

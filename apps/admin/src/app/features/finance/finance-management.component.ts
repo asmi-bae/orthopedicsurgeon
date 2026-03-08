@@ -6,6 +6,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { PAYMENTSService } from '../../core/services/api/payments.service';
 import { REPORTSService } from '../../core/services/api/reports.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-finance-management',
@@ -195,21 +196,23 @@ export class FinanceManagementComponent implements OnInit {
 
   loadData() {
     this.loading.set(true);
-    // Load ledger
-    this.paymentService.getAdminPayments().subscribe({
+    
+    forkJoin({
+      payments: this.paymentService.getAdminPayments(),
+      financials: this.reportService.getAdminReportsFinancial()
+    }).subscribe({
       next: (res: any) => {
-        const data = res?.data?.content || res?.data || [];
+        // Handle payments
+        const paymentRes = res.payments;
+        const data = paymentRes?.data?.content || paymentRes?.data || [];
         this.transactions.set(Array.isArray(data) ? data : []);
+        
+        // Handle financial summary
+        this.stats.set(res.financials?.data);
+        
         this.loading.set(false);
       },
       error: () => this.loading.set(false)
-    });
-
-    // Load financial summary
-    this.reportService.getAdminReportsFinancial().subscribe({
-      next: (res: any) => {
-        this.stats.set(res?.data);
-      }
     });
   }
 

@@ -19,7 +19,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     { provide: AUTH_API_URL, useValue: `${environment.apiUrl}/admin/auth` },
     provideTranslateService({
-      defaultLanguage: 'en',
+      fallbackLang: 'en',
     }),
     provideTranslateHttpLoader({
       prefix: './assets/i18n/',

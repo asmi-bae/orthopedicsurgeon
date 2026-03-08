@@ -1,6 +1,7 @@
 package com.orthopedic.api.auth.controller;
 
 import com.orthopedic.api.auth.dto.request.UserFilterRequest;
+import com.orthopedic.api.auth.dto.request.UserUpdateDto;
 import com.orthopedic.api.auth.dto.response.UserDetailResponse;
 import com.orthopedic.api.auth.dto.response.UserSummaryResponse;
 import com.orthopedic.api.auth.service.AdminUserService;
@@ -10,6 +11,7 @@ import com.orthopedic.api.shared.dto.PageResponse;
 import com.orthopedic.api.shared.util.PageableUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -56,9 +58,18 @@ public class AdminUserController extends BaseController {
         return ok(adminUserService.getUserById(id));
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "Update user account (Super Admin)")
+    @PreAuthorize("hasRole('SUPER_ADMIN') and @ownershipValidator.isNotSelf(authentication, #id)")
+    public ResponseEntity<ApiResponse<UserDetailResponse>> updateUser(
+            @PathVariable UUID id,
+            @Valid @RequestBody UserUpdateDto updateDto) {
+        return ok("User updated successfully", adminUserService.updateUser(id, updateDto));
+    }
+
     @PostMapping("/{id}/lock")
     @Operation(summary = "Lock a user account")
-    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.protectSuperAdmin(authentication, #id)")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.protectSuperAdmin(authentication, #id) and @ownershipValidator.isNotSelf(authentication, #id)")
     public ResponseEntity<ApiResponse<Void>> lockUser(@PathVariable UUID id, @RequestBody Map<String, Integer> body) {
         int minutes = body.getOrDefault("minutes", 60);
         adminUserService.lockUser(id, minutes);
@@ -67,7 +78,7 @@ public class AdminUserController extends BaseController {
 
     @PostMapping("/{id}/unlock")
     @Operation(summary = "Unlock a user account")
-    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.protectSuperAdmin(authentication, #id)")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.protectSuperAdmin(authentication, #id) and @ownershipValidator.isNotSelf(authentication, #id)")
     public ResponseEntity<ApiResponse<Void>> unlockUser(@PathVariable UUID id) {
         adminUserService.unlockUser(id);
         return ok("User unlocked successfully", null);
@@ -75,7 +86,7 @@ public class AdminUserController extends BaseController {
 
     @PostMapping("/{id}/reset-password")
     @Operation(summary = "Reset user password")
-    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.protectSuperAdmin(authentication, #id)")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.protectSuperAdmin(authentication, #id) and @ownershipValidator.isNotSelf(authentication, #id)")
     public ResponseEntity<ApiResponse<Void>> resetPassword(@PathVariable UUID id,
             @RequestBody Map<String, String> body) {
         String newPassword = body.get("newPassword");
@@ -88,7 +99,7 @@ public class AdminUserController extends BaseController {
 
     @PatchMapping("/{id}/status")
     @Operation(summary = "Update user enabled/disabled status")
-    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.protectSuperAdmin(authentication, #id)")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.protectSuperAdmin(authentication, #id) and @ownershipValidator.isNotSelf(authentication, #id)")
     public ResponseEntity<ApiResponse<Void>> updateStatus(@PathVariable UUID id,
             @RequestBody Map<String, Boolean> body) {
         Boolean enabled = body.get("enabled");
@@ -100,8 +111,8 @@ public class AdminUserController extends BaseController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a user account")
-    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN') and @ownershipValidator.protectSuperAdmin(authentication, #id)")
+    @Operation(summary = "Delete a user account (Super Admin)")
+    @PreAuthorize("hasRole('SUPER_ADMIN') and @ownershipValidator.isNotSelf(authentication, #id)")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable UUID id) {
         adminUserService.deleteUser(id);
         return ok("User deleted successfully", null);

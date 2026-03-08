@@ -1,6 +1,7 @@
 package com.orthopedic.api.auth.service;
 
 import com.orthopedic.api.auth.dto.request.UserFilterRequest;
+import com.orthopedic.api.auth.dto.request.UserUpdateDto;
 import com.orthopedic.api.auth.dto.response.RoleSummaryResponse;
 import com.orthopedic.api.auth.dto.response.UserDetailResponse;
 import com.orthopedic.api.auth.dto.response.UserSummaryResponse;
@@ -16,6 +17,8 @@ public interface AdminUserService {
     List<RoleSummaryResponse> getRolesSummary();
 
     UserDetailResponse getUserById(UUID id);
+
+    UserDetailResponse updateUser(UUID id, UserUpdateDto updateDto);
 
     void lockUser(UUID id, int minutes);
 

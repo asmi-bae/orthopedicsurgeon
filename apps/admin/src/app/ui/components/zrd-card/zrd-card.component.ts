@@ -43,7 +43,7 @@ export class ZrdCardComponent {
   @Input({ transform: booleanAttribute }) hasFooter = false;
 
   get classes(): string {
-    const base = 'block bg-white dark:bg-[#1f1f1f] rounded-md overflow-hidden';
+    const base = 'block bg-white dark:bg-sidebar-dark rounded-md overflow-hidden';
     
     const variants: Record<ZrdCardVariant, string> = {
       default: 'border border-google-gray-200 dark:border-white/10 shadow-sm',

@@ -52,7 +52,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/f
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZrdInputComponent implements ControlValueAccessor {
-  @Input() id = `zrd-input-${Math.random().toString(36).substr(2, 9)}`;
+  @Input() id = `zrd-input-${Math.random().toString(36).substring(2, 11)}`;
   @Input() label?: string;
   @Input() placeholder = '';
   @Input() type: 'text' | 'email' | 'password' | 'number' | 'tel' | 'date' | 'time' | 'datetime-local' = 'text';

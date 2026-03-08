@@ -38,6 +38,7 @@ import { Notification as NotificationModel, NotificationType, NotificationLevel 
         [matBadgeHidden]="notificationService.unreadCount() === 0"
         matBadgeColor="warn"
         matBadgeSize="small"
+        aria-hidden="false"
       >notifications_none</mat-icon>
     </button>
 
@@ -140,7 +141,6 @@ export class NotificationMenuComponent implements OnInit {
   notificationService = inject(NotificationService);
 
   ngOnInit() {
-    this.notificationService.getUnreadCount().subscribe();
     this.notificationService.getNotifications().subscribe();
   }
 

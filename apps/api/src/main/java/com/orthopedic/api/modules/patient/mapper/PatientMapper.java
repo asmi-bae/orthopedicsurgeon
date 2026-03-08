@@ -28,6 +28,7 @@ public interface PatientMapper {
     @Mapping(target = "fullName", expression = "java(patient.getUser().getFirstName() + \" \" + patient.getUser().getLastName())")
     @Mapping(target = "email", source = "user.email")
     @Mapping(target = "phone", source = "user.phone")
+    @Mapping(target = "age", expression = "java(calculateAge(patient.getDateOfBirth()))")
     PatientSummaryResponse toSummaryResponse(Patient patient);
 
     PatientAllergy toAllergyEntity(CreatePatientRequest.AllergyRequest request);

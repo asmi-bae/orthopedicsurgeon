@@ -26,7 +26,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/admin/patients")
 @Tag(name = "Admin Patient Management", description = "Endpoints for administrators to manage patient records and medical history")
-@PreAuthorize("hasRole('SUPER_ADMIN')")
 public class AdminPatientController extends BaseController {
 
     private final PatientService patientService;
@@ -37,6 +36,7 @@ public class AdminPatientController extends BaseController {
 
     @GetMapping
     @Operation(summary = "List all patients for administration")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'STAFF', 'ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<PageResponse<PatientSummaryResponse>>> getAll(
             PatientFilterRequest filters,
             @RequestParam(defaultValue = "0") int page,
@@ -52,6 +52,7 @@ public class AdminPatientController extends BaseController {
 
     @PostMapping
     @Operation(summary = "Create a new patient record")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<PatientResponse>> create(@Valid @RequestBody CreatePatientRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.success("Patient record created successfully",
@@ -60,18 +61,21 @@ public class AdminPatientController extends BaseController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get full patient profile")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'STAFF', 'ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<PatientResponse>> getById(@PathVariable UUID id) {
         return ok(patientService.getPatientById(id));
     }
 
     @GetMapping("/{id}/history")
     @Operation(summary = "Get complete medical history of a patient")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'DOCTOR', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<PatientMedicalHistoryResponse>> getHistory(@PathVariable UUID id) {
         return ok(patientService.getMedicalHistory(id));
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update patient record (Admin)")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<PatientResponse>> update(@PathVariable UUID id,
             @Valid @RequestBody AdminUpdatePatientRequest request) {
         return ok(patientService.updatePatient(id, request));
@@ -79,6 +83,7 @@ public class AdminPatientController extends BaseController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Deactivate patient record (Soft Delete)")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> delete(@PathVariable UUID id) {
         patientService.deletePatient(id);
         return ok("Patient record deactivated successfully", null);

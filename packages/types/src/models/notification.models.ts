@@ -40,3 +40,8 @@ export interface Notification {
   severity: NotificationLevel;
   createdAt: string;
 }
+
+export interface NotificationListResponse {
+  notifications: import('./api.models').PageResponse<Notification>;
+  unreadCount: number;
+}

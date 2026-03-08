@@ -44,7 +44,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ZrdCheckboxComponent implements ControlValueAccessor {
-  @Input() id = `zrd-checkbox-${Math.random().toString(36).substr(2, 9)}`;
+  @Input() id = `zrd-checkbox-${Math.random().toString(36).substring(2, 11)}`;
   @Input() label?: string;
   @Input({ transform: booleanAttribute }) required = false;
 

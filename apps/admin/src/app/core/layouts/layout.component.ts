@@ -55,17 +55,42 @@ export class AdminLayoutComponent implements OnInit {
   collapsed = signal(typeof window !== 'undefined' ? window.innerWidth < 1024 : false);
 
   navItems: ZrdNavItem[] = [
+    { label: 'Main', isHeader: true },
     { label: 'Dashboard', icon: 'mat-icon:home', route: '/dashboard' },
     { label: 'Appointments', icon: 'mat-icon:calendar_today', route: '/appointments' },
     { label: 'Doctors', icon: 'mat-icon:medical_services', route: '/doctors' },
     { label: 'Patients', icon: 'mat-icon:people', route: '/patients' },
-    { label: 'Prescriptions', icon: 'mat-icon:description', route: '/records/prescriptions' },
-    { label: 'Reports', icon: 'mat-icon:assessment', route: '/records/reports' },
-    { label: 'Hospitals', icon: 'mat-icon:local_hospital', route: '/hospitals' },
-    { label: 'Finance', icon: 'mat-icon:payments', route: '/finance' },
-    { label: 'Content Management', icon: 'mat-icon:article', route: '/content/hero' },
-    { label: 'Blog', icon: 'mat-icon:rss_feed', route: '/blog' },
-    { label: 'Users', icon: 'mat-icon:admin_panel_settings', route: '/users' }
+    
+    { label: 'Operations', isHeader: true },
+    { 
+      label: 'Medical Records', 
+      icon: 'mat-icon:description',
+      children: [
+        { label: 'Prescriptions', route: '/records/prescriptions', icon: 'mat-icon:history_edu' },
+        { label: 'Lab Reports', route: '/records/reports', icon: 'mat-icon:assessment' }
+      ]
+    },
+    { 
+      label: 'Finance & Facilities', 
+      icon: 'mat-icon:account_balance',
+      children: [
+        { label: 'Finance', route: '/finance', icon: 'mat-icon:payments' },
+        { label: 'Hospitals', route: '/hospitals', icon: 'mat-icon:local_hospital' }
+      ]
+    },
+
+    { label: 'Administration', isHeader: true },
+    { 
+      label: 'System Admin', 
+      icon: 'mat-icon:settings_suggest',
+      children: [
+        { label: 'API Control', route: '/system/api-control', icon: 'mat-icon:settings_input_component' },
+        { label: 'Audit Logs', route: '/system/audit-logs', icon: 'mat-icon:history' },
+        { label: 'System Health', route: '/system/health', icon: 'mat-icon:health_and_safety' },
+        { label: 'User Management', route: '/users', icon: 'mat-icon:admin_panel_settings' },
+        { label: 'Global Settings', route: '/system/settings', icon: 'mat-icon:settings' }
+      ]
+    }
   ];
 
   ngOnInit() { 
