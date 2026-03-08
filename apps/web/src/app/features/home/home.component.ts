@@ -55,11 +55,11 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
                
                <div class="flex flex-wrap gap-5">
                  <a mat-flat-button color="primary" href="https://www.facebook.com/Ab.rahman49" target="_blank"
-                          class="h-16 px-10 rounded-2xl text-lg font-bold uppercase shadow-2xl shadow-primary/30 hover:scale-105 transition-transform">
+                          class="h-16 px-10 rounded-2xl text-lg font-bold uppercase shadow-2xl shadow-primary/30">
                    {{ 'HOME.HERO.CTA.BOOK' | translate }}
                  </a>
                  <a mat-stroked-button color="primary" href="https://www.facebook.com/orthopedicsurgeonrahmanbd" target="_blank"
-                          class="h-16 px-10 rounded-2xl text-lg font-bold uppercase hover:bg-primary/5 transition-all border-2">
+                          class="h-16 px-10 rounded-2xl text-lg font-bold uppercase border-2">
                    {{ 'HOME.HERO.CTA.CONTACT' | translate }}
                  </a>
                </div>
@@ -67,12 +67,10 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
                <!-- Specializations List -->
                <div class="mt-12 grid grid-cols-2 gap-4">
                   @for (spec of 'HOME.HERO.DOCTOR.SPECIALIZATIONS' | translate; track spec) {
-                    <div class="flex items-center gap-3">
-                      <div class="w-6 h-6 rounded-full bg-medical-teal/10 flex items-center justify-center">
-                        <mat-icon class="text-medical-teal !text-sm">check</mat-icon>
-                      </div>
-                      <span class="text-xs font-bold text-secondary-600 uppercase tracking-tight">{{spec}}</span>
-                    </div>
+                <div class="flex items-center gap-3">
+                   <mat-icon class="text-xl text-blue-800">check_circle</mat-icon>
+                   <span class="text-xs font-bold text-secondary-600 uppercase tracking-tight">{{spec}}</span>
+                </div>
                   }
                </div>
             </div>
@@ -127,10 +125,13 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
             <mat-icon class="text-primary">expand_more</mat-icon>
           </div>
         </div>
+        
+        <!-- Bottom Soft Transition -->
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-20"></div>
       </section>
 
       <!-- Stats Section -->
-      <section class="bg-white py-32 relative overflow-hidden">
+      <section class="bg-white py-32 relative overflow-hidden -mx-6 sm:-mx-10 lg:-mx-12">
          <div class="app-container relative z-10">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
                @for (stat of stats; track stat.label) {
@@ -145,11 +146,16 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
                }
             </div>
          </div>
+         <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -z-10"></div>
       </section>
 
       <!-- Services Section -->
-      <section class="py-32 bg-gray-50">
-         <div class="app-container">
+      <section class="py-32 bg-gray-50 relative overflow-hidden -mx-6 sm:-mx-10 lg:-mx-12">
+         <!-- Top/Bottom Soft Transitions -->
+         <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-10"></div>
+         <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-10"></div>
+         
+         <div class="app-container relative z-20">
           <div class="text-center mb-20 text-balance">
             <h2 class="text-xs font-black text-primary uppercase tracking-[0.4em] mb-4">{{ 'HOME.SERVICES.SUBTITLE' | translate }}</h2>
             <h3 class="text-5xl font-black text-secondary-900 tracking-tighter uppercase">{{ 'HOME.SERVICES.TITLE' | translate }}</h3>
@@ -168,10 +174,11 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
             }
           </div>
         </div>
+        <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-medical-teal/5 rounded-full blur-[120px] -z-10"></div>
       </section>
 
       <!-- Partner Hospitals Section -->
-      <section class="py-32 bg-white relative overflow-hidden">
+      <section class="py-32 bg-white relative overflow-hidden -mx-6 sm:-mx-10 lg:-mx-12">
         <div class="app-container relative z-10">
           <div class="text-center mb-20">
             <h2 class="text-xs font-black text-primary uppercase tracking-[0.4em] mb-4">{{ 'HOME.PARTNERS.SUBTITLE' | translate }}</h2>
@@ -204,10 +211,14 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
              </a>
           </div>
         </div>
+        <div class="absolute top-1/2 left-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10"></div>
       </section>
 
       <!-- Virtual Tour Banner -->
-      <section class="py-32 bg-secondary-900 relative overflow-hidden group text-center">
+      <section class="py-32 bg-secondary-900 relative overflow-hidden group text-center -mx-6 sm:-mx-10 lg:-mx-12">
+          <!-- Top/Bottom Soft Transitions -->
+          <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-10 opacity-10"></div>
+          <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-10 opacity-10"></div>
           <div class="app-container flex flex-col items-center relative z-10">
             <h2 class="text-xs font-black text-primary uppercase tracking-[0.5em] mb-6">{{ 'HOME.VIRTUAL_TOUR.SUBTITLE' | translate }}</h2>
             <h3 class="text-5xl font-black text-white tracking-tighter uppercase mb-10">{{ 'HOME.VIRTUAL_TOUR.TITLE' | translate }}</h3>
@@ -220,8 +231,8 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
       </section>
 
       <!-- Latest Intelligence (Blog) -->
-      <section class="py-32 bg-white">
-          <div class="app-container">
+      <section class="py-32 bg-white relative overflow-hidden -mx-6 sm:-mx-10 lg:-mx-12">
+          <div class="app-container relative z-10">
           <div class="flex justify-between items-end mb-20 text-balance">
             <div>
               <h2 class="text-xs font-black text-primary uppercase tracking-[0.4em] mb-4">{{ 'HOME.BLOG.SUBTITLE' | translate }}</h2>
@@ -248,8 +259,12 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
       </section>
 
       <!-- Testimonials Section -->
-      <section class="py-32 bg-gray-50 relative overflow-hidden">
-        <div class="app-container relative z-10">
+      <section class="py-32 bg-gray-50 relative overflow-hidden -mx-6 sm:-mx-10 lg:-mx-12">
+        <!-- Top/Bottom Soft Transitions -->
+        <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-10"></div>
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-10"></div>
+        
+        <div class="app-container relative z-20">
           <div class="text-center mb-20">
             <h2 class="text-xs font-black text-primary uppercase tracking-[0.4em] mb-4">{{ 'HOME.TESTIMONIALS.SUBTITLE' | translate }}</h2>
             <h3 class="text-5xl font-black text-secondary-900 tracking-tighter uppercase">{{ 'HOME.TESTIMONIALS.TITLE' | translate }}</h3>
@@ -278,8 +293,8 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
       </section>
 
       <!-- FAQ Section -->
-      <section class="py-32 bg-white">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section class="py-32 bg-white relative overflow-hidden -mx-6 sm:-mx-10 lg:-mx-12">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div class="text-center mb-20">
             <h2 class="text-xs font-black text-primary uppercase tracking-[0.4em] mb-4">{{ 'HOME.FAQ.SUBTITLE' | translate }}</h2>
             <h3 class="text-5xl font-black text-secondary-900 tracking-tighter uppercase">{{ 'HOME.FAQ.TITLE' | translate }}</h3>
@@ -303,8 +318,12 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
       </section>
 
       <!-- Newsletter Section -->
-      <section class="py-32 bg-primary">
-         <div class="app-container text-center text-white">
+      <section class="py-32 bg-primary relative overflow-hidden -mx-6 sm:-mx-10 lg:-mx-12">
+         <!-- Top/Bottom Soft Transitions -->
+         <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-10 opacity-20"></div>
+         <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-10 opacity-20"></div>
+         
+         <div class="app-container text-center text-white relative z-20">
           <div class="max-w-2xl mx-auto">
             <h2 class="text-xs font-black uppercase tracking-[0.4em] mb-4 text-white/60">{{ 'HOME.NEWSLETTER.SUBTITLE' | translate }}</h2>
             <h3 class="text-5xl font-black tracking-tighter uppercase mb-10">{{ 'HOME.NEWSLETTER.TITLE' | translate }}</h3>

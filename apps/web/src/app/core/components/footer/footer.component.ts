@@ -9,8 +9,11 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
   standalone: true,
   imports: [CommonModule, LogoComponent, MatButtonModule, TranslatePipe],
   template: `
-    <footer class="bg-secondary-900 text-white py-24 font-sans border-t border-white/5">
-      <div class="app-container px-10">
+    <footer class="bg-secondary-900 text-white py-24 font-sans border-t border-white/5 relative overflow-hidden">
+      <!-- Top Soft Transition -->
+      <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-10 opacity-10"></div>
+      
+      <div class="app-container px-10 relative z-20">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
           <div class="col-span-1 md:col-span-1">
             <div class="mb-8">
