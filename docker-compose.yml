@@ -68,13 +68,25 @@ services:
     networks:
       - ortho-network
 
+  doctor:
+    build:
+      context: .
+      dockerfile: apps/admin/Dockerfile
+    container_name: ortho-doctor
+    ports:
+      - "4201:80"
+    depends_on:
+      - api
+    networks:
+      - ortho-network
+
   web:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
     container_name: ortho-public
     ports:
-      - "4201:80"
+      - "4202:80"
     depends_on:
       - api
     networks:

@@ -37,10 +37,13 @@ security:
         web-origins:
             - https://orthopedicsurgeon.com
             - http://localhost:4200
+            - http://localhost:4201
+            - http://localhost:4202
         admin-origins:
             - https://admin.orthopedicsurgeon.com
-            - http://localhost:4201
             - http://localhost:4200
+            - http://localhost:4201
+            - http://localhost:4202
 
     encryption:
         key: ${FIELD_ENCRYPTION_KEY:REPLACE_ME_PRODUCTION_SECRET_KEY_32B}

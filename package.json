@@ -7,6 +7,7 @@
     "dev": "turbo dev",
     "dev:api": "turbo dev --filter=api",
     "dev:admin": "turbo dev --filter=admin",
+    "dev:doctor": "turbo dev --filter=doctor",
     "dev:public": "turbo dev --filter=web",
     "lint": "turbo lint",
     "test": "turbo test"
@@ -14,5 +15,5 @@
   "devDependencies": {
     "turbo": "latest"
   },
-  "packageManager": "pnpm@9.1.4"
+  "packageManager": "pnpm@10.31.0"
 }

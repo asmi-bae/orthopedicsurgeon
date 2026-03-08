@@ -62,7 +62,7 @@
             },
             "development": {
               "buildTarget": "web:build:development",
-              "port": 4201
+              "port": 4202
             }
           },
           "defaultConfiguration": "development"

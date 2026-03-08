@@ -11,20 +11,8 @@ export const routes: Routes = [
         loadComponent: () => import('@features/home/home.component').then(m => m.HomeComponent)
       },
       {
-        path: 'doctors',
-        loadComponent: () => import('@features/doctors/doctor-list/doctor-list.component').then(m => m.DoctorListComponent)
-      },
-      {
-        path: 'doctors/:id',
-        loadComponent: () => import('@features/doctors/doctor-detail/doctor-detail.component').then(m => m.DoctorDetailComponent)
-      },
-      {
-        path: 'doctors/:id/book',
-        loadComponent: () => import('@features/doctors/booking/booking.component').then(m => m.BookingComponent)
-      },
-      {
-        path: 'hospitals',
-        loadComponent: () => import('@features/hospitals/hospital-list/hospital-list.component').then(m => m.HospitalListComponent)
+        path: 'services',
+        loadComponent: () => import('@features/services/services.component').then(m => m.ServicesComponent)
       },
       {
         path: 'about',
@@ -35,8 +23,8 @@ export const routes: Routes = [
         loadComponent: () => import('@features/contact/contact.component').then(m => m.ContactComponent)
       },
       {
-        path: 'departments',
-        loadComponent: () => import('@features/departments/departments.component').then(m => m.DepartmentsComponent)
+        path: 'appointment',
+        loadComponent: () => import('@features/appointment/appointment.component').then(m => m.AppointmentComponent)
       },
       {
         path: 'blog',
@@ -45,10 +33,6 @@ export const routes: Routes = [
       {
         path: 'blog/:slug',
         loadComponent: () => import('@features/blog/blog-detail/blog-detail.component').then(m => m.BlogDetailComponent)
-      },
-      {
-        path: 'careers',
-        loadComponent: () => import('@features/careers/careers.component').then(m => m.CareersComponent)
       },
       {
         path: 'gallery',

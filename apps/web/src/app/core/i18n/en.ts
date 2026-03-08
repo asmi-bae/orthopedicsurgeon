@@ -9,20 +9,58 @@ export const EN = {
   },
   NAV: {
     HOME: 'Home',
-    CENTRES: 'Centres',
-    SPECIALISTS: 'Specialists',
-    FACILITIES: 'Facilities',
     ABOUT: 'About',
-    CONTACT: 'Contact'
+    SERVICES: 'Services',
+    APPOINTMENT: 'Appointment',
+    BLOG: 'Blog',
+    CONTACT: 'Contact',
+    DROPDOWN: {
+      ABOUT: {
+        PROFILE: 'Doctor Profile',
+        EDUCATION: 'Education & Experience',
+        CERTIFICATIONS: 'Certifications & Achievements',
+        AWARDS: 'Awards / Memberships'
+      },
+      SERVICES: {
+        SHOWCASE: 'Showcase',
+        SURGERIES: 'Successful Surgeries',
+        GALLERY: 'Gallery',
+        TREATMENTS: 'Treatments',
+        KNEE: 'Knee Replacement',
+        HIP: 'Hip Replacement',
+        FRACTURE: 'Fracture Treatment',
+        ARTHROSCOPY: 'Arthroscopy',
+        SPINE: 'Spine Care',
+        SPORTS: 'Sports Injuries'
+      },
+      APPOINTMENT: {
+        FORM: 'Book Appointment Form',
+        WHATSAPP: 'WhatsApp Booking',
+        INSTRUCTIONS: 'Appointment Instructions'
+      },
+      BLOG: {
+        TIPS: 'Health Tips',
+        ARTICLES: 'Articles',
+        NEWS: 'News',
+        CASES: 'Case Studies'
+      },
+      CONTACT: {
+        ADDRESS: 'Clinic Address',
+        MAP: 'Google Map',
+        COMMUNICATION: 'Phone / Email / WhatsApp',
+        SOCIAL: 'Social Links',
+        FORM: 'Contact Form'
+      }
+    }
   },
   HOME: {
     HERO: {
       TITLE_PART1: 'EXPERT ORTHOPEDIC CARE FOR',
       TITLE_PART2: 'STRONGER BONES & JOINTS',
-      SUBTITLE: 'Professional diagnosis and treatment for bone, joint, and spine problems. Specialized in fracture treatment, joint replacement, sports injury care, and advanced orthopedic surgery.',
-      DESCRIPTION: 'Providing trusted orthopedic medical care with modern techniques and patient-focused treatment. Dedicated to helping patients recover mobility and live pain-free lives.',
+      SUBTITLE: 'Professional diagnosis and specialized surgical treatment for bone, joint, and spine problems.',
+      DESCRIPTION: 'Trusted orthopedic care focused on your recovery and pain-free mobility.',
       DOCTOR: {
-        NAME: 'Dr. Rahman',
+        NAME: 'Dr. Ab Rahman',
         TITLE: 'Orthopedic Surgeon',
         EXP: '15+ Years',
         LOC: 'Dhaka, Bangladesh',
@@ -45,10 +83,26 @@ export const EN = {
       SUCCESSFUL_TREATMENTS: 'Successful Treatments',
       SPECIALIZATION: 'Specialization',
       DATA: {
-        DESC1: 'Board-certified specialists',
+        DESC1: 'In Orthopedic Excellence',
         DESC2: 'Modern hubs across sectors',
-        DESC3: 'Based on verified reviews',
-        DESC4: 'Success rate in surgery'
+        DESC3: 'In successful complex surgeries',
+        DESC4: 'In robotic-assisted procedures'
+      }
+    },
+    SUCCESSFUL_SURGERIES: {
+      SUBTITLE: 'CASE STUDIES',
+      TITLE: 'Successful Surgeries & Recoveries',
+      DESCRIPTION: 'Explore real stories of patients who regained their mobility and returned to their active lives through our advanced surgical protocols.',
+      VIEW_ALL: 'View All Case Studies',
+      CASE1: {
+        TITLE: 'Complex Hip Revision',
+        DESC: 'Successful restoration of mobility for a 65-year-old patient after previous failed surgery.',
+        TAG: 'Joint Replacement'
+      },
+      CASE2: {
+        TITLE: 'ACL Reconstruction',
+        DESC: 'Elite athlete returning to professional sports just 6 months post-surgery.',
+        TAG: 'Sports Medicine'
       }
     },
     SERVICES: {
@@ -148,18 +202,53 @@ export const EN = {
   },
   ABOUT: {
     HERO: {
-      SUBTITLE: 'OUR METHODOLOGY',
-      TITLE_PART1: 'ENGINEERING HUMAN',
-      TITLE_PART2: 'MOBILITY',
-      DESCRIPTION: 'OrthoSync stands at the intersection of clinical excellence and technological innovation, redefined for the modern orthopedic patient.'
+      SUBTITLE: 'MY APPROACH',
+      TITLE_PART1: 'Restoring Human',
+      TITLE_PART2: 'Mobility through Precision',
+      DESCRIPTION: 'Dr. Ab Rahman is a leading orthopedic surgeon dedicated to clinical excellence and technological innovation in musculoskeletal care.'
     },
     MISSION: {
       SUBTITLE: 'MISSION',
-      TITLE_PART1: 'RESTORING FUNCTION',
-      TITLE_PART2: 'THROUGH PRECISION',
-      DESCRIPTION: 'Our mission is simple: provide a seamless, technologically advanced path from diagnosis to full functional restoration. We believe every patient deserves a customized recovery protocol backed by data and executed by specialists.',
-      SUCCESS_RATE: 'SUCCESS RATE',
-      PROCEDURES: 'PROCEDURES'
+      TITLE_PART1: 'Recovering Function',
+      TITLE_PART2: 'Through Engineering',
+      DESCRIPTION: 'My goal is simple: providing a seamless, technologically advanced path from diagnosis to full recovery. I believe every patient deserves a personalized recovery protocol backed by data.',
+      SUCCESS_RATE: 'Success Rate',
+      PROCEDURES: 'Procedures'
+    },
+    PROFILE: {
+      EDUCATION: {
+        TITLE: 'Education & Training',
+        ITEMS: [
+          'MBBS, Dhaka Medical College',
+          'MS (Orthopedic Surgery), National Institute of Traumatology and Orthopedic Rehabilitation (NITOR)',
+          'Fellowship in Joint Replacement (Singapore)',
+          'Advanced Training in Robotic Surgery (Germany)'
+        ]
+      },
+      EXPERIENCE: {
+        TITLE: 'Professional Experience',
+        ITEMS: [
+          'Consultant Orthopedic Surgeon, City Hospital (2015 - Present)',
+          'Associate Professor, Ortho Engineering Unit (2020 - Present)',
+          'Senior Resident, NITOR (2010 - 2015)'
+        ]
+      },
+      CERTIFICATIONS: {
+        TITLE: 'Certifications',
+        ITEMS: [
+          'Board Certified Orthopedic Surgeon',
+          'Member, International Society of Orthopedic Surgery',
+          'Fellow, Royal College of Surgeons (England)'
+        ]
+      },
+      ACHIEVEMENTS: {
+        TITLE: 'Awards & Achievements',
+        ITEMS: [
+          'Best Surgeon Award 2023 - Ortho Excellence',
+          'Pioneer in Robotic Hip Replacement in Bangladesh',
+          '15+ Research Publications in International Journals'
+        ]
+      }
     }
   },
   DOCTORS: {
@@ -423,27 +512,12 @@ export const EN = {
   },
   CONTACT: {
     HERO: {
-      SUBTITLE: 'Establish Link',
-      TITLE: 'Global Command Center',
-      DESCRIPTION: 'Connect with our support network or emergency coordinator. Our response unit is active 24/7 for critical orthopedic inquiries.'
-    },
-    FORM: {
-      TITLE: 'Transmission',
-      NAME: 'Full Name',
-      EMAIL: 'Email Address',
-      SUBJECT: 'Subject Protocol',
-      MESSAGE: 'Message Segment',
-      NAME_PLACEHOLDER: 'JOHN DOE',
-      EMAIL_PLACEHOLDER: 'JOHN@DOMAIN.COM',
-      SUBJECT_PLACEHOLDER: 'E.G. SURGERY INQUIRY',
-      MESSAGE_PLACEHOLDER: 'DESCRIBE YOUR CONDITION...',
-      SUBMIT: 'Verify & Transmit'
+      SUBTITLE: 'Get in Touch',
+      TITLE: 'Consultation & Inquiries',
+      DESCRIPTION: 'Reach out to schedule a consultation or for any professional inquiries regarding orthopedic care and advanced surgical options.'
     },
     INFO: {
       HUB: 'Clinical Hub',
-      EMAIL: 'Email Channel',
-      HOURS: 'Operation Hours',
-      EMERGENCY: 'Emergency Line',
       EMERGENCY_DESC: 'Direct link to surgical response unit'
     }
   },

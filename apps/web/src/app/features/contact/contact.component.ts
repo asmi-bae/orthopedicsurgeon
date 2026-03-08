@@ -77,7 +77,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
                
                <div class="p-10 rounded-[40px] bg-secondary-900 text-white relative overflow-hidden">
                   <h4 class="text-xl font-black uppercase tracking-tight mb-4">{{ 'CONTACT.INFO.EMERGENCY' | translate }}</h4>
-                  <p class="text-4xl font-black text-primary tracking-tighter mb-6">+1 (800) 911-ORTHO</p>
+                  <p class="text-4xl font-black text-primary tracking-tighter mb-6">+880 1711 000000</p>
                   <p class="text-white/40 text-xs font-bold uppercase tracking-widest">{{ 'CONTACT.INFO.EMERGENCY_DESC' | translate }}</p>
                   <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
                </div>
@@ -94,8 +94,8 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
 })
 export class ContactComponent {
   contactInfo = [
-    { labelKey: 'CONTACT.INFO.HUB', value: '42 PRECISION AVE, SECTOR 7, ORTHO CITY', icon: 'location_on' },
-    { labelKey: 'CONTACT.INFO.EMAIL', value: 'HQ@ORTHOSYNC.MED', icon: 'mail' },
-    { labelKey: 'CONTACT.INFO.HOURS', value: '24/7 CLINICAL AVAILABILITY', icon: 'schedule' },
+    { labelKey: 'CONTACT.INFO.HUB', value: 'DR. AB RAHMAN CLINIC, SECTOR 12, UTTARA, DHAKA', icon: 'location_on' },
+    { labelKey: 'CONTACT.INFO.EMAIL', value: 'DR@ABRAHMAN.MED', icon: 'mail' },
+    { labelKey: 'CONTACT.INFO.HOURS', value: 'SAT - THU: 4 PM - 9 PM', icon: 'schedule' },
   ];
 }

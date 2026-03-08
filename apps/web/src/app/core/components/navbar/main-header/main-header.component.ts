@@ -39,10 +39,10 @@ import { UserMenuComponent } from '../../user-menu/user-menu.component';
         <!-- Desktop Links -->
         <div class="hidden md:flex items-center gap-2">
           <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{ 'NAV.HOME' | translate }}</a>
-          <a mat-button routerLink="/departments" routerLinkActive="active">{{ 'NAV.CENTRES' | translate }}</a>
-          <a mat-button routerLink="/doctors" routerLinkActive="active">{{ 'NAV.SPECIALISTS' | translate }}</a>
-          <a mat-button routerLink="/hospitals" routerLinkActive="active">{{ 'NAV.FACILITIES' | translate }}</a>
           <a mat-button routerLink="/about" routerLinkActive="active">{{ 'NAV.ABOUT' | translate }}</a>
+          <a mat-button routerLink="/services" routerLinkActive="active">{{ 'NAV.SERVICES' | translate }}</a>
+          <a mat-button routerLink="/appointment" routerLinkActive="active">{{ 'NAV.APPOINTMENT' | translate }}</a>
+          <a mat-button routerLink="/blog" routerLinkActive="active">{{ 'NAV.BLOG' | translate }}</a>
           <a mat-button routerLink="/contact" routerLinkActive="active">{{ 'NAV.CONTACT' | translate }}</a>
           <a mat-button (click)="portalClick.emit()">{{ 'COMMON.PORTAL' | translate }}</a>
         </div>
@@ -77,10 +77,10 @@ import { UserMenuComponent } from '../../user-menu/user-menu.component';
 
             <mat-divider></mat-divider>
             <a mat-menu-item routerLink="/" routerLinkActive="active-mobile" [routerLinkActiveOptions]="{exact: true}">{{ 'NAV.HOME' | translate }}</a>
-            <a mat-menu-item routerLink="/departments" routerLinkActive="active-mobile">{{ 'NAV.CENTRES' | translate }}</a>
-            <a mat-menu-item routerLink="/doctors" routerLinkActive="active-mobile">{{ 'NAV.SPECIALISTS' | translate }}</a>
-            <a mat-menu-item routerLink="/hospitals" routerLinkActive="active-mobile">{{ 'NAV.FACILITIES' | translate }}</a>
             <a mat-menu-item routerLink="/about" routerLinkActive="active-mobile">{{ 'NAV.ABOUT' | translate }}</a>
+            <a mat-menu-item routerLink="/services" routerLinkActive="active-mobile">{{ 'NAV.SERVICES' | translate }}</a>
+            <a mat-menu-item routerLink="/appointment" routerLinkActive="active-mobile">{{ 'NAV.APPOINTMENT' | translate }}</a>
+            <a mat-menu-item routerLink="/blog" routerLinkActive="active-mobile">{{ 'NAV.BLOG' | translate }}</a>
             <a mat-menu-item routerLink="/contact" routerLinkActive="active-mobile">{{ 'NAV.CONTACT' | translate }}</a>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="portalClick.emit()">{{ 'COMMON.PORTAL' | translate }}</button>

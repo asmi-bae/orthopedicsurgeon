@@ -20,7 +20,7 @@ export class TranslationService {
     return (savedLang === 'EN' || savedLang === 'BN') ? savedLang : 'EN';
   }
 
-  translate(key: string): import('@angular/core').Signal<string> {
+  translate(key: string): import('@angular/core').Signal<any> {
     return computed(() => {
       const keys = key.split('.');
       let result = this.translations[this.currentLanguage()];

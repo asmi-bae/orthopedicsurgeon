@@ -1,0 +1,122 @@
+{
+    "COMMON": {
+        "SEARCH": "Search...",
+        "LOGOUT": "Logout",
+        "LOGOUT_CONFIRM_TITLE": "Confirm Logout",
+        "LOGOUT_CONFIRM_MESSAGE": "Are you sure you want to end your current session? You will need to log in again to access the console.",
+        "CANCEL": "Cancel",
+        "SETTINGS": "Settings",
+        "DASHBOARD": "Dashboard",
+        "NAV": {
+            "OVERVIEW": "Overview",
+            "ORGANIZATION": "Organization",
+            "DEPARTMENTS": "Departments",
+            "HOSPITALS": "Hospitals",
+            "MEDICAL_STAFF": "Medical Staff",
+            "PATIENTS": "Patients",
+            "APPOINTMENTS": "Appointments",
+            "RECORDS": "Records",
+            "FINANCE": "Finance",
+            "CONTENT": {
+                "GROUP": "Web Content",
+                "HERO": "Hero Banner",
+                "FAQ": "FAQ",
+                "PARTNERS": "Partners",
+                "BLOG": "Blog"
+            },
+            "SETTINGS": "Settings"
+        }
+    },
+    "DASHBOARD": {
+        "TITLE": "Operational Nexus",
+        "SUBTITLE": "System Overview",
+        "STATS": {
+            "REVENUE": "Fiscal Revenue",
+            "SPECIALISTS": "Active Specialists",
+            "PATIENTS": "Patient Inflow",
+            "SECURITY": "Matrix Security"
+        },
+        "LIVE_FEED": {
+            "TITLE": "Operational Feed",
+            "SUBTITLE": "Real-time synchronization active",
+            "COLUMNS": {
+                "PATIENT": "Patient",
+                "DOCTOR": "Doctor",
+                "TIME": "Time",
+                "STATUS": "Status"
+            }
+        },
+        "LOGISTICS": {
+            "TITLE": "Sector Logistics",
+            "REPORT_BUTTON": "Generate Report"
+        }
+    },
+    "DOCTORS": {
+        "TITLE": "Medical Staff Registry",
+        "SUBTITLE": "Manage and monitor specialists",
+        "FILTER_PLACEHOLDER": "Filter specialists...",
+        "ENLIST_BUTTON": "Enlist Specialist",
+        "COLUMNS": {
+            "NAME": "Name",
+            "SPECIALIZATION": "Specialization",
+            "HOSPITAL": "Hospital",
+            "STATUS": "Status",
+            "ACTIONS": "Actions"
+        },
+        "NO_DATA": "No doctors found"
+    },
+    "HOSPITALS": {
+        "TITLE": "Infrastructure Management",
+        "SUBTITLE": "Manage hospital network",
+        "ADD_BUTTON": "Add Facility",
+        "COLUMNS": {
+            "NAME": "Facility Name",
+            "CITY": "City",
+            "PHONE": "Phone",
+            "STATUS": "Status",
+            "ACTIONS": "Actions"
+        },
+        "NO_DATA": "No facilities found"
+    },
+    "PATIENTS": {
+        "TITLE": "Patient Registry",
+        "SUBTITLE": "Comprehensive medical protocol history",
+        "REGISTER_BUTTON": "Register Patient",
+        "COLUMNS": {
+            "NAME": "Patient Name",
+            "BIOMETRICS": "Biometrics",
+            "LAST_VISIT": "Last Visit",
+            "STATUS": "Status",
+            "ACTIONS": "Actions"
+        }
+    },
+    "APPOINTMENTS": {
+        "TITLE": "Appointment Scheduler",
+        "SUBTITLE": "Manage system-wide scheduling",
+        "NEW_SESSION": "New Session",
+        "COLUMNS": {
+            "PATIENT": "Patient",
+            "DOCTOR": "Doctor",
+            "TIMESTAMP": "Time",
+            "STATUS": "Status",
+            "ACTIONS": "Actions"
+        }
+    },
+    "BLOG": {
+        "TITLE": "Blog Management",
+        "SUBTITLE": "Broadcast health intelligence",
+        "ADD_BUTTON": "New Article",
+        "COLUMNS": {
+            "TITLE": "Title",
+            "CATEGORY": "Category",
+            "STATS": "Stats",
+            "STATUS": "Status",
+            "ACTIONS": "Actions"
+        },
+        "STATUS": {
+            "PUBLISHED": "Published",
+            "DRAFT": "Draft"
+        },
+        "NO_DATA": "No articles found"
+    }
+}
