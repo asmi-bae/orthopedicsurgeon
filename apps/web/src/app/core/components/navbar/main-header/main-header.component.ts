@@ -44,7 +44,7 @@ import { UserMenuComponent } from '../../user-menu/user-menu.component';
                routerLinkActive="active" 
                [routerLinkActiveOptions]="{exact: link.path === '/'}"
                class="px-3 py-2 rounded-xl text-sm font-bold tracking-widest relative overflow-hidden transition-all duration-300">
-              <mat-icon *ngIf="link.children" class="mr-0.5 text-xs scale-75 transition-transform duration-300 group-hover:rotate-180">expand_more</mat-icon>
+              <mat-icon *ngIf="link.children" class="text-xs scale-75 transition-transform duration-300 group-hover:rotate-180">expand_more</mat-icon>
               {{ link.label | translate }}
             </a>
 
@@ -172,8 +172,8 @@ export class MainHeaderComponent {
       children: [
         { label: 'NAV.DROPDOWN.ABOUT.PROFILE', path: '/about', icon: 'person' },
         { label: 'NAV.DROPDOWN.ABOUT.EDUCATION', path: '/about', icon: 'school' },
-        { label: 'NAV.DROPDOWN.ABOUT.CERTIFICATIONS', path: '/about', icon: 'verified' },
-        { label: 'NAV.DROPDOWN.ABOUT.AWARDS', path: '/about', icon: 'military_tech' }
+        { label: 'NAV.DROPDOWN.ABOUT.EXPERIENCE', path: '/about', icon: 'work' },
+        { label: 'NAV.DROPDOWN.ABOUT.CERTIFICATIONS', path: '/about', icon: 'verified' }
       ]
     },
     { 
@@ -205,9 +205,8 @@ export class MainHeaderComponent {
       label: 'NAV.BLOG', 
       path: '/blog',
       children: [
-        { label: 'NAV.DROPDOWN.BLOG.TIPS', path: '/blog', icon: 'lightbulb' },
         { label: 'NAV.DROPDOWN.BLOG.ARTICLES', path: '/blog', icon: 'article' },
-        { label: 'NAV.DROPDOWN.BLOG.NEWS', path: '/blog', icon: 'newspaper' },
+        { label: 'NAV.DROPDOWN.BLOG.TIPS', path: '/blog', icon: 'lightbulb' },
         { label: 'NAV.DROPDOWN.BLOG.CASES', path: '/blog', icon: 'biotech' }
       ]
     },
@@ -215,11 +214,9 @@ export class MainHeaderComponent {
       label: 'NAV.CONTACT', 
       path: '/contact',
       children: [
-        { label: 'NAV.DROPDOWN.CONTACT.ADDRESS', path: '/contact', icon: 'location_on' },
-        { label: 'NAV.DROPDOWN.CONTACT.MAP', path: '/contact', icon: 'map' },
-        { label: 'NAV.DROPDOWN.CONTACT.COMMUNICATION', path: '/contact', icon: 'call' },
-        { label: 'NAV.DROPDOWN.CONTACT.SOCIAL', path: '/contact', icon: 'share' },
-        { label: 'NAV.DROPDOWN.CONTACT.FORM', path: '/contact', icon: 'email' }
+        { label: 'NAV.DROPDOWN.CONTACT.DETAILS', path: '/contact', icon: 'location_on' },
+        { label: 'NAV.DROPDOWN.CONTACT.FORM', path: '/contact', icon: 'email' },
+        { label: 'NAV.DROPDOWN.CONTACT.HOURS', path: '/contact', icon: 'schedule' }
       ]
     }
   ];

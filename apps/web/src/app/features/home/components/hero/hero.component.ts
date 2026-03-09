@@ -14,7 +14,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
     TranslatePipe
   ],
   template: `
-    <section class="relative min-h-[500px] lg:min-h-[70vh] flex items-center pt-48 pb-20 lg:pb-32 overflow-hidden bg-soft-blue -mt-[136px] -mx-6 sm:-mx-10 lg:-mx-12">
+    <section class="relative min-h-[500px] lg:min-h-[70vh] flex items-center pt-48 pb-20 lg:pb-32 overflow-hidden bg-soft-blue -mt-[130px] -mx-6 sm:-mx-10 lg:-mx-12">
       <div class="app-container relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <!-- Text Content -->

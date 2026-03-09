@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/admin/auth")
+@RequestMapping("/api/v1/doctor/auth")
 @Tag(name = "Admin Authentication", description = "Endpoints for Admin authentication and session management")
 @RequiredArgsConstructor
 public class AdminAuthController {

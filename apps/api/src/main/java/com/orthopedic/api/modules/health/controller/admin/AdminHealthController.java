@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin/health")
+@RequestMapping("/api/v1/doctor/health")
 @RequiredArgsConstructor
 @Tag(name = "Admin Health", description = "Endpoints for provider-side health records management")
 @PreAuthorize("hasRole('SUPER_ADMIN')")

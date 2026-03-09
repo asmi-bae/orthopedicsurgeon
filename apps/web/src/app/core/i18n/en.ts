@@ -5,7 +5,8 @@ export const EN = {
     PORTAL: 'Portal',
     SIGN_IN: 'Sign In',
     GET_STARTED: 'Get Started',
-    SCROLL_DISCOVER: 'Scroll to Discover'
+    SCROLL_DISCOVER: 'Scroll to Discover',
+    CALL_DOCTOR: 'Call Doctor'
   },
   NAV: {
     HOME: 'Home',
@@ -19,9 +20,9 @@ export const EN = {
         TITLE: 'About Dr. Rahman',
         DESC: 'Learn about the professional journey, academic credentials, and core values that drive our clinical excellence.',
         PROFILE: 'Doctor Profile',
-        EDUCATION: 'Education & Experience',
-        CERTIFICATIONS: 'Certifications & Achievements',
-        AWARDS: 'Awards / Memberships'
+        EDUCATION: 'Education',
+        EXPERIENCE: 'Professional Experience',
+        CERTIFICATIONS: 'Certifications & Achievements'
       },
       SERVICES: {
         TITLE: 'Specialized Treatments',
@@ -47,19 +48,16 @@ export const EN = {
       BLOG: {
         TITLE: 'Medical Intelligence',
         DESC: 'Stay informed with the latest insights, research findings, and post-operative recovery protocols.',
+        ARTICLES: 'Article List',
         TIPS: 'Health Tips',
-        ARTICLES: 'Articles',
-        NEWS: 'News',
         CASES: 'Case Studies'
       },
       CONTACT: {
         TITLE: 'Connect with Us',
         DESC: 'Reach out for emergency support, clinical inquiries, or visit our primary hub in Uttara.',
-        ADDRESS: 'Clinic Address',
-        MAP: 'Google Map',
-        COMMUNICATION: 'Phone / Email / WhatsApp',
-        SOCIAL: 'Social Links',
-        FORM: 'Contact Form'
+        DETAILS: 'Clinic Details / Map',
+        FORM: 'Contact Form',
+        HOURS: 'Visiting Hours'
       }
     }
   },
@@ -67,10 +65,10 @@ export const EN = {
     HERO: {
       TITLE_PART1: 'EXPERT ORTHOPEDIC CARE FOR',
       TITLE_PART2: 'STRONGER BONES & JOINTS',
-      SUBTITLE: 'Professional diagnosis and specialized surgical treatment for bone, joint, and spine problems.',
+      SUBTITLE: 'Expert care for bones, joints, and spine health',
       DESCRIPTION: 'Trusted orthopedic care focused on your recovery and pain-free mobility.',
       DOCTOR: {
-        NAME: 'Dr. Ab Rahman',
+        NAME: 'Dr. Rahman',
         TITLE: 'Orthopedic Surgeon',
         EXP: '15+ Years',
         LOC: 'Dhaka, Bangladesh',
@@ -94,7 +92,6 @@ export const EN = {
       SPECIALIZATION: 'Specialization',
       DATA: {
         DESC1: 'In Orthopedic Excellence',
-        DESC2: 'Modern hubs across sectors',
         DESC3: 'In successful complex surgeries',
         DESC4: 'In robotic-assisted procedures'
       }
@@ -115,22 +112,32 @@ export const EN = {
         TAG: 'Sports Medicine'
       }
     },
+    SHOWCASE: {
+      TITLE: 'Clinical Excellence Showcase',
+      GALLERY: 'Treatment Gallery',
+      SURGERIES: 'Success Stories',
+      DESCRIPTION: 'Explore our documented results and case studies demonstrating recovery and results.'
+    },
     SERVICES: {
       SUBTITLE: 'Clinical Focus',
-      TITLE: 'Precision Medicine & Orthopedic Excellence',
-      JOINT: 'Joint Replacement',
-      JOINT_DESC: 'State-of-the-art hip, knee, and shoulder replacement surgeries with minimally invasive techniques.',
-      SPORTS: 'Sports Medicine',
-      SPORTS_DESC: 'Comprehensive care for athletes, from diagnostic imaging to advanced arthroscopic surgery.',
+      TITLE: 'Featured Treatments',
+      KNEE: 'Knee Replacement',
+      KNEE_DESC: 'Advanced knee restoration using precision alignment and minimally invasive techniques.',
+      HIP: 'Hip Replacement',
+      HIP_DESC: 'Expert hip joint restoration designed for long-term stability and rapid mobilization.',
+      FRACTURE: 'Fracture Treatment',
+      FRACTURE_DESC: 'Comprehensive management of complex bone breaks and traumatic musculoskeletal injuries.',
+      ARTHROSCOPY: 'Arthroscopy',
+      ARTHROSCOPY_DESC: 'Keyhole surgery for joint diagnosis and repair with minimal downtime.',
       SPINE: 'Spine Care',
-      SPINE_DESC: 'Expert treatment for spinal conditions, including herniated discs and spinal stenosis.',
-      PEDIATRIC: 'Pediatric Orthopedics',
-      PEDIATRIC_DESC: 'Specialized care for children with congenital, developmental, and traumatic bone issues.',
-      TRAUMA: 'Trauma & Fractures',
-      TRAUMA_DESC: '24/7 emergency care for complex bone breaks and musculoskeletal trauma.',
-      PHYSIO: 'Physical Therapy',
-      PHYSIO_DESC: 'Tailored rehabilitation programs to restore mobility and strength after surgery.',
-      LEARN_MORE: 'Learn More'
+      SPINE_DESC: 'Specialized treatment for spinal conditions, herniated discs, and structural alignment.',
+      SPORTS: 'Sports Injuries',
+      SPORTS_DESC: 'Elite-level care for athletes, focusing on ligament repair and functional performance.',
+      LEARN_MORE: 'View All Services'
+    },
+    QUICK_APPOINTMENT: {
+      TITLE: 'Ready to start your recovery?',
+      DESC: 'Book your consultation with Dr. Rahman today and take the first step towards pain-free mobility.'
     },
     PARTNERS: {
       SUBTITLE: 'Strategic Network',
@@ -154,7 +161,58 @@ export const EN = {
       ACCESS: 'Access Protocol',
       NEWS1: { TITLE: 'Robotic Engineering in Hip Restoration', DATE: 'MAY 24' },
       NEWS2: { TITLE: 'Biometric Recovery Protocols', DATE: 'MAY 20' },
-      NEWS3: { TITLE: 'Regenerative Bone Biology', DATE: 'MAY 15' }
+      NEWS3: { TITLE: 'Regenerative Bone Biology', DATE: 'MAY 15' },
+      LIST: {
+        HERO: {
+          SUBTITLE: 'Health Insights',
+          TITLE_PART1: 'Orthopedic Care',
+          TITLE_PART2: '& Recovery Guide',
+          DESCRIPTION: 'Expert advice, surgical insights, and recovery tips from Dr. Rahman to help you maintain bone and joint health.'
+        },
+        CARD: {
+          READ_PROTOCOL: 'Read Article'
+        },
+        NEWSLETTER: {
+          TITLE: 'Stay Informed',
+          DESCRIPTION: 'Subscribe to get the latest orthopedic health tips and clinic updates delivered to your inbox.',
+          SUBSCRIBE: 'Subscribe Now'
+        }
+      },
+      POSTS: {
+        HIP_REPLACEMENT: {
+          TITLE: 'Modern Innovations in Hip Replacement',
+          EXCERPT: 'Discover how robotic assistance and minimally invasive techniques are transforming hip restoration.',
+          CATEGORY: 'Surgery'
+        },
+        RECOVERY: {
+          TITLE: 'Essential Post-Surgery Recovery Tips',
+          EXCERPT: 'A comprehensive guide on what to expect and how to speed up your recovery after orthopedic surgery.',
+          CATEGORY: 'Recovery'
+        },
+        REGENERATIVE: {
+          TITLE: 'The Future of Regenerative Bone Therapy',
+          EXCERPT: 'Exploring new non-surgical options for joint pain and bone health using advanced biology.',
+          CATEGORY: 'Therapy'
+        }
+      },
+      DETAIL: {
+        RELEASED: 'Published',
+        PROTOCOL: 'Topic',
+        READ_TIME: 'min read',
+        INTRO: 'Advancements in orthopedic surgery are making procedures safer and recovery faster than ever before.',
+        PRECISION_TITLE: 'Precision and Accuracy',
+        PRECISION_TEXT: 'Modern orthopedic care utilizes advanced imaging and robotic systems to ensure the highest level of precision during surgical procedures.',
+        RESTORATION_TITLE: 'Functional Restoration',
+        RESTORATION_TEXT: 'Our primary goal is to restore your mobility and quality of life through personalized treatment plans and comprehensive rehabilitation.',
+        HIGHLIGHT: {
+          TITLE: 'Expert Tip',
+          TEXT: 'Early intervention and physical therapy are crucial for optimal recovery after any orthopedic procedure.'
+        },
+        COMMITMENT: 'Dr. Rahman is committed to providing the highest standard of care using the latest medical evidence and technologies.',
+        AUTHOR_CERT: 'Orthopedic Surgeon',
+        AUTHOR_BIO: 'Dr. Rahman has years of experience in joint replacements, trauma surgery, and sports medicine.',
+        BOOK: 'Book Consult'
+      }
     },
     TESTIMONIALS: {
       SUBTITLE: 'Success Stories',
@@ -170,14 +228,35 @@ export const EN = {
       EMMA_CONTENT: 'From emergency trauma care to physical therapy, the integrated protocol was seamless and highly professional.'
     },
     FAQ: {
-      SUBTITLE: 'Knowledge Base',
-      TITLE: 'Frequently Asked Questions',
-      Q1: 'What should I bring to my first appointment?',
-      A1: 'Please bring your ID, insurance card, any recent imaging (X-rays, MRIs), and a list of current medications.',
-      Q2: 'Do you offer virtual consultations?',
-      A2: 'Yes, we offer telehealth appointments for initial consultations and certain follow-up visits.',
-      Q3: 'What insurance plans do you accept?',
-      A3: 'We accept most major insurance providers. Please contact our billing office for specific plan verification.'
+      HERO: {
+        SUBTITLE: 'Help Center',
+        TITLE: 'Common Questions',
+        DESCRIPTION: 'Find answers to frequently asked questions about appointments, surgery, recovery, and clinic procedures.'
+      },
+      CATEGORIES: {
+        GENERAL: 'General Inquiry',
+        SURGERY: 'Surgical Procedures',
+        RECOVERY: 'Recovery & Rehab',
+        BILLING: 'Insurance & Billing'
+      },
+      QUESTIONS: {
+        Q1: 'What should I bring to my first appointment?',
+        A1: 'Please bring your ID, insurance card, any recent imaging (X-rays, MRIs), and a list of current medications.',
+        Q2: 'Do you offer virtual consultations?',
+        A2: 'Yes, we offer telehealth appointments for initial consultations and certain follow-up visits.',
+        Q3: 'What insurance plans do you accept?',
+        A3: 'We accept most major insurance providers. Please contact our billing office for specific plan verification.',
+        Q4: 'How long is the typical recovery for knee replacement?',
+        A4: 'Most patients return to light activities within 6-12 weeks, with full recovery taking up to 6-12 months depending on individual progress.',
+        Q5: 'Can I book an appointment via WhatsApp?',
+        A5: 'Yes, you can message us at +880 1711 123456 for quick scheduling and basic inquiries.'
+      }
+    },
+    GALLERY_PREVIEW: {
+      SUBTITLE: 'Gallery Feed',
+      TITLE: 'Treatment Gallery',
+      DESCRIPTION: 'A visual insight into our successful procedures and patient restoration journey.',
+      VIEW_ALL: 'View Full Gallery'
     },
     NEWSLETTER: {
       SUBTITLE: 'Newsletter Subscription',
@@ -231,188 +310,37 @@ export const EN = {
         ITEMS: [
           'MBBS, Dhaka Medical College',
           'MS (Orthopedic Surgery), National Institute of Traumatology and Orthopedic Rehabilitation (NITOR)',
-          'Fellowship in Joint Replacement (Singapore)',
-          'Advanced Training in Robotic Surgery (Germany)'
+          'Fellowship in Joint Replacement (Singapore General Hospital)',
+          'Advanced Training in Arthroscopy & Sports Medicine (AO Foundation, Switzerland)'
         ]
       },
       EXPERIENCE: {
-        TITLE: 'Professional Experience',
+        TITLE: 'Professional Journey',
         ITEMS: [
-          'Consultant Orthopedic Surgeon, City Hospital (2015 - Present)',
-          'Associate Professor, Ortho Engineering Unit (2020 - Present)',
-          'Senior Resident, NITOR (2010 - 2015)'
+          'Consultant Orthopedic Surgeon, Popular Diagnostic Center (Uttara)',
+          'Former Senior Resident, NITOR (Dhaka)',
+          'Specialist Surgeon, Joint Care Pavilion',
+          'Clinical Lead, Advanced Trauma Unit'
         ]
       },
       CERTIFICATIONS: {
-        TITLE: 'Certifications',
+        TITLE: 'Certifications & Memberships',
         ITEMS: [
-          'Board Certified Orthopedic Surgeon',
-          'Member, International Society of Orthopedic Surgery',
-          'Fellow, Royal College of Surgeons (England)'
+          'Board Certified Orthopedic Surgeon (BCPS)',
+          'Active Member, Bangladesh Orthopedic Society (BOS)',
+          'International Affiliate, American Academy of Orthopaedic Surgeons (AAOS)',
+          'Fellow of International College of Surgeons (FICS)'
         ]
       },
       ACHIEVEMENTS: {
-        TITLE: 'Awards & Achievements',
+        TITLE: 'Key Achievements',
         ITEMS: [
-          'Best Surgeon Award 2023 - Ortho Excellence',
-          'Pioneer in Robotic Hip Replacement in Bangladesh',
-          '15+ Research Publications in International Journals'
+          'Successfully completed 5000+ complex orthopedic procedures',
+          'Specialization in Minimally Invasive Knee & Hip Replacements',
+          'Pioneer in Advanced Fracture Management techniques',
+          'Published Author in International Orthopedic Journals'
         ]
       }
-    }
-  },
-  DOCTORS: {
-    LIST: {
-      HERO: {
-        SUBTITLE: 'The Collective',
-        TITLE_PART1: 'EXPERT CLINICAL',
-        TITLE_PART2: 'SPECIALISTS',
-        DESCRIPTION: 'Our medical board consists of internationally recognized specialists dedicated to precision musculoskeletal restoration and advanced clinical outcomes.'
-      },
-      SEARCH: {
-        LABEL: 'Search Specialists',
-        PLACEHOLDER: 'E.G. DR. WILSON'
-      },
-      FILTERS: {
-        ALL: 'All Specialties',
-        AVAILABLE: 'Available Today'
-      },
-      CARD: {
-        SPECIALIZATION_PREFIX: 'Specialist in',
-        EXPERIENCE: '15+ Yrs Exp',
-        CERTIFIED: 'Board Certified',
-        BOOK: 'Book Consultation'
-      }
-    },
-    DETAIL: {
-      VERIFIED: 'Verified Specialist',
-      EXPERIENCE_SUFFIX: 'Years Experience',
-      LANGUAGES: 'English, Bengali',
-      LANGUAGES_LABEL: 'Languages',
-      REVIEWS: 'Reviews',
-      BIO_TITLE: 'Professional Biography',
-      NO_BIO: 'No biography provided.',
-      SPECIALIZATIONS_TITLE: 'Specializations',
-      FEE_LABEL: 'Consultation Fee',
-      FEE_DESC: 'Includes 15 minutes of direct consultation and prescription.',
-      BOOK: 'Book Appointment',
-      WAIT_TIME: 'Wait Time',
-      NEXT_SLOT: 'Next Slot',
-      AVAILABLE: 'Available Today',
-      LOCATION: 'Location',
-      TABS: {
-        ABOUT: 'About Doctor',
-        REVIEWS: 'Patient Reviews'
-      }
-    }
-  },
-  HOSPITALS: {
-    LIST: {
-      HERO: {
-        SUBTITLE: 'STRATEGIC ASSETS',
-        TITLE_PART1: 'PARTNER MEDICAL',
-        TITLE_PART2: 'FACILITIES',
-        DESCRIPTION: 'Explore our network of state-of-the-art clinical hubs and specialized hospitals designed for orthopedic excellence and patient recovery.'
-      },
-      CARD: {
-        STATUS: 'Active',
-        DESCRIPTION: 'Standard of excellence in patient care and clinical innovation across the orthopedic spectrum.',
-        NODE_STATUS: 'Node Status',
-        HOURS: 'Open 24/7',
-        ACCESS: 'Access Specialists'
-      }
-    }
-  },
-  BLOG: {
-    LIST: {
-      HERO: {
-        SUBTITLE: 'INTELLIGENCE STREAM',
-        TITLE_PART1: 'MEDICAL INSIGHTS &',
-        TITLE_PART2: 'HEALTH PROTOCOLS',
-        DESCRIPTION: 'Stay updated with the latest advancements in orthopedic surgery, recovery strategies, and clinical research.'
-      },
-      CARD: {
-        READ_PROTOCOL: 'Read Protocol'
-      },
-      NEWSLETTER: {
-        TITLE: 'Establish Intelligence Link',
-        DESCRIPTION: 'Receive clinical updates and health protocols directly to your encrypted channel.',
-        SUBSCRIBE: 'Subscribe Now'
-      }
-    },
-    POSTS: {
-      HIP_REPLACEMENT: {
-        TITLE_PART1: 'INNOVATIONS IN ROBOTIC-ASSISTED',
-        TITLE_PART2: 'HIP REPLACEMENT',
-        EXCERPT: 'How precision engineering is reducing recovery times and improving long-term outcomes for patients.',
-        CATEGORY: 'Research'
-      },
-      RECOVERY: {
-        TITLE: 'Post-Surgery Recovery: The Biometric Protocol',
-        EXCERPT: 'Leveraging wearable tech to monitor musculoskeletal restoration and prevent secondary injuries.',
-        CATEGORY: 'Protocols'
-      },
-      REGENERATIVE: {
-        TITLE: 'The Future of Regenerative Bone Therapy',
-        EXCERPT: 'Exploring the boundary between biology and engineering in modern orthopedic medicine.',
-        CATEGORY: 'Vision'
-      }
-    },
-    DETAIL: {
-      RELEASED: 'Released',
-      PROTOCOL: 'Protocol',
-      READ_TIME: 'MIN READ',
-      PRECISION_TITLE: 'The Precision Advantage',
-      RESTORATION_TITLE: 'Accelerated Restoration',
-      HIGHLIGHT: {
-        TITLE: 'Protocol Highlight',
-        TEXT: 'Patients undergoing robotic-assisted procedures at OrthoSync typically mobilize within 4 hours post-operatively, compared to the 8-12 hour benchmark in traditional methods.'
-      },
-      AUTHOR_CERT: 'Board-Certified Orthopedic Surgeon',
-      AUTHOR_BIO: 'Specializing in complex joint reconstruction and pioneers of robotic surgical protocols at OrthoSync.',
-      BOOK: 'Book Consultation',
-      INTRO: 'The integration of robotic guidance systems into orthopedic surgery marks a pivotal transition towards absolute precision in musculoskeletal restoration.',
-      PRECISION_TEXT: "Traditional hip replacement relies heavily on the surgeon's manual experience for alignment and positioning. While highly successful, robotic assistance introduces a layer of sub-millimeter accuracy that was previously unattainable. Using real-time 3D mapping and haptic feedback, surgeons can now execute bone preparation and implant placement with unprecedented control.",
-      RESTORATION_TEXT: 'One of the most significant benefits documented in recent clinical trials is the reduction in soft tissue trauma. The precision of the robotic arm ensures that incisions are minimal and that healthy surrounding tissue remains preserved. This directly correlates to reduced post-operative pain and significantly faster functional restoration.',
-      COMMITMENT: 'At OrthoSync, we continue to invest in the latest generations of Mako and ROSA systems, ensuring that our patients receive cares that is not just current, but visionary.'
-    }
-  },
-  CAREERS: {
-    HERO: {
-      SUBTITLE: 'JOIN THE COLLECTIVE',
-      TITLE_PART1: 'ENGINEER THE FUTURE',
-      TITLE_PART2: 'OF ORTHOPEDIC CARE',
-      DESCRIPTION: 'We are seeking visionary medical professionals, technologists, and clinical staff to assist in our mission of musculoskeletal excellence.'
-    },
-    LIST: {
-      SUBTITLE: 'CURRENT VACANCIES',
-      TITLE_PART1: 'CLINICAL & OPERATIONAL',
-      TITLE_PART2: 'POSITIONS',
-      COMPETITIVE: 'COMPETITIVE PACKAGE',
-      TRANSMIT: 'TRANSMIT APPLICATION'
-    },
-    FORM: {
-      SUBTITLE: 'Express Interest',
-      TITLE: 'General Application',
-      NAME: 'Full Name',
-      EMAIL: 'Email Protocol',
-      SPECIALIZATION: 'Specialization',
-      EXP: 'Exp. Years',
-      BIO: 'Brief Bio-Statement',
-      BIO_PLACEHOLDER: 'TYPE YOUR MISSION STATEMENT...',
-      SUBMIT: 'Verify & Transmit',
-      OPTIONS: {
-        MEDICAL: 'Medical / Clinical',
-        NURSING: 'Nursing / Support',
-        ADMIN: 'Administrative',
-        TECH: 'Technology / Bio-engineering'
-      }
-    },
-    VACANCIES: {
-      SURGEON: { TITLE: 'Senior Orthopedic Surgeon', DEPT: 'Surgical Dept' },
-      THERAPIST: { TITLE: 'Lead Physical Therapist', DEPT: 'Rehab Engine' },
-      ENGINEER: { TITLE: 'Clinical Systems Engineer', DEPT: 'Technology' },
-      PEDIATRIC: { TITLE: 'Head of Pediatric Care', DEPT: 'Pediatrics' }
     }
   },
   AUTH: {
@@ -496,6 +424,16 @@ export const EN = {
       SLOTS: 'Available time slots will be fetched based on your selected date. We only show dates where the doctor is active.'
     },
     SLOTS_TITLE: 'Select an Available Slot',
+    INSTRUCTIONS: {
+      TITLE: 'Important Instructions',
+      ITEMS: [
+        'Please bring all previous X-rays, MRIs, and medical reports.',
+        'Arrive 15 minutes before your scheduled appointment time.',
+        'Wear comfortable clothing that allows easy access to the affected joint.',
+        'Carry a list of all your current medications.'
+      ],
+      WHATSAPP: 'Or book via WhatsApp'
+    },
     CONFIRM: {
       CONSULTATION: 'Consultation with',
       TYPE: 'Type',
@@ -522,13 +460,30 @@ export const EN = {
   },
   CONTACT: {
     HERO: {
-      SUBTITLE: 'Get in Touch',
+      SUBTITLE: 'Contact Us',
       TITLE: 'Consultation & Inquiries',
-      DESCRIPTION: 'Reach out to schedule a consultation or for any professional inquiries regarding orthopedic care and advanced surgical options.'
+      DESCRIPTION: 'Reach out to schedule a consultation or for any professional inquiries regarding orthopedic care.'
+    },
+    FORM: {
+      TITLE: 'Send a Message',
+      NAME: 'Full Name',
+      EMAIL: 'Email Address',
+      SUBJECT: 'Subject',
+      MESSAGE: 'Message',
+      NAME_PLACEHOLDER: 'Your Name',
+      EMAIL_PLACEHOLDER: 'email@example.com',
+      SUBJECT_PLACEHOLDER: 'e.g. Knee Pain Consultation',
+      MESSAGE_PLACEHOLDER: 'Describe your symptoms or inquiry...',
+      SUBMIT: 'Send Message'
     },
     INFO: {
-      HUB: 'Clinical Hub',
-      EMERGENCY_DESC: 'Direct link to surgical response unit'
+      HUB: 'Clinic Location',
+      HOURS: 'Visiting Hours',
+      DETAILS: 'Contact Details',
+      EMERGENCY: 'Emergency Contact',
+      EMERGENCY_DESC: 'Direct line for urgent orthopedic cases',
+      MAP_TITLE: 'Find Us on Map',
+      GET_DIRECTIONS: 'Get Directions'
     }
   },
   DEPARTMENTS: {
@@ -581,6 +536,63 @@ export const EN = {
       TITLE_PART1: 'LAUNCH FULL VIRTUAL',
       TITLE_PART2: 'FACILITY SCAN',
       ACTION: 'INITIALIZE TOUR'
+    }
+  },
+  SUCCESS_STORIES: {
+    HERO: {
+      SUBTITLE: 'Patient Journeys',
+      TITLE: 'Recovery Stories',
+      DESCRIPTION: 'Real stories of patients who regained their mobility and quality of life through our advanced orthopedic treatments.'
+    },
+    CARD: {
+      RECOVERY: 'Recovery Time',
+      PROCEDURE: 'Procedure',
+      YEAR: 'Surgery Year'
+    },
+    STORIES: {
+      SARAH: {
+        NAME: 'Sarah Johnson',
+        TYPE: 'Athlete Recovery',
+        PROCEDURE: 'ACL Reconstruction',
+        QUOTE: 'I never thought I would run again. Dr. Rahman gave me back my career.',
+        DESC: 'After a severe knee injury during a professional match, Sarah underwent advanced robotic-assisted ACL reconstruction. Her dedication to the rehabilitation protocol led to a full return to professional sports in record time.'
+      },
+      JOHN: {
+        NAME: 'John Smith',
+        TYPE: 'Active Living',
+        PROCEDURE: 'Total Hip Replacement',
+        QUOTE: 'The pain is gone. I can finally walk my dog and enjoy life without constant discomfort.',
+        DESC: 'John suffered from chronic hip arthritis for years. Following a minimally invasive bilateral hip replacement, he experienced immediate relief and was back to light daily activities within weeks.'
+      }
+    },
+    CTA: {
+      TITLE: 'Start Your Recovery Journey Today',
+      DESCRIPTION: 'Every patient is unique. Schedule a consultation with Dr. Rahman to discuss your personalized treatment plan.',
+      ACTION: 'Book Your Consultation'
+    }
+  },
+  LEGAL: {
+    PRIVACY: {
+      TITLE: 'Privacy Policy',
+      SUBTITLE: 'Data Protection & Ethics',
+      LAST_UPDATED: 'Last Updated: March 2026',
+      SECTION1: 'Information We Collect',
+      TEXT1: 'We collect personal and medical information necessary to provide orthopedic care and manage your appointments.',
+      SECTION2: 'How We Use Your Data',
+      TEXT2: 'Your data is used solely for clinical purposes, billing, and communication regarding your health.',
+      SECTION3: 'Data Security',
+      TEXT3: 'We implement industry-standard encryption and security protocols to protect your sensitive information.'
+    },
+    TERMS: {
+      TITLE: 'Terms of Service',
+      SUBTITLE: 'Usage Protocol',
+      LAST_UPDATED: 'Last Updated: March 2026',
+      SECTION1: 'Clinic Policies',
+      TEXT1: 'By using our services, you agree to follow our clinic protocols and appointment cancellation policies.',
+      SECTION2: 'Medical Disclaimer',
+      TEXT2: 'The information on this website is for educational purposes and does not substitute professional medical advice.',
+      SECTION3: 'Liability',
+      TEXT3: 'Dr. Rahman is not liable for any actions taken based on online information without a direct consultation.'
     }
   }
 };

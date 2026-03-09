@@ -52,9 +52,9 @@ public class SecurityConfig {
                         "/api/v1/public/auth/login/mfa-verify",
                         "/api/v1/public/auth/resend-verification",
                         "/api/v1/public/auth/token/verify",
-                        "/api/v1/admin/auth/login",
-                        "/api/v1/admin/auth/login/mfa",
-                        "/api/v1/admin/auth/refresh"
+                        "/api/v1/doctor/auth/login",
+                        "/api/v1/doctor/auth/login/mfa",
+                        "/api/v1/doctor/auth/refresh"
         };
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -101,9 +101,9 @@ public class SecurityConfig {
                                                 .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/v1/public/contact/**", "/api/v1/public/newsletter/**").permitAll()
                                                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
                                                 .requestMatchers("/actuator/**").hasAuthority("ROLE_SUPER_ADMIN")
-                                                .requestMatchers("/api/v1/admin/website/**").hasAnyRole("SUPER_ADMIN", "DOCTOR_ADMIN")
-                                                .requestMatchers("/api/v1/admin/**").hasRole("SUPER_ADMIN")
-                                                .requestMatchers("/api/v1/doctor/**").hasRole("DOCTOR_ADMIN")
+                                                .requestMatchers("/api/v1/doctor/website/**").hasAnyRole("SUPER_ADMIN", "DOCTOR_ADMIN")
+                                                .requestMatchers("/api/v1/doctor/**").hasRole("SUPER_ADMIN")
+                                                .requestMatchers("/api/v1/admin/**").hasRole("DOCTOR_ADMIN")
                                                 .requestMatchers("/api/v1/patient/**").hasAnyRole("PATIENT", "DOCTOR_ADMIN", "SUPER_ADMIN")
                                                 .anyRequest().authenticated())
                                 .oauth2Login(oauth2 -> oauth2

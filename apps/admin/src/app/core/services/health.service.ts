@@ -6,7 +6,7 @@ import { ApiResponse, PageResponse, VitalSigns, RecordVitalsRequest, PatientDash
 @Injectable({ providedIn: 'root' })
 export class HealthService {
   private http = inject(HttpClient);
-  private adminApiUrl = 'http://localhost:8080/api/v1/admin/health';
+  private adminApiUrl = 'http://localhost:8080/api/v1/doctor/health';
   private patientApiUrl = 'http://localhost:8080/api/v1/patient/health';
  
   // Admin/Doctor endpoints

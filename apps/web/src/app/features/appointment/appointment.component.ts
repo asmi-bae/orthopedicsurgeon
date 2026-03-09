@@ -21,147 +21,208 @@ import { Doctor, ApiResponse, PageResponse } from '@repo/types';
     MatIconModule
   ],
   template: `
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <zrd-card class="overflow-visible">
-        <div header>
-          <div class="flex items-center gap-4">
-             <button (click)="cancel()" class="p-2 hover:bg-secondary-50 rounded-lg transition-colors">
-               <mat-icon class="text-secondary-500">arrow_back</mat-icon>
-             </button>
-             <div>
-               <h1 class="text-xl font-bold text-secondary-900">{{ 'BOOKING.TITLE' | translate }}</h1>
-               <p class="text-xs text-secondary-500">{{ 'BOOKING.STEP_OF' | translate }} {{ currentStep() + 1 }} {{ 'BOOKING.OF' | translate }} 4</p>
-             </div>
-          </div>
-        </div>
-
-        <!-- Stepper -->
-        <div class="px-8 pt-4 pb-8 border-b border-secondary-100 bg-secondary-50/30">
-          <zrd-stepper [steps]="bookingSteps$()" [currentStep]="currentStep()"></zrd-stepper>
-        </div>
-
-        <!-- Step Content -->
-        <div class="p-8">
-           <form [formGroup]="bookingForm">
-             
-             <!-- Step 1: Select Type & Date -->
-             <div *ngIf="currentStep() === 0" class="space-y-6 animate-in fade-in duration-300">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                   <zrd-select 
-                     [label]="'BOOKING.FORM.TYPE' | translate" 
-                     [options]="appointmentTypes()" 
-                     formControlName="type"
-                     [required]="true"
-                   ></zrd-select>
-                   <zrd-datepicker 
-                     [label]="'BOOKING.FORM.DATE' | translate" 
-                     formControlName="date"
-                     [min]="todayStr"
-                     [required]="true"
-                   ></zrd-datepicker>
-                </div>
-                <div class="p-4 bg-primary-50 rounded-xl border border-primary-100 flex gap-4">
-                   <mat-icon class="text-primary-600 mt-1">info</mat-icon>
-                   <p class="text-sm text-primary-700">{{ 'BOOKING.INFO.SLOTS' | translate }}</p>
-                </div>
-             </div>
-
-             <!-- Step 2: Select Time Slot -->
-             <div *ngIf="currentStep() === 1" class="space-y-6 animate-in fade-in duration-300">
-                <h3 class="text-sm font-bold text-secondary-900 uppercase tracking-widest mb-4">{{ 'BOOKING.SLOTS_TITLE' | translate }}</h3>
-                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                   <button 
-                     *ngFor="let slot of availableSlots"
-                     type="button"
-                     (click)="bookingForm.patchValue({ timeSlot: slot })"
-                     class="px-3 py-2.5 rounded-xl border-2 text-sm font-bold transition-all"
-                     [class]="bookingForm.get('timeSlot')?.value === slot 
-                        ? 'border-primary-600 bg-primary-50 text-primary-600 shadow-md' 
-                        : 'border-secondary-100 hover:border-secondary-300 text-secondary-600'"
-                   >
-                     {{ slot }}
+    <div class="min-h-screen bg-gray-50 pt-32 pb-20">
+      <div class="app-container">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          <!-- Left: Booking Card (8 cols) -->
+          <div class="lg:col-span-8 animate-in fade-in slide-in-from-left duration-700">
+            <zrd-card class="overflow-visible !rounded-[40px] shadow-2xl border-none">
+              <div header class="p-8 pb-4">
+                <div class="flex items-center gap-6">
+                   <button (click)="cancel()" class="w-12 h-12 bg-gray-50 hover:bg-primary/10 hover:text-primary rounded-2xl transition-all duration-300 flex items-center justify-center">
+                     <mat-icon class="scale-110">arrow_back</mat-icon>
                    </button>
-                </div>
-             </div>
-
-             <!-- Step 3: Patient Information -->
-             <div *ngIf="currentStep() === 2" class="space-y-6 animate-in fade-in duration-300">
-                <div class="space-y-4">
-                   <zrd-textarea 
-                     [label]="'BOOKING.FORM.REASON' | translate" 
-                     [placeholder]="'BOOKING.FORM.REASON_PLACEHOLDER' | translate"
-                     formControlName="reason"
-                     [rows]="4"
-                     [required]="true"
-                   ></zrd-textarea>
-                   <zrd-input 
-                     [label]="'BOOKING.FORM.NOTES' | translate" 
-                     formControlName="notes"
-                   ></zrd-input>
-                </div>
-             </div>
-
-             <!-- Step 4: Confirmation -->
-             <div *ngIf="currentStep() === 3" class="space-y-6 animate-in fade-in duration-300">
-                <div class="bg-secondary-50 rounded-2xl p-6 border border-secondary-100 space-y-4">
-                   <div class="flex justify-between items-center pb-4 border-b border-secondary-200">
-                      <span class="text-secondary-500 text-sm">{{ 'BOOKING.CONFIRM.CONSULTATION' | translate }}</span>
-                      <span class="font-bold text-secondary-900">Dr. {{ doctor()?.user?.firstName }} {{ doctor()?.user?.lastName }}</span>
-                   </div>
-                   <div class="flex justify-between items-center pb-4 border-b border-secondary-200">
-                      <span class="text-secondary-500 text-sm">{{ 'BOOKING.CONFIRM.TYPE' | translate }}</span>
-                      <zrd-badge variant="info">{{ bookingForm.get('type')?.value }}</zrd-badge>
-                   </div>
-                   <div class="flex justify-between items-center pb-4 border-b border-secondary-200">
-                      <span class="text-secondary-500 text-sm">{{ 'BOOKING.CONFIRM.DATE_TIME' | translate }}</span>
-                      <span class="font-bold text-secondary-900">{{ bookingForm.get('date')?.value }} at {{ bookingForm.get('timeSlot')?.value }}</span>
-                   </div>
-                   <div class="flex justify-between items-center">
-                      <span class="text-secondary-500 text-sm">{{ 'BOOKING.CONFIRM.TOTAL_FEE' | translate }}</span>
-                      <span class="text-xl font-black text-primary-600">$\{{ doctor()?.consultationFee }}</span>
+                   <div>
+                     <h1 class="text-3xl font-black text-secondary-900 uppercase tracking-tighter">{{ 'BOOKING.TITLE' | translate }}</h1>
+                     <p class="text-[10px] font-black uppercase tracking-[0.3em] text-primary mt-1">{{ 'BOOKING.STEP_OF' | translate }} {{ currentStep() + 1 }} {{ 'BOOKING.OF' | translate }} 4</p>
                    </div>
                 </div>
-             </div>
+              </div>
 
-           </form>
+              <!-- Stepper -->
+              <div class="px-8 pt-6 pb-10 border-b border-gray-100 bg-gray-50/50">
+                <zrd-stepper [steps]="bookingSteps$()" [currentStep]="currentStep()"></zrd-stepper>
+              </div>
+
+              <!-- Step Content -->
+              <div class="p-10 min-h-[400px]">
+                 <form [formGroup]="bookingForm">
+                   
+                   <!-- Step 1: Select Type & Date -->
+                   <div *ngIf="currentStep() === 0" class="space-y-8 animate-in fade-in duration-500">
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                         <zrd-select 
+                           [label]="'BOOKING.FORM.TYPE' | translate" 
+                           [options]="appointmentTypes()" 
+                           formControlName="type"
+                           [required]="true"
+                         ></zrd-select>
+                         <zrd-datepicker 
+                           [label]="'BOOKING.FORM.DATE' | translate" 
+                           formControlName="date"
+                           [min]="todayStr"
+                           [required]="true"
+                         ></zrd-datepicker>
+                      </div>
+                      <div class="p-6 bg-primary/5 rounded-[32px] border border-primary/10 flex gap-6 items-center">
+                         <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center text-primary flex-shrink-0">
+                            <mat-icon>info</mat-icon>
+                         </div>
+                         <p class="text-sm font-medium text-secondary-600 leading-relaxed">{{ 'BOOKING.INFO.SLOTS' | translate }}</p>
+                      </div>
+                   </div>
+
+                   <!-- Step 2: Select Time Slot -->
+                   <div *ngIf="currentStep() === 1" class="space-y-8 animate-in fade-in duration-500 text-center">
+                      <h3 class="text-xs font-black text-secondary-400 uppercase tracking-[0.4em] mb-8">{{ 'BOOKING.SLOTS_TITLE' | translate }}</h3>
+                      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                         <button 
+                           *ngFor="let slot of availableSlots"
+                           type="button"
+                           (click)="bookingForm.patchValue({ timeSlot: slot })"
+                           class="h-16 rounded-2xl border-2 text-sm font-black transition-all duration-300 uppercase tracking-widest"
+                           [class]="bookingForm.get('timeSlot')?.value === slot 
+                              ? 'border-primary bg-primary text-white shadow-xl shadow-primary/30 scale-105' 
+                              : 'border-gray-100 hover:border-primary/30 text-secondary-500 hover:bg-gray-50'"
+                         >
+                           {{ slot }}
+                         </button>
+                      </div>
+                   </div>
+
+                   <!-- Step 3: Patient Information -->
+                   <div *ngIf="currentStep() === 2" class="space-y-8 animate-in fade-in duration-500">
+                      <div class="space-y-6">
+                         <zrd-textarea 
+                           [label]="'BOOKING.FORM.REASON' | translate" 
+                           [placeholder]="'BOOKING.FORM.REASON_PLACEHOLDER' | translate"
+                           formControlName="reason"
+                           [rows]="6"
+                           [required]="true"
+                         ></zrd-textarea>
+                         <zrd-input 
+                           [label]="'BOOKING.FORM.NOTES' | translate" 
+                           formControlName="notes"
+                           [placeholder]="'Special requests or additional info...'"
+                         ></zrd-input>
+                      </div>
+                   </div>
+
+                   <!-- Step 4: Confirmation -->
+                   <div *ngIf="currentStep() === 3" class="space-y-8 animate-in fade-in duration-500">
+                      <div class="bg-gray-50 rounded-[40px] p-10 border border-gray-100 space-y-6 relative overflow-hidden">
+                         <div class="flex justify-between items-center pb-6 border-b border-gray-200">
+                            <span class="text-secondary-400 text-[10px] font-black uppercase tracking-widest">{{ 'BOOKING.CONFIRM.CONSULTATION' | translate }}</span>
+                            <span class="font-black text-secondary-900 uppercase">Dr. {{ doctor()?.user?.firstName }} {{ doctor()?.user?.lastName }}</span>
+                         </div>
+                         <div class="flex justify-between items-center pb-6 border-b border-gray-200">
+                            <span class="text-secondary-400 text-[10px] font-black uppercase tracking-widest">{{ 'BOOKING.CONFIRM.TYPE' | translate }}</span>
+                            <zrd-badge variant="info" class="font-black">{{ bookingForm.get('type')?.value }}</zrd-badge>
+                         </div>
+                         <div class="flex justify-between items-center pb-6 border-b border-gray-200">
+                            <span class="text-secondary-400 text-[10px] font-black uppercase tracking-widest">{{ 'BOOKING.CONFIRM.DATE_TIME' | translate }}</span>
+                            <span class="font-black text-secondary-900 uppercase tracking-tight">{{ bookingForm.get('date')?.value }} @ {{ bookingForm.get('timeSlot')?.value }}</span>
+                         </div>
+                         <div class="flex justify-between items-center pt-2">
+                            <span class="text-secondary-400 text-[10px] font-black uppercase tracking-widest">{{ 'BOOKING.CONFIRM.TOTAL_FEE' | translate }}</span>
+                            <span class="text-3xl font-black text-primary">$\{{ doctor()?.consultationFee }}</span>
+                         </div>
+                         <!-- Design Element -->
+                         <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
+                      </div>
+                   </div>
+
+                 </form>
+              </div>
+
+              <!-- Footer Actions -->
+              <div footer class="flex flex-col sm:flex-row justify-between items-center p-10 bg-gray-50/50 gap-6 rounded-b-[40px]">
+                 <button zrdButton variant="ghost" (click)="prevStep()" [disabled]="currentStep() === 0" class="uppercase font-black tracking-widest text-xs h-14 px-8">
+                   <mat-icon class="mr-2">west</mat-icon>
+                   {{ 'BOOKING.BUTTONS.PREVIOUS' | translate }}
+                 </button>
+                 
+                 <div class="flex flex-wrap justify-center gap-4">
+                    <button zrdButton variant="outline" (click)="cancel()" class="uppercase font-black tracking-widest text-xs h-14 px-10 rounded-2xl">{{ 'BOOKING.BUTTONS.CANCEL' | translate }}</button>
+                    <button 
+                      *ngIf="currentStep() < 3"
+                      zrdButton 
+                      [disabled]="!isStepValid()"
+                      (click)="nextStep()"
+                      class="uppercase font-black tracking-widest text-xs h-14 px-12 rounded-2xl shadow-xl shadow-primary/20"
+                    >
+                      {{ 'BOOKING.BUTTONS.CONTINUE' | translate }}
+                      <mat-icon class="ml-2">east</mat-icon>
+                    </button>
+                    <button 
+                      *ngIf="currentStep() === 3"
+                      zrdButton 
+                      variant="primary"
+                      [loading]="submitting()"
+                      (click)="submit()"
+                      class="uppercase font-black tracking-widest text-xs h-14 px-14 rounded-2xl shadow-2xl shadow-primary/40 group"
+                    >
+                      {{ 'BOOKING.BUTTONS.CONFIRM' | translate }}
+                      <mat-icon class="ml-2 group-hover:translate-x-1 transition-transform">check_circle</mat-icon>
+                    </button>
+                 </div>
+              </div>
+            </zrd-card>
+          </div>
+
+          <!-- Right: Sidebar (4 cols) -->
+          <div class="lg:col-span-4 space-y-8 animate-in fade-in slide-in-from-right duration-700">
+            <!-- Instructions Card -->
+            <zrd-card class="!rounded-[40px] border-none shadow-xl bg-secondary-900 text-white p-10 relative overflow-hidden">
+               <div class="relative z-10">
+                  <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-primary mb-8 border border-white/10">
+                    <mat-icon class="scale-125">assignment</mat-icon>
+                  </div>
+                  <h3 class="text-2xl font-black uppercase tracking-tighter mb-8">{{ 'BOOKING.INSTRUCTIONS.TITLE' | translate }}</h3>
+                  <ul class="space-y-6">
+                    <li *ngFor="let item of 'BOOKING.INSTRUCTIONS.ITEMS' | translate" class="flex gap-4">
+                       <div class="w-5 h-5 rounded-full bg-primary flex-shrink-0 mt-1"></div>
+                       <p class="text-sm font-medium text-white/70 leading-relaxed">{{item}}</p>
+                    </li>
+                  </ul>
+               </div>
+               <!-- Abstract background -->
+               <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-primary/10 rounded-full blur-[80px]"></div>
+            </zrd-card>
+
+            <!-- WhatsApp Card -->
+            <zrd-card class="!rounded-[40px] border-none shadow-xl bg-[#25D366]/5 p-8 border-2 border-[#25D366]/10 group hover:bg-[#25D366]/10 transition-colors duration-500">
+               <div class="text-center">
+                  <div class="w-20 h-20 bg-[#25D366] text-white rounded-[28px] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-[#25D366]/30 group-hover:scale-110 transition-transform duration-500">
+                    <mat-icon class="scale-[2]">chat</mat-icon>
+                  </div>
+                  <h4 class="text-lg font-black text-secondary-900 uppercase tracking-tighter mb-2">{{ 'BOOKING.INSTRUCTIONS.WHATSAPP' | translate }}</h4>
+                  <p class="text-xs text-secondary-400 font-bold uppercase tracking-widest mb-8">+880 1711-123456</p>
+                  <a mat-flat-button class="w-full h-14 rounded-2xl !bg-[#25D366] !text-white font-black uppercase tracking-widest text-xs" href="https://wa.me/8801711123456" target="_blank">
+                    Message Now
+                  </a>
+               </div>
+            </zrd-card>
+          </div>
+
         </div>
-
-        <div footer class="flex justify-between items-center p-8 bg-secondary-50/50">
-           <button zrdButton variant="ghost" (click)="prevStep()" [disabled]="currentStep() === 0">{{ 'BOOKING.BUTTONS.PREVIOUS' | translate }}</button>
-           
-           <div class="flex gap-3">
-              <button zrdButton variant="outline" (click)="cancel()">{{ 'BOOKING.BUTTONS.CANCEL' | translate }}</button>
-              <button 
-                *ngIf="currentStep() < 3"
-                zrdButton 
-                [disabled]="!isStepValid()"
-                (click)="nextStep()"
-              >
-                {{ 'BOOKING.BUTTONS.CONTINUE' | translate }}
-              </button>
-              <button 
-                *ngIf="currentStep() === 3"
-                zrdButton 
-                variant="primary"
-                [loading]="submitting()"
-                (click)="submit()"
-              >
-                {{ 'BOOKING.BUTTONS.CONFIRM' | translate }}
-              </button>
-           </div>
-        </div>
-      </zrd-card>
+      </div>
     </div>
 
     <!-- Success Feedback Overlay -->
-    <div *ngIf="success()" class="fixed inset-0 z-[100] flex items-center justify-center bg-secondary-900/80 backdrop-blur-sm animate-in fade-in duration-500">
-       <div class="bg-white rounded-3xl p-10 max-w-md w-full text-center shadow-2xl animate-in zoom-in-95 duration-500">
-          <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-             <mat-icon class="scale-[2.5]">check</mat-icon>
+    <div *ngIf="success()" class="fixed inset-0 z-[100] flex items-center justify-center bg-secondary-900/90 backdrop-blur-md animate-in fade-in duration-500">
+       <div class="bg-white rounded-[50px] p-12 max-w-lg w-full text-center shadow-[0_50px_100px_rgba(0,0,0,0.5)] animate-in zoom-in-95 duration-500 relative overflow-hidden">
+          <div class="relative z-10">
+            <div class="w-24 h-24 bg-green-50 text-green-500 rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-inner">
+               <mat-icon class="scale-[3]">task_alt</mat-icon>
+            </div>
+            <h2 class="text-4xl font-black text-secondary-900 uppercase tracking-tighter mb-4">{{ 'BOOKING.SUCCESS.TITLE' | translate }}</h2>
+            <p class="text-secondary-500 text-lg font-medium mb-10 leading-relaxed">{{ 'BOOKING.SUCCESS.TEXT' | translate | replace:'{{name}}':(doctor()?.user?.firstName || 'Ab Rahman') }}</p>
+            <button zrdButton class="w-full h-16 rounded-[24px] uppercase font-black tracking-widest text-sm shadow-2xl shadow-primary/40" (click)="finish()">{{ 'BOOKING.SUCCESS.PORTAL' | translate }}</button>
           </div>
-          <h2 class="text-2xl font-bold text-secondary-900 mb-2">{{ 'BOOKING.SUCCESS.TITLE' | translate }}</h2>
-          <p class="text-secondary-500 mb-8">{{ 'BOOKING.SUCCESS.TEXT' | translate | replace:'{{name}}':(doctor()?.user?.firstName || 'Dr. Ab Rahman') }}</p>
-          <button zrdButton class="w-full" (click)="finish()">{{ 'BOOKING.SUCCESS.PORTAL' | translate }}</button>
+          <!-- Decorative circle -->
+          <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-primary/5 rounded-full blur-[80px]"></div>
        </div>
     </div>
   `

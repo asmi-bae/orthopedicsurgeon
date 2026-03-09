@@ -37,6 +37,22 @@ export const routes: Routes = [
       {
         path: 'gallery',
         loadComponent: () => import('@features/gallery/gallery.component').then(m => m.GalleryComponent)
+      },
+      {
+        path: 'success-stories',
+        loadComponent: () => import('@features/success-stories/success-stories.component').then(m => m.SuccessStoriesComponent)
+      },
+      {
+        path: 'faq',
+        loadComponent: () => import('@features/faq/faq.component').then(m => m.FaqComponent)
+      },
+      {
+        path: 'privacy-policy',
+        loadComponent: () => import('@features/legal/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent)
+      },
+      {
+        path: 'terms-of-service',
+        loadComponent: () => import('@features/legal/terms-of-service/terms-of-service.component').then(m => m.TermsOfServiceComponent)
       }
     ]
   },

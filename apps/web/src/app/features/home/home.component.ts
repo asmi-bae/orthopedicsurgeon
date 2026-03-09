@@ -12,6 +12,9 @@ import { BlogComponent, NewsItem } from './components/blog/blog.component';
 import { TestimonialsComponent, Testimonial } from './components/testimonials/testimonials.component';
 import { FaqComponent, FAQ } from './components/faq/faq.component';
 import { NewsletterComponent } from './components/newsletter/newsletter.component';
+import { GalleryPreviewComponent } from './components/gallery-preview/gallery-preview.component';
+import { ContactPreviewComponent } from './components/contact-preview/contact-preview.component';
+import { QuickAppointmentComponent } from './components/quick-appointment/quick-appointment.component';
 
 @Component({
   selector: 'app-home',
@@ -22,11 +25,14 @@ import { NewsletterComponent } from './components/newsletter/newsletter.componen
     HeroComponent,
     StatsComponent,
     ServicesComponent,
+    GalleryPreviewComponent,
     SuccessfulSurgeriesComponent,
     VirtualTourComponent,
     BlogComponent,
     TestimonialsComponent,
     FaqComponent,
+    QuickAppointmentComponent,
+    ContactPreviewComponent,
     NewsletterComponent
   ],
   template: `
@@ -40,6 +46,9 @@ import { NewsletterComponent } from './components/newsletter/newsletter.componen
       <!-- Services Section -->
       <app-home-services [services]="services"></app-home-services>
 
+      <!-- Gallery Preview -->
+      <app-home-gallery-preview></app-home-gallery-preview>
+
       <!-- Successful Surgeries Section -->
       <app-home-surgeries></app-home-surgeries>
 
@@ -49,11 +58,17 @@ import { NewsletterComponent } from './components/newsletter/newsletter.componen
       <!-- Latest Intelligence (Blog) -->
       <app-home-blog [newsStream]="newsStream"></app-home-blog>
 
+      <!-- Quick Appointment Section -->
+      <app-home-quick-appointment></app-home-quick-appointment>
+
       <!-- Testimonials -->
       <app-home-testimonials [testimonials]="testimonials"></app-home-testimonials>
 
       <!-- FAQ Section -->
       <app-home-faq [faqs]="faqs"></app-home-faq>
+
+      <!-- Contact / Location -->
+      <app-home-contact-preview></app-home-contact-preview>
 
       <!-- Newsletter -->
       <app-home-newsletter></app-home-newsletter>
@@ -73,12 +88,12 @@ export class HomeComponent {
   ];
 
   services = [
-    { title: 'HOME.SERVICES.JOINT', description: 'HOME.SERVICES.JOINT_DESC', icon: 'rebase_edit' },
-    { title: 'HOME.SERVICES.SPORTS', description: 'HOME.SERVICES.SPORTS_DESC', icon: 'sports_scores' },
-    { title: 'HOME.SERVICES.SPINE', description: 'HOME.SERVICES.SPINE_DESC', icon: 'accessibility' },
-    { title: 'HOME.SERVICES.PEDIATRIC', description: 'HOME.SERVICES.PEDIATRIC_DESC', icon: 'child_care' },
-    { title: 'HOME.SERVICES.TRAUMA', description: 'HOME.SERVICES.TRAUMA_DESC', icon: 'healing' },
-    { title: 'HOME.SERVICES.PHYSIO', description: 'HOME.SERVICES.PHYSIO_DESC', icon: 'fitness_center' },
+    { title: 'HOME.SERVICES.KNEE', description: 'HOME.SERVICES.KNEE_DESC', icon: 'rebase_edit', image: 'assets/images/treatments/knee.png' },
+    { title: 'HOME.SERVICES.HIP', description: 'HOME.SERVICES.HIP_DESC', icon: 'accessibility_new', image: 'assets/images/treatments/hip.png' },
+    { title: 'HOME.SERVICES.FRACTURE', description: 'HOME.SERVICES.FRACTURE_DESC', icon: 'healing', image: 'assets/images/treatments/fracture.png' },
+    { title: 'HOME.SERVICES.ARTHROSCOPY', description: 'HOME.SERVICES.ARTHROSCOPY_DESC', icon: 'visibility', image: 'assets/images/treatments/arthroscopy.png' },
+    { title: 'HOME.SERVICES.SPINE', description: 'HOME.SERVICES.SPINE_DESC', icon: 'accessibility', image: 'assets/images/treatments/spine.png' },
+    { title: 'HOME.SERVICES.SPORTS', description: 'HOME.SERVICES.SPORTS_DESC', icon: 'sports_scores', image: 'assets/images/treatments/sports.png' },
   ];
 
   testimonials = [

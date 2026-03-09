@@ -10,6 +10,7 @@ export interface Service {
   title: string;
   description: string;
   icon: string;
+  image?: string;
 }
 
 @Component({
@@ -24,11 +25,7 @@ export interface Service {
     TranslatePipe
   ],
   template: `
-    <section class="py-32 bg-gray-50 relative overflow-hidden -mx-6 sm:-mx-10 lg:-mx-12">
-       <!-- Top/Bottom Soft Transitions -->
-       <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-10"></div>
-       <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-10"></div>
-       
+    <section class="py-32 bg-white relative overflow-hidden -mx-6 sm:-mx-10 lg:-mx-12">
        <div class="app-container relative z-20">
         <div class="text-center mb-20 text-balance">
           <h2 class="text-xs font-black text-primary uppercase tracking-[0.4em] mb-4">{{ 'HOME.SERVICES.SUBTITLE' | translate }}</h2>
@@ -37,18 +34,25 @@ export interface Service {
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           @for (service of services(); track service.title) {
-            <mat-card class="p-8 rounded-[32px] border border-gray-100 shadow-none hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-white">
-              <div class="w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-8">
-                <mat-icon class="scale-125">{{service.icon}}</mat-icon>
+            <mat-card class="rounded-[40px] border border-gray-100 shadow-none hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-gray-50/50 overflow-hidden group">
+              <!-- Image Header -->
+              <div *ngIf="service.image" class="aspect-[4/3] overflow-hidden relative">
+                <img [src]="service.image" [alt]="service.title | translate" class="w-full h-full object-cover grayscale-0 group-hover:scale-105 transition-transform duration-1000" />
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/20 to-transparent"></div>
               </div>
-              <h4 class="text-xl font-black text-secondary-900 uppercase tracking-tight mb-4">{{ service.title | translate }}</h4>
-              <p class="text-secondary-600 text-sm leading-relaxed mb-6 font-medium">{{ service.description | translate }}</p>
-              <a mat-button color="primary" class="font-black uppercase tracking-widest text-[10px] p-0" routerLink="/departments">{{ 'HOME.SERVICES.LEARN_MORE' | translate }} <mat-icon class="text-sm ml-1">arrow_forward</mat-icon></a>
+
+              <div class="p-8">
+                <div class="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6">
+                  <mat-icon>{{service.icon}}</mat-icon>
+                </div>
+                <h4 class="text-xl font-black text-secondary-900 uppercase tracking-tight mb-4">{{ service.title | translate }}</h4>
+                <p class="text-secondary-600 text-sm leading-relaxed mb-6 font-medium line-clamp-2 h-10">{{ service.description | translate }}</p>
+                <a mat-button color="primary" class="font-black uppercase tracking-widest text-[10px] p-0" routerLink="/services">{{ 'HOME.SERVICES.LEARN_MORE' | translate }} <mat-icon class="text-sm ml-1">arrow_forward</mat-icon></a>
+              </div>
             </mat-card>
           }
         </div>
       </div>
-      <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-medical-teal/5 rounded-full blur-[120px] -z-10"></div>
     </section>
   `,
   styles: [`

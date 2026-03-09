@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin/blog")
+@RequestMapping("/api/v1/doctor/blog")
 @RequiredArgsConstructor
 @Tag(name = "Admin Blog", description = "Admin endpoints for blog management")
 public class AdminBlogController {

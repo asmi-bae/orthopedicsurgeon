@@ -16,7 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/admin/account")
+@RequestMapping("/api/v1/doctor/account")
 @Tag(name = "Account Management", description = "Endpoints for authenticated users to manage their own account")
 @RequiredArgsConstructor
 public class AccountController extends BaseController {

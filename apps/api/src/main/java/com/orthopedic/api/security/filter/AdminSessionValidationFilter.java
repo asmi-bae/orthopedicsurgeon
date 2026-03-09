@@ -32,7 +32,7 @@ public class AdminSessionValidationFilter extends OncePerRequestFilter {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String path = request.getRequestURI();
 
-        if (auth == null || !path.startsWith("/api/v1/admin")) {
+        if (auth == null || !path.startsWith("/api/v1/doctor")) {
             filterChain.doFilter(request, response);
             return;
         }

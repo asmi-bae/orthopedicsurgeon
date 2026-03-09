@@ -96,29 +96,29 @@ export class BlogListComponent {
   blogPosts = [
     {
       titleKey: 'BLOG.POSTS.HIP_REPLACEMENT.TITLE',
-      slug: 'robotic-hip-replacement-innovations',
+      slug: 'modern-innovations-hip-replacement',
       excerptKey: 'BLOG.POSTS.HIP_REPLACEMENT.EXCERPT',
-      dateKey: 'HOME.BLOG.NEWS1.DATE',
+      dateKey: 'BLOG.NEWS1.DATE',
       categoryKey: 'BLOG.POSTS.HIP_REPLACEMENT.CATEGORY',
-      author: 'Dr. James Wilson',
+      author: 'Dr. Rahman',
       image: 'https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=800'
     },
     {
       titleKey: 'BLOG.POSTS.RECOVERY.TITLE',
-      slug: 'post-surgery-recovery-biometrics',
+      slug: 'essential-post-surgery-recovery-tips',
       excerptKey: 'BLOG.POSTS.RECOVERY.EXCERPT',
-      dateKey: 'HOME.BLOG.NEWS2.DATE',
+      dateKey: 'BLOG.NEWS2.DATE',
       categoryKey: 'BLOG.POSTS.RECOVERY.CATEGORY',
-      author: 'Dr. Maria Garcia',
+      author: 'Dr. Rahman',
       image: 'https://images.unsplash.com/photo-1571019623518-e71de96e28da?auto=format&fit=crop&q=80&w=800'
     },
     {
       titleKey: 'BLOG.POSTS.REGENERATIVE.TITLE',
       slug: 'future-regenerative-bone-therapy',
       excerptKey: 'BLOG.POSTS.REGENERATIVE.EXCERPT',
-      dateKey: 'HOME.BLOG.NEWS3.DATE',
+      dateKey: 'BLOG.NEWS3.DATE',
       categoryKey: 'BLOG.POSTS.REGENERATIVE.CATEGORY',
-      author: 'Dr. Robert Chen',
+      author: 'Dr. Rahman',
       image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=800'
     }
   ];

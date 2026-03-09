@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/doctor/patients")
+@RequestMapping("/api/v1/admin/patients")
 @Tag(name = "Doctor Patient Management", description = "Endpoints for doctors to manage patient records and medical history")
 @PreAuthorize("hasRole('DOCTOR_ADMIN')")
 @RequiredArgsConstructor

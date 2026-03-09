@@ -97,6 +97,19 @@
 			"item": [
 				{
 					"name": "Create Prescription",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.data && json.data.id) {",
+									"  pm.collectionVariables.set('prescription_id', json.data.id);",
+									"}"
+								]
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -114,6 +127,19 @@
 				},
 				{
 					"name": "Get Prescriptions by Patient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.data && json.data.content && json.data.content.length > 0) {",
+									"  pm.collectionVariables.set('prescription_id', json.data.content[0].id);",
+									"}"
+								]
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"url": "{{base_url}}/doctor/prescriptions/patient/{{patient_id}}"
@@ -133,6 +159,19 @@
 			"item": [
 				{
 					"name": "List Patients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.data && json.data.content && json.data.content.length > 0) {",
+									"  pm.collectionVariables.set('patient_id', json.data.content[0].id);",
+									"}"
+								]
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"url": "{{base_url}}/doctor/patients"
@@ -152,6 +191,19 @@
 			"item": [
 				{
 					"name": "List Lab Reports",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.data && json.data.content && json.data.content.length > 0) {",
+									"  pm.collectionVariables.set('report_id', json.data.content[0].id);",
+									"}"
+								]
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"url": "{{base_url}}/doctor/lab-reports"
@@ -217,6 +269,19 @@
 			"item": [
 				{
 					"name": "List Reviews",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.data && json.data.content && json.data.content.length > 0) {",
+									"  pm.collectionVariables.set('review_id', json.data.content[0].id);",
+									"}"
+								]
+							}
+						}
+					],
 					"request": {
 						"method": "GET",
 						"url": "{{base_url}}/doctor/reviews"

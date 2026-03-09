@@ -45,7 +45,7 @@ public class CorsConfig {
         adminConfig.setAllowCredentials(true);
         adminConfig.setMaxAge(600L); // Shorter for admin
 
-        source.registerCorsConfiguration("/api/v1/admin/**", adminConfig);
+        source.registerCorsConfiguration("/api/v1/doctor/**", adminConfig);
 
         // Configuration for Shared API (Notifications)
         CorsConfiguration sharedConfig = new CorsConfiguration();

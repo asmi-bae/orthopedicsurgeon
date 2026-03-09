@@ -288,7 +288,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/admin/doctors?page=0&size=20",
+                            "raw": "{{base_url}}/TEMP_ROOT/doctors?page=0&size=20",
                             "query": [
                                 {
                                     "key": "page",
@@ -312,7 +312,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/doctors/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/doctors/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -335,7 +335,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/doctors",
+                        "url": "{{base_url}}/TEMP_ROOT/doctors",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"firstName\": \"Dr. Sarah\",\n  \"lastName\": \"Smith\",\n  \"email\": \"dr.sarah@hospital.com\",\n  \"password\": \"password123\",\n  \"phone\": \"+1234567890\",\n  \"specialization\": \"Orthopedic Surgery\",\n  \"licenseNumber\": \"LIC-12345\",\n  \"bio\": \"Experienced orthopedic surgeon\",\n  \"experienceYears\": 10,\n  \"consultationFee\": 2000.00,\n  \"hospitalId\": \"hospital-uuid\",\n  \"availableForOnline\": true\n}"
@@ -356,7 +356,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/doctors/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/doctors/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -379,7 +379,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/doctors/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/doctors/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -404,7 +404,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/admin/hospitals?page=0&size=20",
+                            "raw": "{{base_url}}/TEMP_ROOT/hospitals?page=0&size=20",
                             "query": [
                                 {
                                     "key": "page",
@@ -428,7 +428,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/hospitals/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/hospitals/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -451,7 +451,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/hospitals",
+                        "url": "{{base_url}}/TEMP_ROOT/hospitals",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"name\": \"City General Hospital\",\n  \"address\": \"123 Medical Street\",\n  \"city\": \"Dhaka\",\n  \"phone\": \"+88001234567\",\n  \"email\": \"info@citygeneral.com\",\n  \"website\": \"https://citygeneral.com\",\n  \"description\": \"Leading orthopedic hospital\"\n}"
@@ -472,7 +472,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/hospitals/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/hospitals/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -495,7 +495,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/hospitals/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/hospitals/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -514,7 +514,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/hospitals/:id/services",
+                        "url": "{{base_url}}/TEMP_ROOT/hospitals/:id/services",
                         "variable": [
                             {
                                 "key": "id",
@@ -537,7 +537,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/hospitals/:id/services",
+                        "url": "{{base_url}}/TEMP_ROOT/hospitals/:id/services",
                         "variable": [
                             {
                                 "key": "id",
@@ -564,7 +564,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/hospitals/:id/services/:serviceId",
+                        "url": "{{base_url}}/TEMP_ROOT/hospitals/:id/services/:serviceId",
                         "variable": [
                             {
                                 "key": "id",
@@ -591,7 +591,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/hospitals/:id/services/:serviceId",
+                        "url": "{{base_url}}/TEMP_ROOT/hospitals/:id/services/:serviceId",
                         "variable": [
                             {
                                 "key": "id",
@@ -620,7 +620,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/admin/appointments?page=0&size=20",
+                            "raw": "{{base_url}}/TEMP_ROOT/appointments?page=0&size=20",
                             "query": [
                                 {
                                     "key": "page",
@@ -644,7 +644,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/appointments/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/appointments/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -667,7 +667,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/appointments/:id/cancel",
+                        "url": "{{base_url}}/TEMP_ROOT/appointments/:id/cancel",
                         "variable": [
                             {
                                 "key": "id",
@@ -690,7 +690,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/appointments/stats"
+                        "url": "{{base_url}}/TEMP_ROOT/appointments/stats"
                     }
                 }
             ]
@@ -709,7 +709,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/admin/patients?page=0&size=20",
+                            "raw": "{{base_url}}/TEMP_ROOT/patients?page=0&size=20",
                             "query": [
                                 {
                                     "key": "page",
@@ -733,7 +733,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/patients/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/patients/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -756,7 +756,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/patients/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/patients/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -785,7 +785,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/admin/lab-reports?page=0&size=20",
+                            "raw": "{{base_url}}/TEMP_ROOT/lab-reports?page=0&size=20",
                             "query": [
                                 {
                                     "key": "page",
@@ -809,7 +809,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/lab-reports/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/lab-reports/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -834,7 +834,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/admin/blog/posts?page=0&size=20",
+                            "raw": "{{base_url}}/TEMP_ROOT/blog/posts?page=0&size=20",
                             "query": [
                                 {
                                     "key": "page",
@@ -858,7 +858,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/blog/posts/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/blog/posts/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -881,7 +881,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/blog/posts",
+                        "url": "{{base_url}}/TEMP_ROOT/blog/posts",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"title\": \"Understanding Knee Pain\",\n  \"slug\": \"understanding-knee-pain\",\n  \"content\": \"<p>Article content here...</p>\",\n  \"excerpt\": \"A brief overview of knee pain causes\",\n  \"categoryId\": \"category-uuid\",\n  \"tags\": [\"knee\", \"pain\", \"orthopedic\"],\n  \"status\": \"PUBLISHED\"\n}"
@@ -902,7 +902,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/blog/posts/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/blog/posts/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -925,7 +925,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/blog/posts/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/blog/posts/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -949,7 +949,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/faq"
+                        "url": "{{base_url}}/TEMP_ROOT/website/faq"
                     }
                 },
                 {
@@ -966,7 +966,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/faq",
+                        "url": "{{base_url}}/TEMP_ROOT/website/faq",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"question\": \"What is the recovery time after knee surgery?\",\n  \"answer\": \"Recovery typically takes 3-6 months.\",\n  \"isActive\": true,\n  \"displayOrder\": 1\n}"
@@ -987,7 +987,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/faq/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/website/faq/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -1010,7 +1010,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/faq/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/website/faq/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -1029,7 +1029,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/hero"
+                        "url": "{{base_url}}/TEMP_ROOT/website/hero"
                     }
                 },
                 {
@@ -1046,7 +1046,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/hero",
+                        "url": "{{base_url}}/TEMP_ROOT/website/hero",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"title\": \"Expert Orthopedic Care\",\n  \"subtitle\": \"World-class treatment for joints and bones\",\n  \"imageUrl\": \"https://example.com/hero.jpg\",\n  \"ctaText\": \"Book Appointment\",\n  \"ctaUrl\": \"/appointments/book\",\n  \"displayOrder\": 1,\n  \"active\": true\n}"
@@ -1067,7 +1067,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/hero/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/website/hero/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -1090,7 +1090,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/hero/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/website/hero/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -1109,7 +1109,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/partner"
+                        "url": "{{base_url}}/TEMP_ROOT/website/partner"
                     }
                 },
                 {
@@ -1126,7 +1126,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/partner",
+                        "url": "{{base_url}}/TEMP_ROOT/website/partner",
                         "body": {
                             "mode": "raw",
                             "raw": "{\n  \"name\": \"Health Insurance Co.\",\n  \"logoUrl\": \"https://example.com/logo.png\",\n  \"website\": \"https://insurance.com\",\n  \"active\": true\n}"
@@ -1147,7 +1147,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/partner/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/website/partner/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -1170,7 +1170,7 @@
                                 "value": "Bearer {{access_token}}"
                             }
                         ],
-                        "url": "{{base_url}}/admin/website/partner/:id",
+                        "url": "{{base_url}}/TEMP_ROOT/website/partner/:id",
                         "variable": [
                             {
                                 "key": "id",
@@ -1204,7 +1204,7 @@
                                 }
                             ]
                         },
-                        "url": "{{base_url}}/admin/media/upload"
+                        "url": "{{base_url}}/TEMP_ROOT/media/upload"
                     }
                 },
                 {
@@ -1218,7 +1218,7 @@
                             }
                         ],
                         "url": {
-                            "raw": "{{base_url}}/admin/media/delete?publicId=public-id-here",
+                            "raw": "{{base_url}}/TEMP_ROOT/media/delete?publicId=public-id-here",
                             "query": [
                                 {
                                     "key": "publicId",
@@ -1249,7 +1249,7 @@
                             ]
                         },
                         "url": {
-                            "raw": "{{base_url}}/admin/media/replace?publicId=public-id-here",
+                            "raw": "{{base_url}}/TEMP_ROOT/media/replace?publicId=public-id-here",
                             "query": [
                                 {
                                     "key": "publicId",

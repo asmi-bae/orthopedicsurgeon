@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/doctor/website")
+@RequestMapping("/api/v1/admin/website")
 @Tag(name = "Doctor Website Management", description = "Endpoints for doctors to view website content (hero slides, FAQ, partners)")
 @PreAuthorize("hasRole('DOCTOR_ADMIN')")
 @RequiredArgsConstructor

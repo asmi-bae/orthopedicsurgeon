@@ -63,7 +63,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (storedFingerprint != null && !storedFingerprint.equals(currentFingerprint)) {
                     log.warn("⚠️ Device fingerprint mismatch for user: {}", username);
                     // On admin surface, we might want to reject. On public, we just log.
-                    if (request.getRequestURI().startsWith("/api/v1/admin")) {
+                    if (request.getRequestURI().startsWith("/api/v1/doctor")) {
                         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                         return;
                     }
