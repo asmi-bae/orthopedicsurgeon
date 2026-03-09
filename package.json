@@ -4,7 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "start": "node scripts/start-all.js",
-    "dev": "turbo dev",
+    "dev": "turbo dev --ui=tui",
     "dev:api": "turbo dev --filter=api",
     "dev:admin": "turbo dev --filter=admin",
     "dev:doctor": "turbo dev --filter=doctor",
