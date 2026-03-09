@@ -48,6 +48,9 @@ public class PatientServiceImpl implements PatientService {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'STAFF', 'DOCTOR', 'SUPER_ADMIN')")
     public PageResponse<PatientSummaryResponse> getAllPatients(PatientFilterRequest filters, Pageable pageable) {
+        if (filters == null) {
+            filters = new PatientFilterRequest();
+        }
         Page<Patient> patients = patientRepository.findPatients(
                 filters.getBloodGroup(),
                 filters.getGender(),

@@ -12,7 +12,10 @@ export const jwtInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, nex
   const token = authService.token();
   
   let request = req;
-  if (token) {
+  const publicRoutes = ['/login', '/register', '/forgot-password', '/reset-password', '/refresh', '/verify-2fa'];
+  const isPublicRoute = publicRoutes.some(path => req.url.includes(path));
+  
+  if (token && !isPublicRoute) {
     request = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
@@ -22,7 +25,8 @@ export const jwtInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, nex
   
   return next(request).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && !request.url.includes('/auth/login') && !request.url.includes('/auth/refresh') && !request.url.includes('/auth/logout')) {
+      const isPublicRoute = publicRoutes.some(path => request.url.includes(path));
+      if (error.status === 401 && !isPublicRoute) {
         return handle401Error(request, next, authService);
       }
       return throwError(() => error);

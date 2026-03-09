@@ -3,6 +3,14 @@ import { AdminLayoutComponent } from '@core/layouts/layout.component';
 import { authGuard, guestGuard } from '@repo/auth';
 
 export const routes: Routes = [
+  // Redirects for old auth paths
+  { path: 'auth/login', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'auth/forgot-password', redirectTo: 'forgot-password', pathMatch: 'full' },
+  { path: 'auth/reset-password', redirectTo: 'reset-password', pathMatch: 'full' },
+  { path: 'auth/two-factor', redirectTo: 'two-factor', pathMatch: 'full' },
+  { path: 'auth/totp-setup', redirectTo: 'totp-setup', pathMatch: 'full' },
+  { path: 'auth', redirectTo: 'login', pathMatch: 'full' },
+
   {
     path: '',
     component: AdminLayoutComponent,
@@ -82,23 +90,31 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'auth',
+    path: '',
     loadComponent: () => import('@features/auth/auth-layout.component').then(m => m.AuthLayoutComponent),
     children: [
       {
         path: 'login',
         canActivate: [guestGuard],
-        loadComponent: () => import('@features/auth/login/login.component').then(m => m.AdminLoginComponent)
+        loadComponent: () => import('@features/auth/login/login.component').then(m => m.DoctorLoginComponent)
       },
       {
         path: 'forgot-password',
         canActivate: [guestGuard],
-        loadComponent: () => import('@features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
+        loadComponent: () => import('@features/auth/forgot-password/forgot-password.component').then(m => m.DoctorForgotPasswordComponent)
       },
       {
         path: 'reset-password',
         canActivate: [guestGuard],
-        loadComponent: () => import('@features/auth/reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
+        loadComponent: () => import('@features/auth/reset-password/reset-password.component').then(m => m.DoctorResetPasswordComponent)
+      },
+      {
+        path: 'two-factor',
+        loadComponent: () => import('@features/auth/two-factor/two-factor.component').then(m => m.DoctorTwoFactorComponent)
+      },
+      {
+        path: 'totp-setup',
+        loadComponent: () => import('@features/auth/totp-setup/totp-setup.component').then(m => m.DoctorTotpSetupComponent)
       }
     ]
   }

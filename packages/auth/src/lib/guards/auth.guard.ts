@@ -11,11 +11,11 @@ export const authGuard: CanActivateFn = () => {
     // If we have a token but no user object (e.g. after refresh), fetch it
     if (!authService.currentUser()) {
       return authService.checkAuth().pipe(
-        map(isAuth => isAuth ? true : router.createUrlTree(['/auth/login']))
+        map(isAuth => isAuth ? true : router.createUrlTree(['/login']))
       );
     }
     return true;
   }
 
-  return router.createUrlTree(['/auth/login']);
+  return router.createUrlTree(['/login']);
 };

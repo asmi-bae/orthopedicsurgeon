@@ -128,7 +128,8 @@ export class AuthService {
 
   verify2fa(data: { sessionToken: string; code: string; deviceFingerprint?: string }): Observable<AuthResponse> {
     this.loading.set(true);
-    const endpoint = this.apiUrl.includes('/admin') ? `${this.apiUrl}/login/mfa` : `${this.apiUrl}/verify-2fa`;
+    // Standardize to use /login/mfa for both admin and doctor portals
+    const endpoint = `${this.apiUrl}/login/mfa`;
     return this.http.post<AuthResponse>(endpoint, data).pipe(
       switchMap((res: AuthResponse) => {
         if (res.accessToken) {
@@ -138,6 +139,24 @@ export class AuthService {
       }),
       finalize(() => this.loading.set(false))
     );
+  }
+
+  // Generic 2FA TOTP Verify (for accounts already logged in or with temp token)
+  verifyTotp2fa(data: { tempToken: string; totpCode: string }): Observable<AuthResponse> {
+    this.loading.set(true);
+    return this.http.post<AuthResponse>(`${this.apiUrl}/2fa/verify`, data).pipe(
+      switchMap((res: AuthResponse) => this.handleSuccess(res)),
+      finalize(() => this.loading.set(false))
+    );
+  }
+
+  setup2fa(): Observable<any> {
+    // Correct paths for backend: setup/begin and setup/verify
+    return this.http.post(`${this.apiUrl}/2fa/setup/begin`, {});
+  }
+
+  confirm2faSetup(code: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/2fa/setup/verify`, { code });
   }
 
   register(userData: any): Observable<AuthResponse> {
@@ -191,7 +210,7 @@ export class AuthService {
       }),
       map(() => true),
       catchError(err => {
-        if (err.status === 401 || err.status === 403) {
+        if (err.status === 401) {
           this.logout();
           return of(false);
         }

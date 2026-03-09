@@ -115,7 +115,7 @@ import { AuthService } from '@repo/auth';
                  </zrd-button>
                </div>
              } @else {
-               <zrd-button variant="primary" class="w-full  py-3.5" routerLink="/auth/login" (click)="close()">
+               <zrd-button variant="primary" class="w-full  py-3.5" routerLink="/login" (click)="close()">
                   Sign in
                </zrd-button>
              }
