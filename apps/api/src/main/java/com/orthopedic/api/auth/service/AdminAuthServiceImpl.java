@@ -54,9 +54,9 @@ public class AdminAuthServiceImpl implements AdminAuthService {
                     return new InvalidCredentialsException("Invalid email or password");
                 });
 
-        // 1. Check if user is an ADMIN or SUPER_ADMIN
+        // 1. Check if user is an SUPER_ADMIN or DOCTOR_ADMIN
         Set<String> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
-        if (!roles.contains("ADMIN") && !roles.contains("SUPER_ADMIN")) {
+        if (!roles.contains("SUPER_ADMIN") && !roles.contains("DOCTOR_ADMIN")) {
             auditService.logFailedLogin(request.getEmail(), ipAddress, userAgent, "Not an admin account");
             throw new AuthException("Access denied: Not an admin account");
         }
@@ -154,7 +154,7 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         Session session = Session.builder()
                 .user(user)
                 .accessTokenJti(UUID.fromString(jti))
-                .refreshTokenHash(passwordEncoder.encode(refreshToken.getToken())) // simple hash for DB storage
+                .refreshTokenHash(refreshToken.getToken()) // simple hash for DB storage
                 .deviceFingerprint(request.getDeviceFingerprint())
                 .ipAddress(ipAddress)
                 .userAgent(userAgent)
@@ -183,11 +183,13 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         String newJti = UUID.randomUUID().toString();
         String newAccessToken = tokenProvider.generateAccessToken(userDetails, newJti);
 
-        // Update the session in DB
+        // Deactivate old sessions in one UPDATE, then insert a fresh one (safe for UNIQUE JTI constraint)
+        sessionRepository.deactivateAllActiveSessions(user.getId());
+
         Session session = Session.builder()
                 .user(user)
                 .accessTokenJti(UUID.fromString(newJti))
-                .refreshTokenHash(passwordEncoder.encode(newRefreshToken.getToken()))
+                .refreshTokenHash(newRefreshToken.getToken())
                 .lastActivity(LocalDateTime.now())
                 .isActive(true)
                 .build();

@@ -31,7 +31,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
         <div class="app-container relative z-10">
           <div class="max-w-4xl">
             <h1 class="text-[10px] font-black text-primary uppercase tracking-[0.6em] mb-6 animate-in fade-in slide-in-from-bottom duration-700">{{ 'CONTACT.HERO.SUBTITLE' | translate }}</h1>
-            <h2 class="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.85] mb-10 animate-in fade-in slide-in-from-bottom duration-1000">
+            <h2 class="text-6xl md:text-8xl font-black tracking-[-0.05em] uppercase leading-[0.85] mb-10 animate-in fade-in slide-in-from-bottom duration-1000">
               {{ 'CONTACT.HERO.TITLE' | translate }}
             </h2>
             <p class="text-xl text-white/50 max-w-2xl font-medium leading-relaxed animate-in fade-in slide-in-from-bottom duration-1000 delay-300">
@@ -116,7 +116,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
                       <textarea formControlName="message" rows="6" class="w-full p-8 rounded-2xl bg-gray-50 border-none focus:ring-2 focus:ring-primary/20 transition-all font-bold" [placeholder]="'CONTACT.FORM.MESSAGE_PLACEHOLDER' | translate"></textarea>
                     </div>
 
-                    <button type="submit" [disabled]="contactForm.invalid || submitting" mat-flat-button color="primary" class="h-20 px-16 rounded-[28px] font-black uppercase tracking-widest shadow-2xl shadow-primary/40 group relative overflow-hidden">
+                    <button type="submit" [disabled]="contactForm.invalid || submitting" mat-flat-button color="primary" class="h-20 px-16 rounded-[28px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-primary/40 group relative overflow-hidden">
                       <span class="relative z-10">{{ 'CONTACT.FORM.SUBMIT' | translate }}</span>
                       <mat-icon class="ml-4 relative z-10 group-hover:translate-x-2 transition-transform">send</mat-icon>
                       <div class="absolute inset-0 bg-secondary-900 opacity-0 group-hover:opacity-10 transition-opacity"></div>

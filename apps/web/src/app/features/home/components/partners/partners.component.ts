@@ -52,7 +52,7 @@ export interface Hospital {
         </div>
         
         <div class="mt-20 text-center">
-           <a mat-tonal-button color="primary" routerLink="/hospitals" class="h-14 px-10 rounded-xl font-bold uppercase tracking-widest text-[11px]">
+           <a mat-tonal-button color="primary" routerLink="/hospitals" class="h-14 px-10 rounded-xl font-bold uppercase tracking-[0.2em] text-[11px]">
               {{ 'HOME.PARTNERS.EXPLORE_ALL' | translate }}
            </a>
         </div>

@@ -59,8 +59,16 @@ public class TokenService {
 
         verifyExpiration(oldToken);
 
-        // Issue new token (Rotation)
-        return createRefreshToken(oldToken.getUser(), deviceInfo);
+        // Rotate in-place with a single UPDATE — avoids DELETE + INSERT (2 trips → 1)
+        String newTokenValue = UUID.randomUUID().toString();
+        LocalDateTime newExpiry = LocalDateTime.now().plusSeconds(jwtConfig.getRefreshTokenExpiry());
+        refreshTokenRepository.rotateToken(tokenValue, newTokenValue, newExpiry, deviceInfo);
+
+        // Return a lightweight object with updated values for downstream use
+        oldToken.setToken(newTokenValue);
+        oldToken.setExpiryDate(newExpiry);
+        oldToken.setDeviceInfo(deviceInfo);
+        return oldToken;
     }
 
     public void deleteRefreshToken(String token) {

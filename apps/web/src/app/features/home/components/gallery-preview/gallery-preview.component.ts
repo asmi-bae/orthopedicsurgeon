@@ -72,12 +72,12 @@ export class GalleryPreviewComponent {
     { 
       label: 'HOME.SERVICES.KNEE', 
       category: 'NAV.SERVICES',
-      image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118'
+      image: 'https://images.unsplash.com/photo-1584515933487-779824d29309'
     },
     { 
       label: 'HOME.SERVICES.HIP', 
       category: 'NAV.SERVICES',
-      image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514'
+      image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118'
     },
     { 
       label: 'HOME.SERVICES.FRACTURE', 
@@ -87,7 +87,7 @@ export class GalleryPreviewComponent {
     { 
       label: 'HOME.SERVICES.ARTHROSCOPY', 
       category: 'NAV.SERVICES',
-      image: 'https://images.unsplash.com/photo-1576091160550-2173be9997ad'
+      image: 'https://images.unsplash.com/photo-1551076805-e1869033e561'
     },
     { 
       label: 'HOME.SERVICES.SPINE', 

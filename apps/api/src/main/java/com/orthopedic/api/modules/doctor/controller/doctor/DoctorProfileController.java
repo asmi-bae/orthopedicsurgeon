@@ -13,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/admin/profile")
+@RequestMapping("/api/v1/doctor/profile")
 @Tag(name = "Doctor Profile Management", description = "Endpoints for doctors to manage their own profiles")
 @PreAuthorize("hasRole('DOCTOR_ADMIN')")
 public class DoctorProfileController extends BaseController {

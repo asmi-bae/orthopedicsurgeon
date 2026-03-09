@@ -67,7 +67,7 @@ public class DataInitializer implements CommandLineRunner {
             drUser = User.builder()
                     .email(drEmail)
                     .password(passwordEncoder.encode("doctor@orthopedicsurgeon.com")) // Use email as default pass for demo
-                    .firstName("Dr. Abdur Rahman")
+                    .firstName("Dr. Ab Rahman")
                     .lastName("Miah")
                     .phone("+8801885995293")
                     .roles(Set.of(doctorAdminRole))

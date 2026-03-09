@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin/blog")
+@RequestMapping("/api/v1/doctor/blog")
 @Tag(name = "Doctor Blog Management", description = "Endpoints for doctors to manage blog posts and comments")
 @PreAuthorize("hasRole('DOCTOR_ADMIN')")
 @RequiredArgsConstructor

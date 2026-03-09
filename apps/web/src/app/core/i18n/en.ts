@@ -35,8 +35,8 @@ export const EN = {
         HIP: 'Hip Replacement',
         FRACTURE: 'Fracture Treatment',
         ARTHROSCOPY: 'Arthroscopy',
-        SPINE: 'Spine Care',
-        SPORTS: 'Sports Injuries'
+        SPINE: 'Spine / Back Pain Treatment',
+        SPORTS: 'Sports Injury Treatment'
       },
       APPOINTMENT: {
         TITLE: 'Book Your Consult',
@@ -90,7 +90,12 @@ export const EN = {
       VERIFIED: 'Verified Success Stories',
       SUCCESSFUL_TREATMENTS: 'Successful Treatments',
       SPECIALIZATION: 'Specialization',
+      PRECISION: 'Precision',
       DATA: {
+        VAL1: '15+',
+        VAL2: '5000+',
+        VAL3: 'Knee, Hip, & Spine',
+        VAL4: '98%',
         DESC1: 'In Orthopedic Excellence',
         DESC3: 'In successful complex surgeries',
         DESC4: 'In robotic-assisted procedures'
@@ -129,9 +134,9 @@ export const EN = {
       FRACTURE_DESC: 'Comprehensive management of complex bone breaks and traumatic musculoskeletal injuries.',
       ARTHROSCOPY: 'Arthroscopy',
       ARTHROSCOPY_DESC: 'Keyhole surgery for joint diagnosis and repair with minimal downtime.',
-      SPINE: 'Spine Care',
+      SPINE: 'Spine / Back Pain Treatment',
       SPINE_DESC: 'Specialized treatment for spinal conditions, herniated discs, and structural alignment.',
-      SPORTS: 'Sports Injuries',
+      SPORTS: 'Sports Injury Treatment',
       SPORTS_DESC: 'Elite-level care for athletes, focusing on ligament repair and functional performance.',
       LEARN_MORE: 'View All Services'
     },
@@ -264,6 +269,20 @@ export const EN = {
       PLACEHOLDER: 'SECURE EMAIL CHANNEL',
       ACTION: 'Establish Link',
       SECURED: 'Encrypted transmission secured'
+    },
+    CONTACT_INFO: {
+      ADDRESS_LABEL: 'Clinic Location',
+      ADDRESS_VALUE: 'Popular Diagnostic Center (Unit 02), House 15, Road 07, Sector 04, Uttara, Dhaka',
+      HOURS_LABEL: 'Visiting Hours',
+      HOURS_VALUE: 'Everyday: 5:00 PM – 9:00 PM',
+      PHONE_LABEL: 'Call Now',
+      PHONE_VALUE: '+880 1711-123456',
+      DIRECTIONS: 'Get Directions'
+    }
+  },
+  DOCTORS: {
+    DETAIL: {
+      WAIT_TIME: 'ESTIMATED WAIT: 15 MINS'
     }
   },
   FOOTER: {

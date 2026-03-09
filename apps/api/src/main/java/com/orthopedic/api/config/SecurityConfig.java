@@ -102,8 +102,8 @@ public class SecurityConfig {
                                                 .requestMatchers("/actuator/health", "/actuator/info").permitAll()
                                                 .requestMatchers("/actuator/**").hasAuthority("ROLE_SUPER_ADMIN")
                                                 .requestMatchers("/api/v1/doctor/website/**").hasAnyRole("SUPER_ADMIN", "DOCTOR_ADMIN")
-                                                .requestMatchers("/api/v1/doctor/**").hasRole("SUPER_ADMIN")
-                                                .requestMatchers("/api/v1/admin/**").hasRole("DOCTOR_ADMIN")
+                                                .requestMatchers("/api/v1/doctor/**").hasAnyRole("DOCTOR_ADMIN", "SUPER_ADMIN")
+                                                .requestMatchers("/api/v1/admin/**").hasRole("SUPER_ADMIN")
                                                 .requestMatchers("/api/v1/patient/**").hasAnyRole("PATIENT", "DOCTOR_ADMIN", "SUPER_ADMIN")
                                                 .anyRequest().authenticated())
                                 .oauth2Login(oauth2 -> oauth2

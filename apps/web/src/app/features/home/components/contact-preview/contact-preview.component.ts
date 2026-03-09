@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
+import { ReplacePipe } from '@core/pipes/replace.pipe';
 
 @Component({
   selector: 'app-home-contact-preview',
@@ -11,7 +12,8 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    TranslatePipe
+    TranslatePipe,
+    ReplacePipe
   ],
   template: `
     <section class="py-24 bg-soft-blue relative overflow-hidden -mx-6 sm:-mx-10 lg:-mx-12">
@@ -33,8 +35,8 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
                   <mat-icon>location_on</mat-icon>
                 </div>
                 <div>
-                  <h4 class="text-xs font-black text-secondary-400 uppercase tracking-widest mb-1">{{ 'HOME.CONTACT.DETAILS' | translate }}</h4>
-                  <p class="text-lg font-bold text-secondary-900 leading-tight">Popular Diagnostic Center (Unit 02),<br/>House 15, Road 07, Sector 04,<br/>Uttara, Dhaka</p>
+                  <h4 class="text-xs font-black text-secondary-400 uppercase tracking-widest mb-1">{{ 'HOME.CONTACT_INFO.ADDRESS_LABEL' | translate }}</h4>
+                  <p class="text-lg font-bold text-secondary-900 leading-tight" [innerHTML]="'HOME.CONTACT_INFO.ADDRESS_VALUE' | translate | replace : ', ' : '<br/>'"></p>
                 </div>
               </div>
 
@@ -43,8 +45,8 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
                   <mat-icon>schedule</mat-icon>
                 </div>
                 <div>
-                  <h4 class="text-xs font-black text-secondary-400 uppercase tracking-widest mb-1">{{ 'NAV.DROPDOWN.CONTACT.HOURS' | translate }}</h4>
-                  <p class="text-lg font-bold text-secondary-900 leading-tight">Everyday: 5:00 PM – 9:00 PM</p>
+                  <h4 class="text-xs font-black text-secondary-400 uppercase tracking-widest mb-1">{{ 'HOME.CONTACT_INFO.HOURS_LABEL' | translate }}</h4>
+                  <p class="text-lg font-bold text-secondary-900 leading-tight">{{ 'HOME.CONTACT_INFO.HOURS_VALUE' | translate }}</p>
                 </div>
               </div>
 
@@ -53,15 +55,15 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
                   <mat-icon>phone</mat-icon>
                 </div>
                 <div>
-                   <h4 class="text-xs font-black text-secondary-400 uppercase tracking-widest mb-1">CALL NOW</h4>
-                   <p class="text-lg font-bold text-secondary-900 leading-tight">+880 1711-123456</p>
+                   <h4 class="text-xs font-black text-secondary-400 uppercase tracking-widest mb-1">{{ 'HOME.CONTACT_INFO.PHONE_LABEL' | translate }}</h4>
+                   <p class="text-lg font-bold text-secondary-900 leading-tight">{{ 'HOME.CONTACT_INFO.PHONE_VALUE' | translate }}</p>
                 </div>
               </div>
             </div>
 
             <div class="mt-12 flex flex-wrap gap-4">
                <a mat-flat-button color="primary" href="https://goo.gl/maps/placeholder" target="_blank" class="h-16 px-10 rounded-2xl text-lg font-bold uppercase shadow-2xl shadow-primary/30">
-                  GET DIRECTIONS
+                  {{ 'HOME.CONTACT_INFO.DIRECTIONS' | translate }}
                   <mat-icon class="ml-2">directions</mat-icon>
                </a>
             </div>

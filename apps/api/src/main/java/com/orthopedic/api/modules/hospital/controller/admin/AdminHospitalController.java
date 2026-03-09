@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/doctor/hospitals")
+@RequestMapping("/api/v1/admin/hospitals")
 @Tag(name = "Admin Hospital Management", description = "Admin endpoints for managing hospitals and their services")
 @PreAuthorize("hasRole('SUPER_ADMIN')")
 @RequiredArgsConstructor

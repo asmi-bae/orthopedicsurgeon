@@ -34,7 +34,7 @@ import { Doctor, ApiResponse, PageResponse } from '@repo/types';
                      <mat-icon class="scale-110">arrow_back</mat-icon>
                    </button>
                    <div>
-                     <h1 class="text-3xl font-black text-secondary-900 uppercase tracking-tighter">{{ 'BOOKING.TITLE' | translate }}</h1>
+                     <h1 class="text-3xl font-black text-secondary-900 uppercase tracking-[-0.05em]">{{ 'BOOKING.TITLE' | translate }}</h1>
                      <p class="text-[10px] font-black uppercase tracking-[0.3em] text-primary mt-1">{{ 'BOOKING.STEP_OF' | translate }} {{ currentStep() + 1 }} {{ 'BOOKING.OF' | translate }} 4</p>
                    </div>
                 </div>

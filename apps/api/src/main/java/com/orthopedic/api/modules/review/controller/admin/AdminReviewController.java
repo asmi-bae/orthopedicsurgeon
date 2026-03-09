@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/doctor/reviews")
+@RequestMapping("/api/v1/admin/reviews")
 @RequiredArgsConstructor
 @Tag(name = "Admin Review Management", description = "Endpoints for administrators to moderate doctor reviews")
 @PreAuthorize("hasRole('SUPER_ADMIN')")

@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v1/doctor/media")
+@RequestMapping("/api/v1/admin/media")
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Admin Media", description = "Admin endpoints for media management")

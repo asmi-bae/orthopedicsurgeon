@@ -37,7 +37,7 @@ export interface Service {
             <mat-card class="rounded-[40px] border border-gray-100 shadow-none hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-gray-50/50 overflow-hidden group">
               <!-- Image Header -->
               <div *ngIf="service.image" class="aspect-[4/3] overflow-hidden relative">
-                <img [src]="service.image" [alt]="service.title | translate" class="w-full h-full object-cover grayscale-0 group-hover:scale-105 transition-transform duration-1000" />
+                <img [src]="service.image" [alt]="service.title | translate" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                 <div class="absolute inset-0 bg-gradient-to-t from-gray-900/20 to-transparent"></div>
               </div>
 

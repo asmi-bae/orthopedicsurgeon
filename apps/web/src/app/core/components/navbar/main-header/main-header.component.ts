@@ -43,14 +43,14 @@ import { UserMenuComponent } from '../../user-menu/user-menu.component';
                [routerLink]="link.path" 
                routerLinkActive="active" 
                [routerLinkActiveOptions]="{exact: link.path === '/'}"
-               class="px-3 py-2 rounded-xl text-sm font-bold tracking-widest relative overflow-hidden transition-all duration-300">
-              <mat-icon *ngIf="link.children" class="text-xs scale-75 transition-transform duration-300 group-hover:rotate-180">expand_more</mat-icon>
+               class="px-3 py-2 rounded-xl text-sm font-bold tracking-[0.2em] relative overflow-hidden transition-all duration-300">
+              <mat-icon *ngIf="link.children" class="text-[10px] w-3 h-3 flex items-center justify-center transition-transform duration-300 group-hover:rotate-180">expand_more</mat-icon>
               {{ link.label | translate }}
             </a>
 
             <!-- Premium Dual-Pane Megamenu (Full-Width, Auto-Height) -->
             <div *ngIf="link.children" 
-                 class="absolute top-full left-0 w-full bg-white border-b border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 z-[999] overflow-hidden"
+                 class="absolute top-full left-0 w-full bg-white border-b border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[999] overflow-hidden"
                  style="max-height: 0;">
               <div class="app-container py-8 px-2 sm:px-4">
                 <div class="flex gap-20 items-start">
@@ -75,7 +75,7 @@ import { UserMenuComponent } from '../../user-menu/user-menu.component';
                         <!-- Condensed Premium Link (Matching Header Font) -->
                         <a *ngIf="!child.isHeader"
                            [routerLink]="child.path"
-                           class="group/link flex items-center justify-between gap-4 px-0 py-1.5 text-sm font-bold text-secondary-600 hover:text-primary tracking-widest transition-all duration-200 border-b border-transparent hover:border-primary/5">
+                           class="group/link flex items-center justify-between gap-4 px-0 py-1.5 text-sm font-bold text-secondary-600 hover:text-primary tracking-[0.2em] transition-all duration-200 border-b border-transparent hover:border-primary/5">
                            <div class="flex items-center gap-2">
                              <mat-icon *ngIf="child.icon" class="text-xs opacity-30 group-hover/link:opacity-100 transition-opacity">{{child.icon}}</mat-icon>
                              <span>{{ child.label | translate }}</span>
@@ -213,11 +213,11 @@ export class MainHeaderComponent {
     { 
       label: 'NAV.CONTACT', 
       path: '/contact',
-      children: [
-        { label: 'NAV.DROPDOWN.CONTACT.DETAILS', path: '/contact', icon: 'location_on' },
-        { label: 'NAV.DROPDOWN.CONTACT.FORM', path: '/contact', icon: 'email' },
-        { label: 'NAV.DROPDOWN.CONTACT.HOURS', path: '/contact', icon: 'schedule' }
-      ]
+      // children: [
+      //   { label: 'NAV.DROPDOWN.CONTACT.DETAILS', path: '/contact', icon: 'location_on' },
+      //   { label: 'NAV.DROPDOWN.CONTACT.FORM', path: '/contact', icon: 'email' },
+      //   { label: 'NAV.DROPDOWN.CONTACT.HOURS', path: '/contact', icon: 'schedule' }
+      // ]
     }
   ];
 }

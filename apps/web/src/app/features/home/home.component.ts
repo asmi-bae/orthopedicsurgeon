@@ -15,6 +15,7 @@ import { NewsletterComponent } from './components/newsletter/newsletter.componen
 import { GalleryPreviewComponent } from './components/gallery-preview/gallery-preview.component';
 import { ContactPreviewComponent } from './components/contact-preview/contact-preview.component';
 import { QuickAppointmentComponent } from './components/quick-appointment/quick-appointment.component';
+import { PartnersComponent, Hospital } from './components/partners/partners.component';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +34,8 @@ import { QuickAppointmentComponent } from './components/quick-appointment/quick-
     FaqComponent,
     QuickAppointmentComponent,
     ContactPreviewComponent,
-    NewsletterComponent
+    NewsletterComponent,
+    PartnersComponent
   ],
   template: `
     <div class="min-h-screen bg-white">
@@ -67,6 +69,9 @@ import { QuickAppointmentComponent } from './components/quick-appointment/quick-
       <!-- FAQ Section -->
       <app-home-faq [faqs]="faqs"></app-home-faq>
 
+    <!-- Partners Section -->
+      <app-home-partners [hospitals]="hospitals"></app-home-partners>
+
       <!-- Contact / Location -->
       <app-home-contact-preview></app-home-contact-preview>
 
@@ -81,19 +86,26 @@ import { QuickAppointmentComponent } from './components/quick-appointment/quick-
 })
 export class HomeComponent {
   stats = [
-    { label: 'HOME.HERO.DOCTOR.EXP', value: '15+', description: 'HOME.STATS.DATA.DESC1', icon: 'history' },
-    { label: 'HOME.STATS.SUCCESSFUL_TREATMENTS', value: '5000+', description: 'HOME.STATS.DATA.DESC3', icon: 'task_alt' },
-    { label: 'HOME.STATS.SPECIALIZATION', value: 'Knee, Hip, & Spine', description: 'HOME.STATS.DATA.DESC4', icon: 'accessibility_new' },
-    { label: 'HOME.STATS.PRECISION', value: '98%', description: 'HOME.STATS.DATA.DESC4', icon: 'biotech' },
+    { label: 'HOME.STATS.EXPERIENCE', value: 'HOME.STATS.DATA.VAL1', description: 'HOME.STATS.DATA.DESC1', icon: 'history' },
+    { label: 'HOME.STATS.SUCCESSFUL_TREATMENTS', value: 'HOME.STATS.DATA.VAL2', description: 'HOME.STATS.DATA.DESC3', icon: 'task_alt' },
+    { label: 'HOME.STATS.SPECIALIZATION', value: 'HOME.STATS.DATA.VAL3', description: 'HOME.STATS.DATA.DESC4', icon: 'accessibility_new' },
+    { label: 'HOME.STATS.PRECISION', value: 'HOME.STATS.DATA.VAL4', description: 'HOME.STATS.DATA.DESC1', icon: 'biotech' },
   ];
 
   services = [
-    { title: 'HOME.SERVICES.KNEE', description: 'HOME.SERVICES.KNEE_DESC', icon: 'rebase_edit', image: 'assets/images/treatments/knee.png' },
-    { title: 'HOME.SERVICES.HIP', description: 'HOME.SERVICES.HIP_DESC', icon: 'accessibility_new', image: 'assets/images/treatments/hip.png' },
-    { title: 'HOME.SERVICES.FRACTURE', description: 'HOME.SERVICES.FRACTURE_DESC', icon: 'healing', image: 'assets/images/treatments/fracture.png' },
-    { title: 'HOME.SERVICES.ARTHROSCOPY', description: 'HOME.SERVICES.ARTHROSCOPY_DESC', icon: 'visibility', image: 'assets/images/treatments/arthroscopy.png' },
-    { title: 'HOME.SERVICES.SPINE', description: 'HOME.SERVICES.SPINE_DESC', icon: 'accessibility', image: 'assets/images/treatments/spine.png' },
-    { title: 'HOME.SERVICES.SPORTS', description: 'HOME.SERVICES.SPORTS_DESC', icon: 'sports_scores', image: 'assets/images/treatments/sports.png' },
+    { title: 'HOME.SERVICES.KNEE', description: 'HOME.SERVICES.KNEE_DESC', icon: 'rebase_edit', image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118' },
+    { title: 'HOME.SERVICES.HIP', description: 'HOME.SERVICES.HIP_DESC', icon: 'accessibility_new', image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514' },
+    { title: 'HOME.SERVICES.FRACTURE', description: 'HOME.SERVICES.FRACTURE_DESC', icon: 'healing', image: 'https://images.unsplash.com/photo-1581056323862-99bd07728491' },
+    { title: 'HOME.SERVICES.ARTHROSCOPY', description: 'HOME.SERVICES.ARTHROSCOPY_DESC', icon: 'visibility', image: 'https://images.unsplash.com/photo-1576091160550-2173be9997ad' },
+    { title: 'HOME.SERVICES.SPINE', description: 'HOME.SERVICES.SPINE_DESC', icon: 'accessibility', image: 'https://images.unsplash.com/photo-1559757175-5700dde675bc' },
+    { title: 'HOME.SERVICES.SPORTS', description: 'HOME.SERVICES.SPORTS_DESC', icon: 'sports_scores', image: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8' },
+  ];
+
+  hospitals: Hospital[] = [
+    { name: 'HOME.PARTNERS.CI1.NAME', city: 'HOME.PARTNERS.CI1.CITY', image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d' },
+    { name: 'HOME.PARTNERS.CI2.NAME', city: 'HOME.PARTNERS.CI2.CITY', image: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3' },
+    { name: 'HOME.PARTNERS.CI3.NAME', city: 'HOME.PARTNERS.CI3.CITY', image: 'https://images.unsplash.com/photo-1504439468489-c8920d766a28' },
+    { name: 'HOME.PARTNERS.CI4.NAME', city: 'HOME.PARTNERS.CI4.CITY', image: 'https://images.unsplash.com/photo-1512678080530-7760d81faba6' }
   ];
 
   testimonials = [

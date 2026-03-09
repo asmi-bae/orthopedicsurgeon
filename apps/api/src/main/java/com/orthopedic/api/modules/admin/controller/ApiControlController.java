@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/api/v1/doctor/api-controls")
+@RequestMapping("/api/v1/admin/api-controls")
 @RequiredArgsConstructor
 @Tag(name = "Admin API Controls", description = "Endpoints for managing maintenance mode, blocked IPs, and API circuit breakers")
 @PreAuthorize("hasRole('SUPER_ADMIN')") // Super Admin only feature

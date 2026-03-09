@@ -141,7 +141,7 @@ public class AuthServiceImpl implements AuthService {
         Session session = Session.builder()
                 .user(user)
                 .accessTokenJti(UUID.fromString(jti))
-                .refreshTokenHash(passwordEncoder.encode(refreshToken.getToken()))
+                .refreshTokenHash(refreshToken.getToken())
                 .deviceFingerprint(request.getDeviceFingerprint())
                 .ipAddress(ipAddress)
                 .userAgent(userAgent)
@@ -325,7 +325,7 @@ public class AuthServiceImpl implements AuthService {
         Session session = Session.builder()
                 .user(user)
                 .accessTokenJti(UUID.fromString(newJti))
-                .refreshTokenHash(passwordEncoder.encode(newRefreshToken.getToken()))
+                .refreshTokenHash(newRefreshToken.getToken())
                 .lastActivity(LocalDateTime.now())
                 .isActive(true)
                 .build();

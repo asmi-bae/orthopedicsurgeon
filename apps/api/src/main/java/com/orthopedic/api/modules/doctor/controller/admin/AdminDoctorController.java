@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/doctor/doctors")
+@RequestMapping("/api/v1/admin/doctors")
 @Tag(name = "Admin Doctor Management", description = "Endpoints for administrators to manage doctor profiles and registrations")
 @PreAuthorize("hasRole('SUPER_ADMIN')")
 public class AdminDoctorController extends BaseController {

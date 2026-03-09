@@ -27,7 +27,7 @@ export interface Stat {
                   <div class="w-16 h-16 rounded-2xl bg-medical-teal/5 flex items-center justify-center text-medical-teal mb-6 transition-all duration-500 group-hover:bg-medical-teal group-hover:text-white">
                     <mat-icon>{{stat.icon}}</mat-icon>
                   </div>
-                  <h3 class="text-4xl font-black text-secondary-900 tracking-tighter uppercase mb-2">{{stat.value}}</h3>
+                  <h3 class="text-4xl font-black text-secondary-900 tracking-tighter uppercase mb-2">{{ stat.value | translate }}</h3>
                   <p class="text-xs font-black text-primary uppercase tracking-[0.3em] mb-2">{{ stat.label | translate }}</p>
                   <p class="text-sm text-secondary-400 font-medium leading-relaxed">{{ stat.description | translate }}</p>
                </div>

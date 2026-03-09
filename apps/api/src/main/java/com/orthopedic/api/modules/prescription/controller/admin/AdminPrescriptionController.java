@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/doctor/prescriptions")
+@RequestMapping("/api/v1/admin/prescriptions")
 @Tag(name = "Admin Prescription Management", description = "Endpoints for administrators and staff to view all patient prescriptions")
 @PreAuthorize("hasRole('SUPER_ADMIN')")
 public class AdminPrescriptionController extends BaseController {

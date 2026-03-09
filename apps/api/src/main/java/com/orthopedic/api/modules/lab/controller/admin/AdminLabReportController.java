@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/doctor/lab-reports")
+@RequestMapping("/api/v1/admin/lab-reports")
 @Tag(name = "Admin Lab Report Management", description = "Endpoints for administrators and staff to create and manage all lab report requests")
 @PreAuthorize("hasRole('SUPER_ADMIN')")
 public class AdminLabReportController extends BaseController {

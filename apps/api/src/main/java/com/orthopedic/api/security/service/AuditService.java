@@ -53,7 +53,7 @@ public class AuditService {
 
     @Async
     public void logSuccessfulLogin(String email, String ipAddress, String userAgent, String method) {
-        log.info("✅ SUCCESSFUL LOGIN [{}]: email={}, ip={}, userAgent={}, method={}",
+        log.info("SUCCESSFUL LOGIN [{}]: email={}, ip={}, userAgent={}, method={}",
                 UUID.randomUUID(), email, ipAddress, userAgent, method);
         
         LoginAudit audit = LoginAudit.builder()

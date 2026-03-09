@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin/dashboard")
+@RequestMapping("/api/v1/doctor/dashboard")
 @RequiredArgsConstructor
 @Tag(name = "Doctor Dashboard", description = "Endpoints for retrieving doctor dashboard data")
 @PreAuthorize("hasRole('DOCTOR_ADMIN')")

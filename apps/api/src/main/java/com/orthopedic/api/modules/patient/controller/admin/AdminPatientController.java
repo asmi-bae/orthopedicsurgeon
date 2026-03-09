@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/doctor/patients")
+@RequestMapping("/api/v1/admin/patients")
 @Tag(name = "Admin Patient Management", description = "Endpoints for administrators to manage patient records and medical history")
 public class AdminPatientController extends BaseController {
 

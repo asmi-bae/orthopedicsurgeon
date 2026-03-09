@@ -41,9 +41,9 @@ export interface CaseStudy {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
           <!-- Case 1 -->
           <mat-card class="bg-white/5 border border-white/10 rounded-[40px] overflow-hidden group hover:border-primary/40 transition-all duration-700">
-            <div class="grid grid-cols-1 lg:grid-cols-2">
-              <div class="h-64 lg:h-auto overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1551076805-e1869033e561" class="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000" />
+            <div class="grid grid-cols-1 lg:grid-cols-2 h-full">
+              <div class="relative h-64 lg:h-full overflow-hidden min-h-[300px]">
+                <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118" class="absolute inset-0 w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000" />
               </div>
               <div class="p-10 flex flex-col justify-center">
                 <span class="text-[10px] font-black text-primary uppercase tracking-widest mb-4 block">{{ 'HOME.SUCCESSFUL_SURGERIES.CASE1.TAG' | translate }}</span>
@@ -55,9 +55,9 @@ export interface CaseStudy {
 
           <!-- Case 2 -->
           <mat-card class="bg-white/5 border border-white/10 rounded-[40px] overflow-hidden group hover:border-primary/40 transition-all duration-700">
-            <div class="grid grid-cols-1 lg:grid-cols-2">
-              <div class="h-64 lg:h-auto overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1571019623518-e71de96e28da" class="w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000" />
+            <div class="grid grid-cols-1 lg:grid-cols-2 h-full">
+              <div class="relative h-64 lg:h-full overflow-hidden min-h-[300px]">
+                <img src="https://images.unsplash.com/photo-1584515933487-779824d29309" class="absolute inset-0 w-full h-full object-cover grayscale brightness-75 group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000" />
               </div>
               <div class="p-10 flex flex-col justify-center">
                 <span class="text-[10px] font-black text-primary uppercase tracking-widest mb-4 block">{{ 'HOME.SUCCESSFUL_SURGERIES.CASE2.TAG' | translate }}</span>
