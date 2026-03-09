@@ -18,7 +18,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
       <div class="app-container relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <!-- Text Content -->
-          <div class="animate-in fade-in slide-in-from-left duration-1000 order-2 lg:order-1">
+          <div class="animate-in fade-in duration-1000 order-2 lg:order-1">
              <div class="inline-flex items-center gap-2 px-4 py-2 bg-medical-teal/10 rounded-full mb-8">
                <mat-icon class="text-medical-teal scale-75">medical_services</mat-icon>
                <span class="text-[10px] font-black text-medical-teal uppercase tracking-[0.2em]">{{ 'HOME.HERO.DOCTOR.TITLE' | translate }}</span>
@@ -39,11 +39,11 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
              
              <div class="flex flex-wrap gap-5">
                <a mat-flat-button color="primary" href="https://www.facebook.com/Ab.rahman49" target="_blank"
-                        class="h-16 px-10 rounded-2xl text-lg font-bold uppercase shadow-2xl shadow-primary/30">
+                        class="h-16 px-10 rounded-2xl text-lg font-bold uppercase shadow-2xl shadow-primary/30 hover:shadow-primary/50 hover:brightness-110 transition-all duration-300">
                  {{ 'HOME.HERO.CTA.BOOK' | translate }}
                </a>
                <a mat-stroked-button color="primary" href="https://www.facebook.com/orthopedicsurgeonrahmanbd" target="_blank"
-                        class="h-16 px-10 rounded-2xl text-lg font-bold uppercase border-2">
+                        class="h-16 px-10 rounded-2xl text-lg font-bold uppercase border-2 hover:bg-primary/5 transition-all duration-300">
                  {{ 'HOME.HERO.CTA.CONTACT' | translate }}
                </a>
              </div>
@@ -60,10 +60,10 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
           </div>
 
           <!-- Profile Image & Info Card -->
-          <div class="relative animate-in fade-in slide-in-from-right duration-1000 order-1 lg:order-2 mb-12 lg:mb-0 lg:-mt-20">
+          <div class="relative animate-in fade-in duration-1000 order-1 lg:order-2 mb-12 lg:mb-0 lg:-mt-20">
              <div class="relative z-10 overflow-hidden aspect-[4/5] max-w-[320px] sm:max-w-md lg:max-w-xl mx-auto group">
                 <img src="assets/images/Dr. Rahman.svg" [alt]="'HOME.HERO.DOCTOR.NAME' | translate" 
-                     class="w-full h-full object-cover grayscale-0 group-hover:scale-105 transition-transform duration-1000" />
+                     class="w-full h-full object-cover" />
                 
                 <!-- Blurry Fade Transition at bottom - smoothed with mask -->
                 <div class="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-soft-blue via-soft-blue/40 to-transparent backdrop-blur-[10px] pointer-events-none z-10 [mask-image:linear-gradient(to_top,black_20%,transparent)]"></div>
@@ -87,7 +87,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
              </div>
 
              <!-- Visiting Hours Card -->
-             <div class="absolute -top-10 -right-4 z-20 bg-white p-6 rounded-[32px] shadow-2xl border border-slate-100 animate-bounce-subtle hidden lg:block">
+             <div class="absolute -top-8 -right-4 z-20 bg-white p-6 rounded-[32px] border border-slate-100 hover:shadow-primary/20 transition-all duration-500 hidden lg:block">
                 <div class="flex items-center gap-4">
                   <div class="w-12 h-12 bg-medical-teal/10 rounded-2xl flex items-center justify-center text-medical-teal">
                     <mat-icon>schedule</mat-icon>
@@ -106,7 +106,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
 
     <!-- Interaction Hint -->
     <div (click)="scrollToDiscover()" 
-         class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-40 hover:opacity-100 transition-all duration-500 cursor-pointer group z-30">
+         class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-all duration-500 cursor-pointer group z-30">
         <span class="text-[10px] font-black uppercase tracking-[0.4em] text-secondary-900 group-hover:text-primary transition-colors text-center">{{ 'COMMON.SCROLL_DISCOVER' | translate }}</span>
         <div class="w-10 h-10 rounded-full border border-primary/20 flex items-center justify-center group-hover:border-primary transition-colors">
           <mat-icon class="text-primary">expand_more</mat-icon>
@@ -119,11 +119,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
   `,
   styles: [`
     :host { display: block; }
-    @keyframes bounce-subtle {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    .animate-bounce-subtle { animation: bounce-subtle 4s ease-in-out infinite; }
+  
   `]
 })
 export class HeroComponent {

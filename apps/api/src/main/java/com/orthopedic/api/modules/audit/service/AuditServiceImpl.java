@@ -25,6 +25,7 @@ public class AuditServiceImpl implements AuditService {
     }
 
     @Override
+    @org.springframework.scheduling.annotation.Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void logEvent(AuditEventRequest request) {
         AuditLog log = auditMapper.toEntity(request);

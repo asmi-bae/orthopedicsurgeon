@@ -4,7 +4,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { LABREPORTSService } from '../../core/services/api/labreports.service';
+import { DoctorLabReportService } from '../../core/services/api/doctor-lab-report.service';
 
 @Component({
   selector: 'app-report-management',
@@ -146,7 +146,7 @@ import { LABREPORTSService } from '../../core/services/api/labreports.service';
   styles: [`:host { display: block; }`]
 })
 export class ReportManagementComponent implements OnInit {
-  private labreportsService = inject(LABREPORTSService);
+  private labreportsService = inject(DoctorLabReportService);
 
   reports = signal<any[]>([]);
   loading = signal(false);
@@ -157,7 +157,7 @@ export class ReportManagementComponent implements OnInit {
 
   loadReports() {
     this.loading.set(true);
-    this.labreportsService.getAdminLabreports().subscribe({
+    this.labreportsService.getLabReports().subscribe({
       next: (res: any) => {
         const data = res?.data?.content || res?.data || [];
         this.reports.set(Array.isArray(data) ? data : []);

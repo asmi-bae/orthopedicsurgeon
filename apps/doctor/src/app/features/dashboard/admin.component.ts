@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '@repo/auth';
-import { ADMINDASHBOARDService } from '../../core/services/api/admindashboard.service';
+import { DoctorDashboardService } from '../../core/services/api/doctor-dashboard.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 
@@ -145,7 +145,7 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
                   <p class="text-xs text-google-gray-600 m-0">{{ h.city }}</p>
                 </div>
                 <div class="text-right shrink-0">
-                  <p class="text-sm font-black text-google-gray-900 dark:text-white m-0">{{ h.revenue }}</p>
+                  <p class="text-sm font-black text-google-gray-900 dark:text-white m-0">{{ h.patientCount }} Patients</p>
                   <div class="flex items-center justify-end gap-1">
                     <mat-icon class="text-[14px] text-google-green">trending_up</mat-icon>
                     <p class="text-[10px] text-google-green font-black m-0">{{ h.growth }}</p>
@@ -181,12 +181,12 @@ type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'out
 })
 export class AdminComponent {
   auth = inject(AuthService);
-  dashboardService = inject(ADMINDASHBOARDService);
+  dashboardService = inject(DoctorDashboardService);
   currencyPipe = inject(CurrencyPipe);
 
   // Use toSignal to handle API data reactively
   dashboardData = toSignal(
-    this.dashboardService.getAdminDashboard().pipe(
+    this.dashboardService.getDashboardData().pipe(
       map(res => res?.data)
     )
   );
@@ -196,11 +196,11 @@ export class AdminComponent {
     const s = d?.stats;
     return [
       {
-        label: 'Total Revenue', 
-        value: this.currencyPipe.transform(s?.totalRevenue || 0, 'USD', 'symbol', '1.0-0') || '$0',
-        description: 'Net earnings this month',
-        icon: 'payments', iconBg: 'bg-google-blue/10', iconColor: 'text-google-blue',
-        trend: s?.revenueTrend || '0%', trendVariant: (s?.revenueTrend?.startsWith('-') ? 'danger' : 'success') as BadgeVariant
+        label: 'Active Appointments', 
+        value: (s?.activeAppointmentsCount || 0).toLocaleString(),
+        description: 'Scheduled for today',
+        icon: 'event_available', iconBg: 'bg-google-blue/10', iconColor: 'text-google-blue',
+        trend: s?.appointmentTrend || '0', trendVariant: 'info' as BadgeVariant
       },
       {
         label: 'Medical Staff', 
@@ -235,7 +235,7 @@ export class AdminComponent {
       { label: 'Appointments Today',   value: String(q?.appointmentsToday || 0),  icon: 'event_available' },
       { label: 'Pending Prescriptions', value: String(q?.pendingPrescriptions || 0),  icon: 'description' },
       { label: 'Active Hospitals',      value: String(q?.activeHospitals || 0),   icon: 'corporate_fare' },
-      { label: 'Open Invoices',         value: q?.openInvoicesAmount || '$0', icon: 'receipt_long' },
+      { label: 'Pending Audits',         value: String(q?.pendingAudits || 0), icon: 'verified_user' },
     ];
   });
 

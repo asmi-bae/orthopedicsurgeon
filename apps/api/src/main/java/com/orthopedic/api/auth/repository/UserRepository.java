@@ -14,6 +14,10 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
+    
+    @Override
+    @EntityGraph(attributePaths = { "roles" })
+    Optional<User> findById(UUID id);
 
     @EntityGraph(attributePaths = { "roles" })
     @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")

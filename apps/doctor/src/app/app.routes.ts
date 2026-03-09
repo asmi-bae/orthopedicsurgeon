@@ -50,11 +50,6 @@ export const routes: Routes = [
         data: { breadcrumb: 'Reports' }
       },
       { 
-        path: 'finance', 
-        loadComponent: () => import('@features/finance/finance-management.component').then(m => m.FinanceManagementComponent),
-        data: { breadcrumb: 'Finance' }
-      },
-      { 
         path: 'hospitals', 
         loadComponent: () => import('@features/hospitals/hospital-management.component').then(m => m.HospitalManagementComponent),
         data: { breadcrumb: 'Hospitals' }
@@ -87,18 +82,24 @@ export const routes: Routes = [
     ]
   },
   {
-    path: 'auth/login',
-    canActivate: [guestGuard],
-    loadComponent: () => import('@features/auth/admin-login.component').then(m => m.AdminLoginComponent)
-  },
-  {
-    path: 'auth/forgot-password',
-    canActivate: [guestGuard],
-    loadComponent: () => import('@features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
-  },
-  {
-    path: 'auth/reset-password',
-    canActivate: [guestGuard],
-    loadComponent: () => import('@features/auth/reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
+    path: 'auth',
+    loadComponent: () => import('@features/auth/auth-layout.component').then(m => m.AuthLayoutComponent),
+    children: [
+      {
+        path: 'login',
+        canActivate: [guestGuard],
+        loadComponent: () => import('@features/auth/login/login.component').then(m => m.AdminLoginComponent)
+      },
+      {
+        path: 'forgot-password',
+        canActivate: [guestGuard],
+        loadComponent: () => import('@features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
+      },
+      {
+        path: 'reset-password',
+        canActivate: [guestGuard],
+        loadComponent: () => import('@features/auth/reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
+      }
+    ]
   }
 ];

@@ -177,7 +177,6 @@ export class AdminSidebarComponent {
     { label: 'Prescriptions',     icon: 'medication',        route: '/records/prescriptions' },
     { label: 'Lab Reports',       icon: 'biotech',           route: '/records/reports' },
     { label: 'Health Records',    icon: 'monitor_heart',     route: '/health' },
-    { label: 'Payments',          icon: 'account_balance',   route: '/finance' },
     { label: 'Notifications',     icon: 'notifications',     route: '/notifications' },
     { label: 'Users',             icon: 'manage_accounts',   route: '/users',           roles: ['DOCTOR_ADMIN'] },
     { label: 'Audit Logs',        icon: 'receipt_long',      route: '/audit',           roles: ['DOCTOR_ADMIN'] },

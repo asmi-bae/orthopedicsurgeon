@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { PATIENTSMANAGEMENTService } from '../../core/services/api/patientsmanagement.service';
+import { DoctorPatientService } from '../../core/services/api/doctor-patient.service';
 
 @Component({
   selector: 'app-patient-management',
@@ -170,7 +170,7 @@ import { PATIENTSMANAGEMENTService } from '../../core/services/api/patientsmanag
   styles: [`:host { display: block; }`]
 })
 export class PatientManagementComponent implements OnInit {
-  private patientService = inject(PATIENTSMANAGEMENTService);
+  private patientService = inject(DoctorPatientService);
 
   patients = signal<any[]>([]);
   loading = signal(false);
@@ -182,7 +182,7 @@ export class PatientManagementComponent implements OnInit {
 
   loadPatients() {
     this.loading.set(true);
-    this.patientService.getAdminPatients().subscribe({
+    this.patientService.getPatients().subscribe({
       next: (res) => {
         // Assuming API returns ApiResponse<PageResponse<PatientResponse>>
         const data = res?.data?.content || res?.data || [];

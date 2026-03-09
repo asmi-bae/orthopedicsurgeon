@@ -9,8 +9,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AuthService } from '@repo/auth';
-import { ADMINAUTHENTICATIONService } from '../../core/services/api/adminauthentication.service';
-import { ADMINSESSIONDEVICESECURITYService } from '../../core/services/api/adminsessiondevicesecurity.service';
+import { DoctorAuthService } from '../../core/services/api/doctor-auth.service';
+import { DoctorAccountService } from '../../core/services/api/doctor-account.service';
+import { DoctorSessionService } from '../../core/services/api/doctor-session.service';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -264,8 +265,9 @@ import { finalize } from 'rxjs';
 })
 export class AccountComponent implements OnInit {
   auth = inject(AuthService);
-  adminAuthService = inject(ADMINAUTHENTICATIONService);
-  securityService = inject(ADMINSESSIONDEVICESECURITYService);
+  doctorAuthService = inject(DoctorAuthService);
+  doctorAccountService = inject(DoctorAccountService);
+  securityService = inject(DoctorSessionService);
   fb = inject(FormBuilder);
   route = inject(ActivatedRoute);
   router = inject(Router);
@@ -343,18 +345,24 @@ export class AccountComponent implements OnInit {
     if (this.profileForm.invalid) return;
     
     this.loading.set(true);
-    // Assuming a profile update endpoint exists in a service, otherwise using a generic update
-    // For now, let's keep the logic consistent with what was there or adapt to AA endpoints if appropriate
-    // AA service doesn't have putProfile, but let's assume it should or use USERSROLESService if appropriate
-    this.loading.set(false);
-    this.snackBar.open('Profile update endpoint integration pending specialized service expansion', 'Close', { duration: 3000 });
+    this.doctorAccountService.updateProfile(this.profileForm.value)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (res: any) => {
+          this.snackBar.open('Profile updated successfully', 'Close', { duration: 3000 });
+          this.auth.checkAuth().subscribe();
+        },
+        error: (err) => {
+          this.snackBar.open(err.error?.message || 'Failed to update profile', 'Close', { duration: 3000 });
+        }
+      });
   }
 
   changePassword() {
     if (this.passwordForm.invalid) return;
     
     this.loading.set(true);
-    this.securityService.postAdminSecurityChangepassword(this.passwordForm.value)
+    this.doctorAccountService.changePassword(this.passwordForm.value)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
@@ -368,21 +376,21 @@ export class AccountComponent implements OnInit {
   }
 
   loadSessions() {
-    this.securityService.getAdminSecurityMysessions().subscribe({
+    this.securityService.getMySessions().subscribe({
       next: (res: any) => this.sessions.set(res?.data || []),
       error: () => this.sessions.set([])
     });
   }
 
   revokeSession(id: string) {
-    this.securityService.deleteAdminSecuritySessionsSessionId(id).subscribe(() => {
+    this.securityService.revokeSession(id).subscribe(() => {
       this.loadSessions();
       this.snackBar.open('Session revoked', 'Close', { duration: 3000 });
     });
   }
 
   revokeOtherSessions() {
-    this.securityService.deleteAdminSecuritySessionsAllexceptcurrent().subscribe(() => {
+    this.securityService.revokeAllOtherSessions().subscribe(() => {
       this.loadSessions();
       this.snackBar.open('All other sessions signed out', 'Close', { duration: 3000 });
     });
@@ -390,7 +398,7 @@ export class AccountComponent implements OnInit {
 
   init2faSetup() {
     this.loading.set(true);
-    this.adminAuthService.postAdminAuth2faSetupBegin({})
+    this.doctorAuthService.setup2faBegin()
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (res: any) => {
@@ -407,7 +415,7 @@ export class AccountComponent implements OnInit {
     if (!this.tfaCode()) return;
     
     this.loading.set(true);
-    this.adminAuthService.postAdminAuth2faSetupVerify({ code: this.tfaCode() })
+    this.doctorAuthService.setup2faVerify({ code: this.tfaCode() })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {

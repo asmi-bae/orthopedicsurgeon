@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="flex items-center gap-3 group cursor-pointer" [style.height.px]="height">
+    <div class="flex items-center group cursor-pointer" [style.height.px]="height">
 
       <!-- PNG Logo (always shown, left side) -->
       <img

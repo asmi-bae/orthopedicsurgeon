@@ -96,10 +96,7 @@ public class DataInitializer implements CommandLineRunner {
 
 
         // 4. Seed Hospital (Trauma Specialized Hospital)
-        Hospital hospital = hospitalRepository.findAll().stream()
-                .filter(h -> "LIC-TRAUMA-001".equals(h.getLicenseNumber()))
-                .findFirst()
-                .orElse(null);
+        Hospital hospital = hospitalRepository.findByLicenseNumber("LIC-TRAUMA-001");
 
         if (hospital == null) {
             hospital = new Hospital();

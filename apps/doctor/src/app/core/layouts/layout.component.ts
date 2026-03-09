@@ -71,10 +71,9 @@ export class AdminLayoutComponent implements OnInit {
       ]
     },
     { 
-      label: 'Finance & Facilities', 
+      label: 'Infrastructure', 
       icon: 'mat-icon:account_balance',
       children: [
-        { label: 'Finance', route: '/finance', icon: 'mat-icon:payments' },
         { label: 'Hospitals', route: '/hospitals', icon: 'mat-icon:local_hospital' }
       ]
     },

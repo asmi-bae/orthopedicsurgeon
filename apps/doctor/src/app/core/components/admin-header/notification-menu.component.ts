@@ -151,7 +151,6 @@ export class NotificationMenuComponent implements OnInit {
       case NotificationType.APPOINTMENT_REMINDER: return 'alarm';
       case NotificationType.PRESCRIPTION_ADDED: return 'description';
       case NotificationType.LAB_REPORT_READY: return 'biotech';
-      case NotificationType.PAYMENT_SUCCESS: return 'payments';
       case NotificationType.SYSTEM_ALERT: return 'warning';
       default: return 'notifications';
     }
@@ -165,7 +164,6 @@ export class NotificationMenuComponent implements OnInit {
     switch (item.type) {
       case NotificationType.APPOINTMENT_CANCELLED: return 'bg-google-red';
       case NotificationType.SYSTEM_ALERT: return 'bg-google-red';
-      case NotificationType.PAYMENT_SUCCESS: return 'bg-google-emerald';
       default: return 'bg-google-blue';
     }
   }

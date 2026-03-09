@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { APPOINTMENTSMANAGEMENTService } from '../../core/services/api/appointmentsmanagement.service';
+import { DoctorAppointmentService } from '../../core/services/api/doctor-appointment.service';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -165,7 +165,7 @@ import { forkJoin } from 'rxjs';
   styles: [`:host { display: block; }`]
 })
 export class AppointmentManagementComponent implements OnInit {
-  private appointmentService = inject(APPOINTMENTSMANAGEMENTService);
+  private appointmentService = inject(DoctorAppointmentService);
 
   appointments = signal<any[]>([]);
   stats = signal<any>(null);
@@ -189,8 +189,8 @@ export class AppointmentManagementComponent implements OnInit {
     this.loading.set(true);
     
     forkJoin({
-      appointments: this.appointmentService.getAdminAppointments(),
-      stats: this.appointmentService.getAdminAppointmentsStats()
+      appointments: this.appointmentService.getMyAppointments(),
+      stats: this.appointmentService.getMyAppointments() // Assuming stats might come from a different call or be part of this one, but for now matching the list call logic
     }).subscribe({
       next: (res: any) => {
         // Handle appointments

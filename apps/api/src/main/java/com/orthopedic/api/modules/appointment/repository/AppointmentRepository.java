@@ -83,4 +83,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
         @EntityGraph(attributePaths = { "doctor.user", "patient.user" })
         List<Appointment> findAllByAppointmentDateAndStatus(java.time.LocalDate date,
                         Appointment.AppointmentStatus status, Pageable pageable);
+
+        long countByAppointmentDateAndDeletedFalse(java.time.LocalDate date);
 }

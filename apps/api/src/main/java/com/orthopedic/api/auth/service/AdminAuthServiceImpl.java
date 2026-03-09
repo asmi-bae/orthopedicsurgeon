@@ -176,6 +176,8 @@ public class AdminAuthServiceImpl implements AdminAuthService {
     @Override
     @Transactional
     public TokenResponse refreshAdminToken(String refreshTokenString) {
+        // Trip 1 (FindByToken + User) & Trip 2 (RotateToken) happen inside rotateRefreshToken
+        // rotateRefreshToken is now more efficient due to @EntityGraph on findByToken
         RefreshToken newRefreshToken = tokenService.rotateRefreshToken(refreshTokenString, "rotated-admin");
         User user = newRefreshToken.getUser();
 
@@ -183,17 +185,27 @@ public class AdminAuthServiceImpl implements AdminAuthService {
         String newJti = UUID.randomUUID().toString();
         String newAccessToken = tokenProvider.generateAccessToken(userDetails, newJti);
 
-        // Deactivate old sessions in one UPDATE, then insert a fresh one (safe for UNIQUE JTI constraint)
-        sessionRepository.deactivateAllActiveSessions(user.getId());
+        // Trip 3: Update existing session directly using indexed refresh_token_hash
+        int updated = sessionRepository.updateSessionOnRefresh(
+                refreshTokenString, // old hash
+                newRefreshToken.getToken(), // new hash
+                UUID.fromString(newJti),
+                LocalDateTime.now()
+        );
 
-        Session session = Session.builder()
-                .user(user)
-                .accessTokenJti(UUID.fromString(newJti))
-                .refreshTokenHash(newRefreshToken.getToken())
-                .lastActivity(LocalDateTime.now())
-                .isActive(true)
-                .build();
-        sessionRepository.save(session);
+        // Fallback: If no active session found for this token (rare), ensure we still have an active one
+        if (updated == 0) {
+            log.warn("No active session found for refresh token during rotation. Creating new session.");
+            sessionRepository.deactivateAllActiveSessions(user.getId());
+            Session session = Session.builder()
+                    .user(user)
+                    .accessTokenJti(UUID.fromString(newJti))
+                    .refreshTokenHash(newRefreshToken.getToken())
+                    .lastActivity(LocalDateTime.now())
+                    .isActive(true)
+                    .build();
+            sessionRepository.save(session);
+        }
 
         return TokenResponse.builder()
                 .accessToken(newAccessToken)

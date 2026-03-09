@@ -4,7 +4,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { PRESCRIPTIONSService } from '../../core/services/api/prescriptions.service';
+import { DoctorPrescriptionService } from '../../core/services/api/doctor-prescription.service';
 
 @Component({
   selector: 'app-prescription-management',
@@ -140,7 +140,7 @@ import { PRESCRIPTIONSService } from '../../core/services/api/prescriptions.serv
   styles: [`:host { display: block; }`]
 })
 export class PrescriptionManagementComponent implements OnInit {
-  private prescriptionService = inject(PRESCRIPTIONSService);
+  private prescriptionService = inject(DoctorPrescriptionService);
 
   prescriptions = signal<any[]>([]);
   loading = signal(false);
@@ -151,7 +151,7 @@ export class PrescriptionManagementComponent implements OnInit {
 
   loadPrescriptions() {
     this.loading.set(true);
-    this.prescriptionService.getAdminPrescriptions().subscribe({
+    this.prescriptionService.getPrescriptions().subscribe({
       next: (res: any) => {
         const data = res?.data?.content || res?.data || [];
         this.prescriptions.set(Array.isArray(data) ? data : []);

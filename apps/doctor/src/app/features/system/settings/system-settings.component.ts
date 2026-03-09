@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ZrdPageHeaderComponent, ZrdCardComponent, ZrdInputComponent, ZrdButtonComponent, ZrdSelectComponent, ZrdBadgeComponent, ZrdSelectItem } from '@ui/components';
-import { WEBSITECONTROLService } from '@core/services/api/websitecontrol.service';
+import { DoctorWebsiteService } from '@core/services/api/doctor-website.service';
 
 @Component({
   selector: 'app-system-settings',
@@ -165,7 +165,7 @@ import { WEBSITECONTROLService } from '@core/services/api/websitecontrol.service
   `]
 })
 export class SystemSettingsComponent implements OnInit {
-  private websiteControlService = inject(WEBSITECONTROLService);
+  private websiteControlService = inject(DoctorWebsiteService);
   private snackBar = inject(MatSnackBar);
 
   settingsForm = new UntypedFormGroup({
@@ -195,7 +195,7 @@ export class SystemSettingsComponent implements OnInit {
   }
 
   loadSettings() {
-    this.websiteControlService.getAdminWebsiteSettings().subscribe({
+    this.websiteControlService.getSettings().subscribe({
       next: (settings: any[]) => {
         const formValues: any = {};
         settings.forEach(s => {
@@ -220,7 +220,7 @@ export class SystemSettingsComponent implements OnInit {
       value: this.settingsForm.value[key]
     }));
 
-    this.websiteControlService.putAdminWebsiteSettings(payload).subscribe({
+    this.websiteControlService.updateSettings(payload).subscribe({
       next: () => {
         this.snackBar.open('Registry updated successfully', 'OK', { duration: 3000 });
         this.settingsForm.markAsPristine();

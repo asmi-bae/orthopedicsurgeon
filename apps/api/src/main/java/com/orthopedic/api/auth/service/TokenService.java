@@ -4,7 +4,6 @@ import com.orthopedic.api.config.JwtConfig;
 import com.orthopedic.api.auth.entity.RefreshToken;
 import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.auth.repository.RefreshTokenRepository;
-import com.orthopedic.api.shared.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +47,7 @@ public class TokenService {
 
     public RefreshToken rotateRefreshToken(String tokenValue, String deviceInfo) {
         RefreshToken oldToken = refreshTokenRepository.findByToken(tokenValue)
-                .orElseThrow(() -> new ResourceNotFoundException("Refresh token not found"));
+                .orElseThrow(() -> new com.orthopedic.api.shared.exception.ResourceNotFoundException("Refresh token not found"));
 
         if (oldToken.isRevoked()) {
             // 🚨 SECURITY: If a revoked token is used, someone might be stealing it.

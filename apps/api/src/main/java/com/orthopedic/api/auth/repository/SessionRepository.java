@@ -31,4 +31,11 @@ public interface SessionRepository extends JpaRepository<Session, UUID> {
     @Modifying
     @Query("UPDATE Session s SET s.isActive = false WHERE s.user.id = :userId AND s.isActive = true")
     int deactivateAllActiveSessions(@Param("userId") UUID userId);
+
+    @Modifying
+    @Query("UPDATE Session s SET s.accessTokenJti = :newJti, s.refreshTokenHash = :newHash, s.lastActivity = :now WHERE s.refreshTokenHash = :oldHash AND s.isActive = true")
+    int updateSessionOnRefresh(@Param("oldHash") String oldHash,
+                               @Param("newHash") String newHash,
+                               @Param("newJti") UUID newJti,
+                               @Param("now") java.time.LocalDateTime now);
 }

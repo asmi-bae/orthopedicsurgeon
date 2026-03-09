@@ -116,13 +116,9 @@ import { RecordVitalsDialogComponent } from '@features/health/components/record-
 
           <zrd-card variant="default">
              <div class="grid grid-cols-2 gap-6">
-                <div class="bg-google-blue/5 p-5 rounded-3xl border border-google-blue/10 flex flex-col items-center text-center">
+                <div class="bg-google-blue/5 p-5 rounded-3xl border border-google-blue/10 flex flex-col items-center text-center col-span-2">
                    <span class="text-[10px] font-black uppercase tracking-widest text-google-blue/60">Active Scripts</span>
                    <span class="text-3xl font-black text-google-blue mt-1">{{ dashboard()?.activePrescriptions || 0 }}</span>
-                </div>
-                <div class="bg-google-red/5 p-5 rounded-3xl border border-google-red/10 flex flex-col items-center text-center">
-                   <span class="text-[10px] font-black uppercase tracking-widest text-google-red/60">Open Payments</span>
-                   <span class="text-3xl font-black text-google-red mt-1">{{ dashboard()?.pendingPayments || 0 }}</span>
                 </div>
              </div>
           </zrd-card>
@@ -226,7 +222,6 @@ export class PatientHealthDetailComponent implements OnInit {
       case 'PRESCRIPTION': return 'history_edu';
       case 'LAB_REPORT': return 'biotech';
       case 'VITAL_SIGNS': return 'monitor_heart';
-      case 'PAYMENT': return 'payments';
       default: return 'radio_button_checked';
     }
   }

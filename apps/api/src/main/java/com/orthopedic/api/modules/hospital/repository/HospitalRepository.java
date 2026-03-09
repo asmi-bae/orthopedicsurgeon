@@ -16,9 +16,13 @@ public interface HospitalRepository extends JpaRepository<Hospital, UUID> {
 
     Page<Hospital> findAllByCity(String city, Pageable pageable);
 
+    Hospital findByLicenseNumber(String licenseNumber);
+
     boolean existsByLicenseNumber(String licenseNumber);
 
     long countByStatus(Hospital.HospitalStatus status);
+
+    long countByStatusAndDeletedFalse(Hospital.HospitalStatus status);
 
     @Query("SELECT COUNT(d) FROM Doctor d WHERE d.hospital.id = :id")
     int countDoctors(@org.springframework.data.repository.query.Param("id") java.util.UUID id);

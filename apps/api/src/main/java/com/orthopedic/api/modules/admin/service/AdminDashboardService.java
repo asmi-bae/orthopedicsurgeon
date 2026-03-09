@@ -31,11 +31,19 @@ public class AdminDashboardService {
 
     @Transactional(readOnly = true)
     public AdminDashboardResponse getDashboardData() {
+        // Run independent queries in parallel to hide database latency
+        var statsFuture = java.util.concurrent.CompletableFuture.supplyAsync(this::getDashboardStats);
+        var liveAppsFuture = java.util.concurrent.CompletableFuture.supplyAsync(this::getLiveAppointments);
+        var topHospitalsFuture = java.util.concurrent.CompletableFuture.supplyAsync(this::getTopHospitals);
+        var quickStatsFuture = java.util.concurrent.CompletableFuture.supplyAsync(this::getQuickStats);
+
+        java.util.concurrent.CompletableFuture.allOf(statsFuture, liveAppsFuture, topHospitalsFuture, quickStatsFuture).join();
+
         return AdminDashboardResponse.builder()
-                .stats(getDashboardStats())
-                .liveAppointments(getLiveAppointments())
-                .topHospitals(getTopHospitals())
-                .quickStats(getQuickStats())
+                .stats(statsFuture.join())
+                .liveAppointments(liveAppsFuture.join())
+                .topHospitals(topHospitalsFuture.join())
+                .quickStats(quickStatsFuture.join())
                 .build();
     }
 
@@ -76,13 +84,14 @@ public class AdminDashboardService {
 
     @Transactional(readOnly = true)
     public List<TopHospitalResponse> getTopHospitals() {
+        // Fetch top 4 hospitals by something? For now, just first 4.
         return hospitalRepository.findAll(PageRequest.of(0, 4)).getContent().stream()
                 .map(h -> TopHospitalResponse.builder()
                         .id(h.getId())
                         .name(h.getName())
                         .city(h.getCity())
-                        .revenue("$" + (1000 + (int) (Math.random() * 5000))) // Aggregation logic could be shared later
-                        .growth("+" + (5 + (int) (Math.random() * 10)) + "%")
+                        .revenue("$0") // Aggregation logic to be implemented
+                        .growth("Stable")
                         .build())
                 .collect(Collectors.toList());
     }
@@ -90,10 +99,10 @@ public class AdminDashboardService {
     @Transactional(readOnly = true)
     public QuickStatsResponse getQuickStats() {
         return QuickStatsResponse.builder()
-                .appointmentsToday(0L) // TEMPORARY: replaced appointmentRepository.countByFilters(...) to isolate issue
-                .pendingPrescriptions(0) // Logic for prescriptions can be added
-                .activeHospitals(hospitalRepository.countByStatus(Hospital.HospitalStatus.ACTIVE))
-                .openInvoicesAmount("$3.2k")
+                .appointmentsToday(appointmentRepository.countByAppointmentDateAndDeletedFalse(LocalDate.now()))
+                .pendingPrescriptions(0) 
+                .activeHospitals(hospitalRepository.countByStatusAndDeletedFalse(Hospital.HospitalStatus.ACTIVE))
+                .openInvoicesAmount("$0")
                 .build();
     }
 }
