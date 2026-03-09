@@ -13,24 +13,26 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/doctor/account")
-@Tag(name = "Account Management", description = "Endpoints for authenticated users to manage their own account")
+@RequestMapping("/api/v1/patient/account")
+@Tag(name = "Patient Account Management", description = "Endpoints for patients to manage their own account")
+@PreAuthorize("hasRole('PATIENT')")
 @RequiredArgsConstructor
-public class AccountController extends BaseController {
+public class PatientAccountController extends BaseController {
 
     private final AccountService accountService;
 
     @GetMapping("/profile")
-    @Operation(summary = "Get current user profile")
+    @Operation(summary = "Get current patient profile")
     public ResponseEntity<ApiResponse<UserDto>> getProfile(@CurrentUser User user) {
         return ok(UserDto.fromEntity(user));
     }
 
     @PutMapping("/profile")
-    @Operation(summary = "Update current user profile")
+    @Operation(summary = "Update current patient profile")
     public ResponseEntity<ApiResponse<UserDto>> updateProfile(
             @CurrentUser User user,
             @Valid @RequestBody UpdateProfileRequest request) {
@@ -38,7 +40,7 @@ public class AccountController extends BaseController {
     }
 
     @PostMapping("/password")
-    @Operation(summary = "Change current user password")
+    @Operation(summary = "Change current patient password")
     public ResponseEntity<ApiResponse<Void>> changePassword(
             @CurrentUser User user,
             @Valid @RequestBody ChangePasswordRequest request) {

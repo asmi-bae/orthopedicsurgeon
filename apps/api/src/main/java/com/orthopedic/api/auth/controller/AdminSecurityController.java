@@ -31,7 +31,7 @@ import java.util.UUID;
 import com.orthopedic.api.auth.dto.response.LoginHistoryResponse;
  
 @RestController
-@RequestMapping("/api/v1/doctor/security")
+@RequestMapping("/api/v1/admin/security")
 @Tag(name = "Admin Security Management", description = "Unified endpoints for admin account security (MFA, Passkeys, Sessions)")
 @RequiredArgsConstructor
 public class AdminSecurityController {
