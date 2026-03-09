@@ -1,12 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatToolbar } from '@angular/material/toolbar';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuModule } from '@angular/material/menu';
 import { AuthService } from '@repo/auth';
 import { LogoComponent } from '@core/components/logo/logo.component';
 import { UserMenuComponent } from '../../components/user-menu/user-menu.component';
@@ -17,12 +15,11 @@ import { UserMenuComponent } from '../../components/user-menu/user-menu.componen
   imports: [
     CommonModule, 
     RouterModule, 
-    MatToolbarModule, 
-    MatButtonModule, 
-    MatIconModule, 
-    MatMenuModule, 
-    MatListModule,
-    MatDividerModule,
+    MatToolbar, 
+    MatButton, 
+    MatIconButton,
+    MatIcon, 
+    MatMenuModule,
     LogoComponent,
     UserMenuComponent
   ],

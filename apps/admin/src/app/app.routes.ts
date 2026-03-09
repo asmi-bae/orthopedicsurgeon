@@ -86,19 +86,39 @@ export const routes: Routes = [
       }
     ]
   },
+  // Redirects for old auth paths
+  { path: 'auth/login', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'auth/forgot-password', redirectTo: 'forgot-password', pathMatch: 'full' },
+  { path: 'auth/reset-password', redirectTo: 'reset-password', pathMatch: 'full' },
+  { path: 'auth/two-factor', redirectTo: 'two-factor', pathMatch: 'full' },
+  { path: 'auth/totp-setup', redirectTo: 'totp-setup', pathMatch: 'full' },
+  { path: 'auth', redirectTo: 'login', pathMatch: 'full' },
+
   {
-    path: 'auth/login',
+    path: '',
     canActivate: [guestGuard],
-    loadComponent: () => import('@features/auth/admin-login.component').then(m => m.AdminLoginComponent)
-  },
-  {
-    path: 'auth/forgot-password',
-    canActivate: [guestGuard],
-    loadComponent: () => import('@features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
-  },
-  {
-    path: 'auth/reset-password',
-    canActivate: [guestGuard],
-    loadComponent: () => import('@features/auth/reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
+    loadComponent: () => import('@features/auth/auth-layout.component').then(m => m.AuthLayoutComponent),
+    children: [
+      {
+        path: 'login',
+        loadComponent: () => import('@features/auth/login/login.component').then(m => m.AdminLoginComponent)
+      },
+      {
+        path: 'forgot-password',
+        loadComponent: () => import('@features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent)
+      },
+      {
+        path: 'reset-password',
+        loadComponent: () => import('@features/auth/reset-password/reset-password.component').then(m => m.ResetPasswordComponent)
+      },
+      {
+        path: 'two-factor',
+        loadComponent: () => import('@features/auth/two-factor/two-factor.component').then(m => m.TwoFactorComponent)
+      },
+      {
+        path: 'totp-setup',
+        loadComponent: () => import('@features/auth/totp-setup/totp-setup.component').then(m => m.TotpSetupComponent)
+      }
+    ]
   }
 ];

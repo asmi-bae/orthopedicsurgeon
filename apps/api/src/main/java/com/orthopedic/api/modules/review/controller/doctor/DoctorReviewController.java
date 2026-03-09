@@ -20,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/doctor/reviews")
 @Tag(name = "Doctor Review Management", description = "Endpoints for doctors to view and moderate patient reviews")
-@PreAuthorize("hasRole('DOCTOR_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 @RequiredArgsConstructor
 public class DoctorReviewController extends BaseController {
 

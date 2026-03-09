@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 
 @Component({
@@ -11,8 +11,8 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
   imports: [
     CommonModule,
     RouterModule,
-    MatButtonModule,
-    MatIconModule,
+    MatButton,
+    MatIcon,
     TranslatePipe
   ],
   template: `

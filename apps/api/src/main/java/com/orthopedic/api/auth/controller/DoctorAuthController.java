@@ -222,14 +222,14 @@ public class DoctorAuthController {
     }
 
     @GetMapping("/sso/providers")
-    @PreAuthorize("hasRole('DOCTOR_ADMIN')")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
     @Operation(summary = "Get all SSO providers")
     public ResponseEntity<List<Object>> getSsoProviders() {
         return ResponseEntity.ok(List.of());
     }
 
     @PutMapping("/sso/providers/{id}")
-    @PreAuthorize("hasRole('DOCTOR_ADMIN')")
+    @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
     @Operation(summary = "Update SSO provider configuration")
     public ResponseEntity<Void> updateSsoProvider(@PathVariable String id, @RequestBody Map<String, Object> body) {
         return ResponseEntity.ok().build();

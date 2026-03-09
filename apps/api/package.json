@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "dev": "./mvnw spring-boot:run",
+        "dev": "JAVA_HOME=/opt/homebrew/opt/openjdk@21 ./mvnw spring-boot:run",
         "build": "./mvnw clean package -DskipTests",
         "test": "./mvnw test"
     }

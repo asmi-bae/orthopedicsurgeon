@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '@repo/auth';
 
 @Component({
@@ -22,7 +23,8 @@ import { AuthService } from '@repo/auth';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatProgressSpinnerModule
   ],
   template: `
     <mat-card class="w-full max-w-[450px] mx-auto bg-slate-50 border border-slate-100 shadow-xl shadow-slate-200/50 rounded-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -59,7 +61,7 @@ import { AuthService } from '@repo/auth';
             @if (!loading()) {
               <span>Reset Password</span>
             } @else {
-              <mat-icon class="animate-spin">sync</mat-icon>
+              <mat-spinner diameter="24" class="inline-block"></mat-spinner>
             }
           </button>
         </form>

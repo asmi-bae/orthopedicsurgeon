@@ -1,11 +1,11 @@
 import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MatToolbar } from '@angular/material/toolbar';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatDivider } from '@angular/material/divider';
 import { LogoComponent } from '@core/components/logo/logo.component';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 import { UserMenuComponent } from '../../user-menu/user-menu.component';
@@ -16,11 +16,12 @@ import { UserMenuComponent } from '../../user-menu/user-menu.component';
   imports: [
     CommonModule,
     RouterModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
+    MatToolbar,
+    MatButton,
+    MatIconButton,
+    MatIcon,
     MatMenuModule,
-    MatDividerModule,
+    MatDivider,
     LogoComponent,
     UserMenuComponent,
     TranslatePipe

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '@repo/auth';
 
 @Component({
@@ -22,7 +23,8 @@ import { AuthService } from '@repo/auth';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatProgressSpinnerModule
   ],
   template: `
     <mat-card class="w-full max-w-[450px] mx-auto bg-slate-50 border border-slate-100 shadow-xl shadow-slate-200/50 rounded-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -51,9 +53,13 @@ import { AuthService } from '@repo/auth';
 
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Verification Code</mat-label>
-              <input matInput type="text" [(ngModel)]="verificationCode" maxlength="6"
+              <input matInput type="text" 
+                      [ngModel]="verificationCode()" 
+                      (ngModelChange)="verificationCode.set($event)"
+                      maxlength="6"
                       inputmode="numeric" pattern="[0-9]*"
-                      class="text-center tracking-[0.5em] text-lg font-bold">
+                      placeholder="000000"
+                      class="text-center tracking-[0.5em] text-2xl font-bold">
             </mat-form-field>
 
             @if (setupData.backupCodes) {
@@ -68,17 +74,21 @@ import { AuthService } from '@repo/auth';
             }
 
             <button mat-flat-button color="primary" (click)="verify()" 
-                    [disabled]="loading || verificationCode.length !== 6"
+                    [disabled]="loading() || verificationCode().length !== 6"
                     class="w-full py-2 mt-2">
-              Verify &amp; Enable 2FA
+              @if (!loading()) {
+                <span>Verify &amp; Enable 2FA</span>
+              } @else {
+                <mat-spinner diameter="24" class="inline-block"></mat-spinner>
+              }
             </button>
           </div>
         }
 
-        @if (error) {
-          <p class="text-red-600 text-sm mt-4 text-center">{{ error }}</p>
+        @if (error()) {
+          <p class="text-red-600 text-sm mt-4 text-center">{{ error() }}</p>
         }
-        @if (success) {
+        @if (success()) {
           <div class="text-center py-6">
             <mat-icon class="text-5xl text-green-600 mb-4">check_circle</mat-icon>
             <p class="text-green-700 font-semibold">2FA has been successfully enabled!</p>
@@ -101,40 +111,38 @@ import { AuthService } from '@repo/auth';
   styles: [`:host { display: block; }`]
 })
 export class DoctorTotpSetupComponent implements OnInit {
-  setupData: any = null;
-  verificationCode: string = '';
-  error: string | null = null;
-  success: boolean = false;
-  loading: boolean = false;
+  private auth = inject(AuthService);
+  private router = inject(Router);
 
-  constructor(
-    private auth: AuthService,
-    private router: Router
-  ) {}
+  setupData: any = null;
+  verificationCode = signal('');
+  error = signal<string | null>(null);
+  success = signal(false);
+  loading = signal(false);
 
   ngOnInit() {
     this.auth.setup2fa().subscribe({
       next: (res) => this.setupData = res,
-      error: () => this.error = 'Failed to load 2FA setup data.'
+      error: () => this.error.set('Failed to load 2FA setup data.')
     });
   }
 
   verify() {
-    if (this.loading || this.verificationCode.length !== 6) return;
-    this.loading = true;
-    this.auth.confirm2faSetup(this.verificationCode).subscribe({
+    if (this.loading() || this.verificationCode().length !== 6) return;
+    this.loading.set(true);
+    this.auth.confirm2faSetup(this.verificationCode()).subscribe({
       next: () => {
-        this.loading = false;
-        this.success = true;
-        this.error = null;
+        this.loading.set(false);
+        this.success.set(true);
+        this.error.set(null);
         // Automatically redirect to dashboard after a short delay
         setTimeout(() => {
           this.router.navigate(['/dashboard']);
         }, 1500);
       },
       error: (err) => {
-        this.loading = false;
-        this.error = err.error?.message || 'Invalid code. Verification failed.';
+        this.loading.set(false);
+        this.error.set(err.error?.message || 'Invalid code. Verification failed.');
       }
     });
   }

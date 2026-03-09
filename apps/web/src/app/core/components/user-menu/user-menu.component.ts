@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatDivider } from '@angular/material/divider';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AuthService } from '@repo/auth';
 import { LogoutDialogComponent } from './logout-dialog.component';
@@ -15,10 +15,10 @@ import { LogoutDialogComponent } from './logout-dialog.component';
   imports: [
     CommonModule,
     RouterModule,
-    MatButtonModule,
-    MatIconModule,
+    MatButton,
+    MatIcon,
     MatMenuModule,
-    MatDividerModule,
+    MatDivider,
     MatDialogModule
   ],
   template: `

@@ -4,7 +4,6 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { routes } from './app.routes';
 import { jwtInterceptor, AUTH_API_URL } from '@repo/auth';
-import { environment } from '@env/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,6 +14,6 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([jwtInterceptor])
     ),
     provideAnimationsAsync(),
-    { provide: AUTH_API_URL, useValue: `${environment.apiUrl}/patient/auth` }
+    { provide: AUTH_API_URL, useValue: 'http://localhost:4202/api/v1/patient/auth' }
   ]
 };

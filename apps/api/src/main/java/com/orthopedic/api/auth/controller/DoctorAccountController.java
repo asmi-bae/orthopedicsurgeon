@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/doctor/account")
 @Tag(name = "Doctor Account Management", description = "Endpoints for doctors to manage their own account")
-@PreAuthorize("hasRole('DOCTOR_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 @RequiredArgsConstructor
 public class DoctorAccountController extends BaseController {
 

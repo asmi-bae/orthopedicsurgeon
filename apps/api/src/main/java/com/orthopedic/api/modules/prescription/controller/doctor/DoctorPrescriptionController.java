@@ -24,7 +24,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/doctor/prescriptions")
 @Tag(name = "Doctor Prescription Management", description = "Endpoints for doctors to issue and manage prescriptions")
-@PreAuthorize("hasRole('DOCTOR_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class DoctorPrescriptionController extends BaseController {
 
     private final PrescriptionService prescriptionService;

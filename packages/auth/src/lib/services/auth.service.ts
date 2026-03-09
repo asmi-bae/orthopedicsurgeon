@@ -35,6 +35,13 @@ export class AuthService {
   private warningTimer?: any;
   private lastActivity = Date.now();
   private authChannel = new BroadcastChannel('auth_channel');
+  private readonly appPrefix = this.apiUrl.includes('/admin/') ? 'admin_' : 
+                       this.apiUrl.includes('/doctor/') ? 'doctor_' : 
+                       this.apiUrl.includes('/patient/') ? 'patient_' : 'auth_';
+
+  private getStorageKey(key: string): string {
+    return `${this.appPrefix}${key}`;
+  }
 
   constructor() {
     this.setupBroadcastChannel();
@@ -90,7 +97,7 @@ export class AuthService {
   }
 
   logout() {
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = localStorage.getItem(this.getStorageKey('refreshToken'));
     
     // Fire and forget logout to backend
     this.http.post(`${this.apiUrl}/logout`, { refreshToken }).subscribe();
@@ -103,21 +110,21 @@ export class AuthService {
     if (this.refreshTimer) clearTimeout(this.refreshTimer);
     if (this.inactivityTimer) clearTimeout(this.inactivityTimer);
     if (this.warningTimer) clearTimeout(this.warningTimer);
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem(this.getStorageKey('token'));
+    localStorage.removeItem(this.getStorageKey('refreshToken'));
     this.currentUser.set(null);
     this.showSessionWarning.set(false);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/login']);
   }
 
   refreshToken(): Observable<AuthResponse> {
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = localStorage.getItem(this.getStorageKey('refreshToken'));
     if (!refreshToken) return of({});
 
     return this.http.post<AuthResponse>(`${this.apiUrl}/refresh`, { refreshToken }).pipe(
       tap(res => {
-        if (res.accessToken) localStorage.setItem('token', res.accessToken);
-        if (res.refreshToken) localStorage.setItem('refreshToken', res.refreshToken);
+        if (res.accessToken) localStorage.setItem(this.getStorageKey('token'), res.accessToken);
+        if (res.refreshToken) localStorage.setItem(this.getStorageKey('refreshToken'), res.refreshToken);
       }),
       catchError(err => {
         this.logout();
@@ -182,7 +189,7 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem(this.getStorageKey('token'));
   }
 
   hasRole(role: Role): boolean {
@@ -268,12 +275,12 @@ export class AuthService {
   }
 
   token(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem(this.getStorageKey('token'));
   }
 
   private handleSuccess(res: AuthResponse): Observable<AuthResponse> {
-    if (res.accessToken) localStorage.setItem('token', res.accessToken);
-    if (res.refreshToken) localStorage.setItem('refreshToken', res.refreshToken);
+    if (res.accessToken) localStorage.setItem(this.getStorageKey('token'), res.accessToken);
+    if (res.refreshToken) localStorage.setItem(this.getStorageKey('refreshToken'), res.refreshToken);
     
     if (res.expiresIn) {
       this.scheduleTokenRefresh(res.expiresIn);

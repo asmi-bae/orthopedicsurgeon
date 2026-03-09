@@ -1,8 +1,8 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatCard } from '@angular/material/card';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 
 export interface CaseStudy {
@@ -15,7 +15,7 @@ export interface CaseStudy {
 @Component({
   selector: 'app-home-surgeries',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatCardModule, TranslatePipe],
+  imports: [CommonModule, MatButton, MatCard, TranslatePipe],
   template: `
     <section class="py-32 bg-secondary-900 overflow-hidden -mx-6 sm:-mx-10 lg:-mx-12 px-6 sm:px-10 lg:px-12 relative">
       <!-- Decorative Blobs -->

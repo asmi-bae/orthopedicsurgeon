@@ -12,9 +12,11 @@ node_modules/
 **/node_modules/
 jspm_packages/
 .pnpm-store/
+.pnpm-debug.log*
 
-# Turbo
+# Turbo & Nx
 .turbo/
+.nx/
 
 # Build Artifacts
 dist/
@@ -35,7 +37,7 @@ out-tsc/
 
 # Logs
 logs
-*.log
+**/*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -62,9 +64,12 @@ pnpm-debug.log*
 .settings/
 .springBeans
 .sts4-cache
+*.sublime-project
+*.sublime-workspace
 
 # Testing
 coverage/
+**/coverage/
 test-results/
 .playwright/
 e2e/test-output/
@@ -75,3 +80,11 @@ tmp/
 
 # TypeScript
 *.tsbuildinfo
+
+# Java/Maven specific
+.mvn/wrapper/maven-wrapper.jar
+release.properties
+pom.xml.releaseBackup
+pom.xml.tagConfFileBackup
+pom.xml.nextSnapshot
+pom.xml.backup

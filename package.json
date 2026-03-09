@@ -17,6 +17,14 @@
   },
   "packageManager": "pnpm@10.31.0",
   "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "esbuild",
+      "less",
+      "lmdb",
+      "msgpackr-extract",
+      "nx"
+    ],
     "overrides": {
       "@angular/animations": "21.2.1",
       "@angular/cdk": "21.2.1",

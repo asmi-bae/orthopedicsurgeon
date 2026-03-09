@@ -32,6 +32,6 @@ export class NavbarComponent {
   isHidden = computed(() => this.scrollService.scrollDirection() === 'up');
 
   navigateToPortal() {
-    window.location.href = 'http://localhost:4201';
+    window.location.href = 'http://localhost:4202';
   }
 }

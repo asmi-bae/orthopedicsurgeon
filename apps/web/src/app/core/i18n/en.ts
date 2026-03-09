@@ -63,8 +63,8 @@ export const EN = {
   },
   HOME: {
     HERO: {
-      TITLE_PART1: 'EXPERT ORTHOPEDIC CARE FOR',
-      TITLE_PART2: 'STRONGER BONES & JOINTS',
+      TITLE_PART1: 'INNOVATIVE CARE,',
+      TITLE_PART2: 'DELIVERED WITH HEART',
       SUBTITLE: 'Expert care for bones, joints, and spine health',
       DESCRIPTION: 'Trusted orthopedic care focused on your recovery and pain-free mobility.',
       DOCTOR: {

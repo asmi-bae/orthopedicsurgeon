@@ -24,7 +24,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
                <span class="text-[10px] font-black text-medical-teal uppercase tracking-[0.2em]">{{ 'HOME.HERO.DOCTOR.TITLE' | translate }}</span>
              </div>
              
-             <h1 class="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-secondary-900 leading-[0.95] mb-8 tracking-tighter uppercase">
+             <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-secondary-900 leading-[1.1] mb-8 tracking-tighter uppercase whitespace-pre-line">
                {{ 'HOME.HERO.TITLE_PART1' | translate }} <br/>
                <span class="text-primary">{{ 'HOME.HERO.TITLE_PART2' | translate }}</span>
              </h1>

@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '@repo/auth';
 
 @Component({
@@ -22,7 +23,8 @@ import { AuthService } from '@repo/auth';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatProgressSpinnerModule
   ],
   template: `
     <mat-card class="w-full max-w-[450px] mx-auto bg-slate-50 border border-slate-100 shadow-xl shadow-slate-200/50 rounded-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -50,17 +52,17 @@ import { AuthService } from '@repo/auth';
               }
             </mat-form-field>
 
-            <button mat-flat-button color="primary" [disabled]="loading()" class="w-full py-2 mt-2">
+            <button mat-flat-button color="primary" [disabled]="loading() || forgotForm.invalid" class="w-full py-2 mt-2">
               @if (!loading()) {
                 <span>Send Instructions</span>
               } @else {
-                <mat-icon class="animate-spin">sync</mat-icon>
+                <mat-spinner diameter="24" class="inline-block"></mat-spinner>
               }
             </button>
           </form>
         } @else {
           <div class="text-center py-6">
-            <mat-icon class="text-5xl text-primary-600 mb-4">mark_email_read</mat-icon>
+              <mat-icon class="text-primary-600 !w-8 !h-8 !text-[32px] leading-none">mail</mat-icon>
             <h3 class="text-lg font-semibold text-slate-900 mb-2">Check your inbox</h3>
             <p class="text-slate-500 text-sm leading-relaxed mb-6">
               If an account exists for <strong>{{forgotForm.get('email')?.value}}</strong>, you will receive reset instructions shortly.

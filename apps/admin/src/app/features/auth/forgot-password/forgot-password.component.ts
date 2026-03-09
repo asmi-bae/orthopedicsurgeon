@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '@repo/auth';
 
 @Component({
@@ -22,85 +23,65 @@ import { AuthService } from '@repo/auth';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatProgressSpinnerModule
   ],
   template: `
-    <div class="min-h-screen flex flex-col lg:flex-row overflow-hidden bg-white">
-      <!-- Left Side: Image -->
-      <div class="hidden lg:flex lg:w-1/2 relative bg-slate-100">
-        <img src="assets/images/auth-bg.png" alt="Precision Orthopedics" class="absolute inset-0 w-full h-full object-cover">
-        <div class="absolute inset-0 bg-primary-900/10 backdrop-blur-[1px]"></div>
-        <!-- Blurry End Transition -->
-        <div class="absolute inset-y-0 right-0 w-32 bg-gradient-to-r from-transparent to-white pointer-events-none"></div>
-        <div class="absolute inset-0 flex flex-col justify-end p-16 text-white bg-gradient-to-t from-slate-900/60 to-transparent">
-          <h1 class="text-5xl font-bold mb-4 tracking-tight">Precision Console</h1>
-          <p class="text-xl opacity-90 max-w-lg leading-relaxed font-light">
-            Advanced Management Interface for Orthopedic Surgeons & Clinical Excellence.
+    <mat-card class="w-full max-w-[450px] mx-auto bg-slate-50 border border-slate-100 shadow-xl shadow-slate-200/50 rounded-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div class="flex flex-col items-center pt-10 pb-6">
+          <div class="w-16 h-16 rounded-full bg-primary-50/20 flex items-center justify-center mb-6">
+            <mat-icon class="text-primary-600 !w-8 !h-8 !text-[32px] leading-none">lock_reset</mat-icon>
+          </div>
+          <h1 class="text-2xl font-bold text-slate-900 m-0 text-center tracking-tight">Forgot Password?</h1>
+          <p class="mt-3 text-sm text-slate-500 text-center max-w-[300px] leading-relaxed">
+            Enter your email to receive recovery instructions
           </p>
-        </div>
       </div>
 
-      <!-- Right Side: Form Content -->
-      <div class="flex-1 flex items-center justify-center p-8 sm:p-16 bg-white overflow-y-auto">
-        <div class="w-full max-w-md">
-          <mat-card class="w-full border border-slate-200 shadow-xl shadow-slate-200/50 rounded-2xl">
-            <mat-card-header class="flex flex-col items-center pt-8 pb-4">
-               <div class="mb-4 text-primary-600">
-                  <mat-icon class="scale-[2]">lock_reset</mat-icon>
-               </div>
-               <mat-card-title class="text-2xl font-medium m-0 text-center">Forgot Password?</mat-card-title>
-               <mat-card-subtitle class="mt-2 text-sm text-slate-500 text-center px-4">
-                 Enter your email to receive recovery instructions
-               </mat-card-subtitle>
-            </mat-card-header>
-
-            <mat-card-content class="px-6 pb-6">
-              @if (!submitted()) {
-                <form [formGroup]="forgotForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
-                  <mat-form-field appearance="outline" class="w-full">
-                    <mat-label>Email Address</mat-label>
-                    <input matInput type="email" formControlName="email">
-                    @if (forgotForm.get('email')?.hasError('required')) {
-                      <mat-error>Email is required</mat-error>
-                    }
-                    @if (forgotForm.get('email')?.hasError('email')) {
-                      <mat-error>Invalid email format</mat-error>
-                    }
-                  </mat-form-field>
-
-                  <button mat-flat-button color="primary" [disabled]="loading()" class="w-full py-2 mt-2">
-                    @if (!loading()) {
-                      <span>Send Instructions</span>
-                    } @else {
-                      <mat-icon class="animate-spin">sync</mat-icon>
-                    }
-                  </button>
-                </form>
-              } @else {
-                <div class="text-center py-6">
-                  <mat-icon class="text-5xl text-primary-600 mb-4">mark_email_read</mat-icon>
-                  <h3 class="text-lg font-semibold text-slate-900 mb-2">Check your inbox</h3>
-                  <p class="text-slate-500 text-sm leading-relaxed mb-6">
-                    If an account exists for <strong>{{forgotForm.get('email')?.value}}</strong>, you will receive reset instructions shortly.
-                  </p>
-                  <button mat-stroked-button class="w-full" (click)="submitted.set(false)">
-                    Try another email
-                  </button>
-                </div>
+      <mat-card-content class="px-6 pb-6">
+        @if (!submitted()) {
+          <form [formGroup]="forgotForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+            <mat-form-field appearance="outline" class="w-full">
+              <mat-label>Email Address</mat-label>
+              <input matInput type="email" formControlName="email">
+              @if (forgotForm.get('email')?.hasError('required')) {
+                <mat-error>Email is required</mat-error>
               }
-              
-              <button mat-button routerLink="/auth/login" class="w-full mt-4">
-                Back to Login
-              </button>
-            </mat-card-content>
+              @if (forgotForm.get('email')?.hasError('email')) {
+                <mat-error>Invalid email format</mat-error>
+              }
+            </mat-form-field>
 
-            <mat-card-footer class="py-4 text-center">
-              <span class="text-xs text-slate-500">Admin Console &copy; 2026</span>
-            </mat-card-footer>
-          </mat-card>
-        </div>
-      </div>
-    </div>
+            <button mat-flat-button color="primary" [disabled]="loading() || forgotForm.invalid" class="w-full py-2 mt-2">
+              @if (!loading()) {
+                <span>Send Instructions</span>
+              } @else {
+                <mat-spinner diameter="24" class="inline-block"></mat-spinner>
+              }
+            </button>
+          </form>
+        } @else {
+          <div class="text-center py-6">
+            <mat-icon class="text-5xl text-primary-600 mb-4">mark_email_read</mat-icon>
+            <h3 class="text-lg font-semibold text-slate-900 mb-2">Check your inbox</h3>
+            <p class="text-slate-500 text-sm leading-relaxed mb-6">
+              If an account exists for <strong>{{forgotForm.get('email')?.value}}</strong>, you will receive reset instructions shortly.
+            </p>
+            <button mat-stroked-button class="w-full" (click)="submitted.set(false)">
+              Try another email
+            </button>
+          </div>
+        }
+        
+        <button mat-button routerLink="/login" class="w-full mt-4">
+          Back to Login
+        </button>
+      </mat-card-content>
+
+      <mat-card-footer class="py-4 text-center">
+        <span class="text-xs text-slate-500">Admin Console &copy; 2026</span>
+      </mat-card-footer>
+    </mat-card>
   `,
   styles: [`
     :host { display: block; }

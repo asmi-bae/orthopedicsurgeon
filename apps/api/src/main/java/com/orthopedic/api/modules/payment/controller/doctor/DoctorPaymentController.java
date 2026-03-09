@@ -20,7 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/doctor/payments")
 @Tag(name = "Doctor Payment Management", description = "Endpoints for doctors to view and track payments and revenue")
-@PreAuthorize("hasRole('DOCTOR_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 @RequiredArgsConstructor
 public class DoctorPaymentController extends BaseController {
 

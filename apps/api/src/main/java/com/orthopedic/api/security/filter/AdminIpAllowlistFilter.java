@@ -36,7 +36,7 @@ public class AdminIpAllowlistFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // Only apply to admin endpoints
-        if (!path.startsWith("/api/v1/doctor")) {
+        if (!path.startsWith("/api/v1/admin")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -48,7 +48,7 @@ public class AdminIpAllowlistFilter extends OncePerRequestFilter {
         }
 
         // Bypass check for public admin auth
-        if (path.startsWith("/api/v1/doctor/auth")) {
+        if (path.startsWith("/api/v1/admin/auth")) {
             filterChain.doFilter(request, response);
             return;
         }

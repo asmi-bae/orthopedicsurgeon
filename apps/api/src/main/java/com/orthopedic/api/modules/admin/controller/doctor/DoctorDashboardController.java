@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/api/v1/doctor/dashboard")
 @RequiredArgsConstructor
 @Tag(name = "Doctor Dashboard", description = "Endpoints for retrieving doctor dashboard data")
-@PreAuthorize("hasRole('DOCTOR_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class DoctorDashboardController {
 
     private final AdminDashboardService dashboardService;

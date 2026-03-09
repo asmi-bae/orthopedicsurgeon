@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatCard } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatDivider } from '@angular/material/divider';
 import { TranslationService } from '@core/services/translation.service';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
 
@@ -14,10 +14,10 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
   imports: [
     CommonModule, 
     RouterModule, 
-    MatCardModule, 
-    MatButtonModule, 
-    MatIconModule, 
-    MatDividerModule,
+    MatCard, 
+    MatButton, 
+    MatIcon, 
+    MatDivider,
     TranslatePipe
   ],
   template: `

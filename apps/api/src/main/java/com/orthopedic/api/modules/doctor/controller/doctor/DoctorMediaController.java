@@ -19,7 +19,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Doctor Media", description = "Doctor endpoints for media management")
-@PreAuthorize("hasRole('DOCTOR_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 public class DoctorMediaController {
 
     private final CloudinaryService cloudinaryService;

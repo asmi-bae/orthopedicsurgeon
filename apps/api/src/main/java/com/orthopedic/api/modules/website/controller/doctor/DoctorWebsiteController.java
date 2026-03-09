@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/doctor/website")
 @Tag(name = "Doctor Website Management", description = "Endpoints for doctors to view website content (hero slides, FAQ, partners)")
-@PreAuthorize("hasRole('DOCTOR_ADMIN')")
+@PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
 @RequiredArgsConstructor
 public class DoctorWebsiteController extends BaseController {
 

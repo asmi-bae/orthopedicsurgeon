@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -43,7 +43,8 @@ import { AuthService } from '@repo/auth';
             <mat-label>Verification Code</mat-label>
             <input matInput type="text" formControlName="totpCode" maxlength="6"
                     inputmode="numeric" pattern="[0-9]*"
-                    class="text-center tracking-[0.5em] text-lg font-bold">
+                    placeholder="000000"
+                    class="text-center tracking-[0.5em] text-2xl font-bold">
             @if (twoFactorForm.get('totpCode')?.hasError('pattern')) {
               <mat-error>Must be a 6-digit number</mat-error>
             }
@@ -54,12 +55,12 @@ import { AuthService } from '@repo/auth';
           }
 
           <button mat-flat-button color="primary" type="submit"
-                  [disabled]="twoFactorForm.invalid || loading"
+                  [disabled]="twoFactorForm.invalid || loading()"
                   class="w-full py-2 mt-2">
-            @if (loading) {
+            @if (loading()) {
               <mat-spinner diameter="24" class="inline-block"></mat-spinner>
             } @else {
-              Verify & Access
+              <span>Verify & Access</span>
             }
           </button>
           
@@ -80,7 +81,7 @@ export class DoctorTwoFactorComponent {
   twoFactorForm: FormGroup;
   error: string | null = null;
   tempToken: string | null = null;
-  loading = false;
+  loading = signal(false);
 
   constructor(
     private fb: FormBuilder,
@@ -95,18 +96,18 @@ export class DoctorTwoFactorComponent {
   }
 
   onSubmit() {
-    if (this.twoFactorForm.valid && this.tempToken && !this.loading) {
-      this.loading = true;
+    if (this.twoFactorForm.valid && this.tempToken && !this.loading()) {
+      this.loading.set(true);
       this.auth.verifyTotp2fa({
         tempToken: this.tempToken,
         totpCode: this.twoFactorForm.value.totpCode
       }).subscribe({
         next: () => {
-          this.loading = false;
+          this.loading.set(false);
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
-          this.loading = false;
+          this.loading.set(false);
           this.error = err.error?.message || 'Invalid code. Please try again.';
         }
       });
