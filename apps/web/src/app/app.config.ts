@@ -3,7 +3,8 @@ import { provideRouter, withComponentInputBinding, withViewTransitions } from '@
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { routes } from './app.routes';
-import { jwtInterceptor } from '@repo/auth';
+import { jwtInterceptor, AUTH_API_URL } from '@repo/auth';
+import { environment } from '@env/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,7 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([jwtInterceptor])
     ),
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    { provide: AUTH_API_URL, useValue: `${environment.apiUrl}/patient/auth` }
   ]
 };

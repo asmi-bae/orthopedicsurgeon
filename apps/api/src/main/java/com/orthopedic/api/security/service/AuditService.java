@@ -25,7 +25,7 @@ public class AuditService {
     public void logEvent(String action, String userId, String userRole, String entityType, String entityId,
             Map<String, Object> details, boolean success) {
         // Implementation to save to DB
-        log.info("📊 AUDIT [{}]: action={}, user={}, role={}, entity={}:{}, success={}, details={}",
+        log.info("AUDIT [{}]: action={}, user={}, role={}, entity={}:{}, success={}, details={}",
                 UUID.randomUUID(), action, userId, userRole, entityType, entityId, success, details);
 
         // In a real implementation, this would save to an 'audit_logs' table
@@ -33,13 +33,13 @@ public class AuditService {
 
     @Async
     public void logSecurityAlert(String type, String ip, String userId, String reason) {
-        log.error("🚨 SECURITY ALERT [{}]: type={}, ip={}, user={}, reason={}",
+        log.error("SECURITY ALERT [{}]: type={}, ip={}, user={}, reason={}",
                 UUID.randomUUID(), type, ip, userId, reason);
     }
 
     @Async
     public void logFailedLogin(String email, String ipAddress, String userAgent, String reason) {
-        log.warn("❌ FAILED LOGIN [{}]: email={}, ip={}, userAgent={}, reason={}",
+        log.warn("FAILED LOGIN [{}]: email={}, ip={}, userAgent={}, reason={}",
                 UUID.randomUUID(), email, ipAddress, userAgent, reason);
         
         LoginAudit audit = LoginAudit.builder()
@@ -67,7 +67,7 @@ public class AuditService {
 
     @Async
     public void logAudit(User user, String ipAddress, String userAgent, String action) {
-        log.info("📊 AUDIT [{}]: email={}, ip={}, userAgent={}, action={}",
+        log.info("AUDIT [{}]: email={}, ip={}, userAgent={}, action={}",
                 UUID.randomUUID(), user != null ? user.getEmail() : "unknown", ipAddress, userAgent, action);
     }
 }

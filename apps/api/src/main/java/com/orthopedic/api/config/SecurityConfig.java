@@ -29,10 +29,13 @@ import java.util.List;
 public class SecurityConfig {
 
         private static final String[] PUBLIC_GET_URLS = {
-                        "/api/v1/public/auth/verify-email/**",
-                        "/api/v1/public/auth/login/google",
-                        "/api/v1/public/auth/oauth2/callback/google",
-                        "/api/v1/public/auth/check-email",
+                        "/api/v1/patient/auth/verify-email/**",
+                        "/api/v1/patient/auth/login/google",
+                        "/api/v1/patient/auth/oauth2/callback/google",
+                        "/api/v1/patient/auth/check-email",
+                        "/api/v1/patient/auth/token/verify",
+                        "/api/v1/doctor/auth/token/verify",
+                        "/api/v1/admin/auth/token/verify",
                         "/api/v1/public/booking/check-slot",
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
@@ -42,19 +45,25 @@ public class SecurityConfig {
         };
 
         private static final String[] PUBLIC_POST_URLS = {
-                        "/api/v1/public/auth/login",
-                        "/api/v1/public/auth/register/patient",
-                        "/api/v1/public/auth/refresh",
-                        "/api/v1/public/auth/forgot-password/**",
-                        "/api/v1/public/auth/reset-password/**",
-                        "/api/v1/public/auth/login/passkey/begin",
-                        "/api/v1/public/auth/login/passkey/complete",
-                        "/api/v1/public/auth/login/mfa-verify",
-                        "/api/v1/public/auth/resend-verification",
-                        "/api/v1/public/auth/token/verify",
+                        "/api/v1/patient/auth/login",
+                        "/api/v1/patient/auth/google",
+                        "/api/v1/patient/auth/register/patient",
+                        "/api/v1/patient/auth/refresh",
+                        "/api/v1/patient/auth/forgot-password/**",
+                        "/api/v1/patient/auth/reset-password/**",
+                        "/api/v1/patient/auth/login/mfa-verify",
+                        "/api/v1/patient/auth/resend-verification",
+                        "/api/v1/patient/auth/check-email",
                         "/api/v1/doctor/auth/login",
                         "/api/v1/doctor/auth/login/mfa",
-                        "/api/v1/doctor/auth/refresh"
+                        "/api/v1/doctor/auth/refresh",
+                        "/api/v1/doctor/auth/forgot-password",
+                        "/api/v1/doctor/auth/reset-password/**",
+                        "/api/v1/admin/auth/login",
+                        "/api/v1/admin/auth/login/mfa",
+                        "/api/v1/admin/auth/refresh",
+                        "/api/v1/admin/auth/forgot-password",
+                        "/api/v1/admin/auth/reset-password/**"
         };
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;

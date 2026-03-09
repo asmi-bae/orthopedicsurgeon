@@ -7,7 +7,7 @@ import com.orthopedic.api.auth.dto.AdminMfaResponse;
 import com.orthopedic.api.auth.dto.TokenResponse;
 
 public interface AdminAuthService {
-    AdminLoginResponse adminLogin(AdminLoginRequest request, String ipAddress, String userAgent);
+    AdminLoginResponse adminLogin(AdminLoginRequest request, String ipAddress, String userAgent, String requiredRole);
 
     AdminMfaResponse adminMfaVerify(AdminMfaRequest request, String ipAddress, String userAgent);
 

@@ -98,7 +98,7 @@ class AuthServiceImplTest {
         when(jwtConfig.getAccessTokenExpiry()).thenReturn(900L);
         when(tokenService.createRefreshToken(any(), anyString())).thenReturn(mockRefreshToken);
 
-        LoginResponse response = authService.login(request, "127.0.0.1", "device");
+        LoginResponse response = authService.login(request, "127.0.0.1", "device", "PATIENT");
 
         assertNotNull(response);
         assertEquals("accessToken", response.getAccessToken());
@@ -116,7 +116,7 @@ class AuthServiceImplTest {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(testUser));
         when(passwordEncoder.matches(anyString(), anyString())).thenReturn(false);
 
-        assertThrows(InvalidCredentialsException.class, () -> authService.login(request, "127.0.0.1", "device"));
+        assertThrows(InvalidCredentialsException.class, () -> authService.login(request, "127.0.0.1", "device", "PATIENT"));
         verify(auditService).logAudit(any(), any(), any(), eq("FAILURE"));
     }
 

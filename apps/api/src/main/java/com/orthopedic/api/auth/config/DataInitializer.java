@@ -40,7 +40,7 @@ public class DataInitializer implements CommandLineRunner {
         // 1. Seed Roles
         Role superAdminRole = createRoleIfNotFound("SUPER_ADMIN");
         Role doctorAdminRole = createRoleIfNotFound("DOCTOR_ADMIN");
-        createRoleIfNotFound("PATIENT");
+        Role patientRole = createRoleIfNotFound("PATIENT");
 
         // 2.1 . Seed MD Shoaib (Original Super Admin)
         String superAdminEmail = "admin@orthopedicsurgeon.com";
@@ -55,18 +55,15 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
             userRepository.save(superAdmin);
             log.info("Super Admin user created: {}", superAdminEmail);
-        } else {
-            log.info("Super Admin user already exists: {}", superAdminEmail);
         }
 
-       
-        // 2.2 . Seed Dr. Abdur Rahman Miah (Super Doctor Admin)
+        // 2.2 . Seed Dr. Abdur Rahman Miah (Doctor Admin)
         String drEmail = "doctor@orthopedicsurgeon.com";
         User drUser = userRepository.findByEmail(drEmail).orElse(null);
         if (drUser == null) {
             drUser = User.builder()
                     .email(drEmail)
-                    .password(passwordEncoder.encode("doctor@orthopedicsurgeon.com")) // Use email as default pass for demo
+                    .password(passwordEncoder.encode("doctor@orthopedicsurgeon")) // Use email as default pass for demo
                     .firstName("Dr. Ab Rahman")
                     .lastName("Miah")
                     .phone("+8801885995293")
@@ -74,17 +71,11 @@ public class DataInitializer implements CommandLineRunner {
                     .enabled(true)
                     .build();
             drUser = userRepository.save(drUser);
-            log.info("Dr. Ab Rahman user created: {}", drEmail);
-        } else {
-            log.info("Dr. Ab Rahman user already exists: {}", drEmail);
-            // Ensure roles
-            drUser.setRoles(Set.of(doctorAdminRole));
-            drUser = userRepository.save(drUser);
+            log.info("Doctor Admin user created: {}", drEmail);
         }
 
          // 2.3 Seed Admin User as Patient
         String adminAsPatientEmail = "patient@orthopedicsurgeon.com";
-        Role patientRole = roleRepository.findByName("PATIENT").orElseThrow();
         if (userRepository.findByEmail(adminAsPatientEmail).isEmpty()) {
             User adminPatient = User.builder()
                     .email(adminAsPatientEmail)

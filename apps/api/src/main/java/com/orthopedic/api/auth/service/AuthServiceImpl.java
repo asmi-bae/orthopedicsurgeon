@@ -86,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public LoginResponse login(LoginRequest request, String ipAddress, String userAgent) {
+    public LoginResponse login(LoginRequest request, String ipAddress, String userAgent, String requiredRole) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid email or password"));
 
@@ -97,6 +97,16 @@ public class AuthServiceImpl implements AuthService {
 
         if (!user.isEnabled()) {
             throw new AuthException("Account is disabled. Please contact support.");
+        }
+
+        // Role Check
+        if (requiredRole != null) {
+            boolean hasRole = user.getRoles().stream()
+                    .anyMatch(r -> r.getName().equals(requiredRole));
+            if (!hasRole) {
+                auditService.logAudit(user, ipAddress, userAgent, "UNAUTHORIZED_ROLE_ACCESS");
+                throw new AuthException("Access denied: You do not have permission to access this portal.");
+            }
         }
 
         String attemptKey = "login_attempts:" + request.getEmail();
@@ -117,14 +127,12 @@ public class AuthServiceImpl implements AuthService {
         redisTemplate.delete(attemptKey);
         updateLoginMetadataAsync(user);
 
-        boolean isAdmin = user.getRoles().stream()
-                .anyMatch(r -> r.getName().equals("ADMIN") || r.getName().equals("SUPER_ADMIN"));
-
-        if (isAdmin || user.isUsing2fa()) {
+        // MFA Check
+        if (user.isUsing2fa()) {
             String tempToken = UUID.randomUUID().toString();
             redisTemplate.opsForValue().set("temp_auth:" + tempToken, user.getEmail(), 10, TimeUnit.MINUTES);
 
-            auditService.logAudit(user, ipAddress, userAgent, isAdmin ? "2FA_MANDATORY_ADMIN" : "2FA_PENDING");
+            auditService.logAudit(user, ipAddress, userAgent, "2FA_PENDING");
             return LoginResponse.builder()
                     .requiresMfa(true)
                     .tempToken(tempToken)
@@ -366,7 +374,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public LoginResponse googleLogin(GoogleLoginRequest request, String ipAddress, String userAgent) {
+    public LoginResponse googleLogin(GoogleLoginRequest request, String ipAddress, String userAgent, String requiredRole) {
         if (googleClientId == null || googleClientId.isEmpty()) {
             throw new AuthException("Google authentication is not configured on the server");
         }
@@ -403,9 +411,10 @@ public class AuthServiceImpl implements AuthService {
             user.setLastName((String) payload.get("family_name"));
             user.setEnabled(true);
 
-            Role patientRole = roleRepository.findByName("PATIENT")
-                    .orElseThrow(() -> new AuthException("Default role not found"));
-            user.setRoles(Set.of(patientRole));
+            String roleToAssign = (requiredRole != null) ? requiredRole : "PATIENT";
+            Role role = roleRepository.findByName(roleToAssign)
+                    .orElseThrow(() -> new AuthException("Default role not found: " + roleToAssign));
+            user.setRoles(Set.of(role));
 
             user = userRepository.save(user);
             auditService.logAudit(user, ipAddress, userAgent, "GOOGLE_REGISTERED");
@@ -417,18 +426,25 @@ public class AuthServiceImpl implements AuthService {
             if (!user.isEnabled()) {
                 throw new AuthException("Account is disabled. Please contact support.");
             }
+
+            // Role Check for existing user
+            if (requiredRole != null) {
+                boolean hasRole = user.getRoles().stream()
+                        .anyMatch(r -> r.getName().equals(requiredRole));
+                if (!hasRole) {
+                    auditService.logAudit(user, ipAddress, userAgent, "GOOGLE_LOGIN_UNAUTHORIZED_ROLE");
+                    throw new AuthException("Access denied: You do not have permission to access this portal.");
+                }
+            }
         }
 
         updateLoginMetadataAsync(user);
 
-        boolean isAdmin = user.getRoles().stream()
-                .anyMatch(r -> r.getName().equals("ADMIN") || r.getName().equals("SUPER_ADMIN"));
-
-        if (isAdmin || user.isUsing2fa()) {
+        // MFA Check
+        if (user.isUsing2fa()) {
             String tempToken = UUID.randomUUID().toString();
             redisTemplate.opsForValue().set("temp_auth:" + tempToken, user.getEmail(), 10, TimeUnit.MINUTES);
-            auditService.logAudit(user, ipAddress, userAgent,
-                    isAdmin ? "2FA_MANDATORY_ADMIN_GOOGLE" : "2FA_PENDING_GOOGLE");
+            auditService.logAudit(user, ipAddress, userAgent, "2FA_PENDING_GOOGLE");
             return LoginResponse.builder()
                     .requiresMfa(true)
                     .tempToken(tempToken)

@@ -47,18 +47,18 @@ public class AdminAuthServiceImpl implements AdminAuthService {
 
     @Override
     @Transactional
-    public AdminLoginResponse adminLogin(AdminLoginRequest request, String ipAddress, String userAgent) {
+    public AdminLoginResponse adminLogin(AdminLoginRequest request, String ipAddress, String userAgent, String requiredRole) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> {
                     auditService.logFailedLogin(request.getEmail(), ipAddress, userAgent, "User not found");
                     return new InvalidCredentialsException("Invalid email or password");
                 });
 
-        // 1. Check if user is an SUPER_ADMIN or DOCTOR_ADMIN
+        // 1. Check if user is an SUPER_ADMIN or DOCTOR_ADMIN based on requirement
         Set<String> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
-        if (!roles.contains("SUPER_ADMIN") && !roles.contains("DOCTOR_ADMIN")) {
-            auditService.logFailedLogin(request.getEmail(), ipAddress, userAgent, "Not an admin account");
-            throw new AuthException("Access denied: Not an admin account");
+        if (!roles.contains(requiredRole)) {
+            auditService.logFailedLogin(request.getEmail(), ipAddress, userAgent, "Unauthorized role: " + requiredRole);
+            throw new AuthException("Access denied: Insufficient permissions for this portal");
         }
 
         // 2. Password Check & Lockout

@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false) // Disable security filters for simple controller test
-class AuthControllerTest {
+class PatientAuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,9 +43,9 @@ class AuthControllerTest {
                 .requiresMfa(false)
                 .build();
 
-        when(authService.login(any(), any(), any())).thenReturn(response);
+        when(authService.login(any(), any(), any(), any())).thenReturn(response);
 
-        mockMvc.perform(post("/api/v1/auth/login")
+        mockMvc.perform(post("/api/v1/patient/auth/login")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())

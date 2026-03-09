@@ -3,6 +3,7 @@ package com.orthopedic.api.auth.controller;
 import com.orthopedic.api.auth.dto.*;
 import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.auth.service.AdminAuthService;
+import com.orthopedic.api.auth.service.AuthService;
 import com.orthopedic.api.auth.service.UserSessionService;
 import com.orthopedic.api.rbac.annotation.CurrentUser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,12 +22,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/doctor/auth")
-@Tag(name = "Admin Authentication", description = "Endpoints for Admin authentication and session management")
+@RequestMapping("/api/v1/admin/auth")
+@Tag(name = "Super Admin Authentication", description = "Endpoints for Super Admin authentication and session management")
 @RequiredArgsConstructor
-public class AdminAuthController {
+public class SuperAdminAuthController {
 
     private final AdminAuthService adminAuthService;
+    private final AuthService authService;
     private final UserSessionService sessionService;
 
     @Value("${app.auth.cookie-name.refresh:refreshToken}")
@@ -36,7 +38,7 @@ public class AdminAuthController {
     private String accessTokenCookieName;
 
     @PostMapping("/login")
-    @Operation(summary = "Admin login step 1", description = "Initiate admin login, returns session token for MFA step")
+    @Operation(summary = "Super Admin login step 1", description = "Initiate super admin login, returns session token for MFA step")
     public ResponseEntity<AdminLoginResponse> login(
             @Valid @RequestBody AdminLoginRequest request,
             HttpServletRequest httpRequest) {
@@ -44,7 +46,7 @@ public class AdminAuthController {
         String ipAddress = getClientIP(httpRequest);
         String userAgent = httpRequest.getHeader("User-Agent");
 
-        return ResponseEntity.ok(adminAuthService.adminLogin(request, ipAddress, userAgent));
+        return ResponseEntity.ok(adminAuthService.adminLogin(request, ipAddress, userAgent, "SUPER_ADMIN"));
     }
 
     @PostMapping("/login/mfa")
@@ -148,6 +150,26 @@ public class AdminAuthController {
             return request.getRemoteAddr();
         }
         return xfHeader.split(",")[0];
+    }
+
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Request password reset for doctor account")
+    public ResponseEntity<Void> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password/{token}")
+    @Operation(summary = "Reset doctor password using a reset token")
+    public ResponseEntity<Void> resetPassword(
+            @PathVariable String token,
+            @Valid @RequestBody ResetPasswordRequest request,
+            HttpServletRequest httpRequest) {
+        request.setToken(token);
+        String ip = getClientIP(httpRequest);
+        String userAgent = httpRequest.getHeader("User-Agent");
+        authService.resetPassword(request, ip, userAgent);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/logout/all-sessions")

@@ -16,10 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/public/auth")
+@RequestMapping("/api/v1/patient/auth")
 @RequiredArgsConstructor
-@Tag(name = "Authentication", description = "Public Authentication and Session Management APIs")
-public class AuthController {
+@Tag(name = "Patient Authentication", description = "Patient Authentication and Session Management APIs")
+public class PatientAuthController {
 
     private final AuthService authService;
 
@@ -30,13 +30,13 @@ public class AuthController {
     private String accessTokenCookieName;
 
     @PostMapping("/login")
-    @Operation(summary = "Login with email and password", description = "Spec A-01: Primary login endpoint for patients and staff.")
+    @Operation(summary = "Login with email and password", description = "Spec A-01: Primary login endpoint for patients.")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request,
             HttpServletRequest servletRequest,
             HttpServletResponse servletResponse) {
         String ip = servletRequest.getRemoteAddr();
         String userAgent = servletRequest.getHeader("User-Agent");
-        LoginResponse response = authService.login(request, ip, userAgent);
+        LoginResponse response = authService.login(request, ip, userAgent, "PATIENT");
 
         if (response.getRefreshToken() != null) {
             addRefreshTokenCookie(servletResponse, response.getRefreshToken());
@@ -173,7 +173,7 @@ public class AuthController {
             HttpServletResponse servletResponse) {
         String ip = servletRequest.getRemoteAddr();
         String userAgent = servletRequest.getHeader("User-Agent");
-        LoginResponse response = authService.googleLogin(request, ip, userAgent);
+        LoginResponse response = authService.googleLogin(request, ip, userAgent, "PATIENT");
 
         if (response.getRefreshToken() != null) {
             addRefreshTokenCookie(servletResponse, response.getRefreshToken());

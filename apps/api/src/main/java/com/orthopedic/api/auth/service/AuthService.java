@@ -3,7 +3,7 @@ package com.orthopedic.api.auth.service;
 import com.orthopedic.api.auth.dto.*;
 
 public interface AuthService {
-    LoginResponse login(LoginRequest request, String ipAddress, String userAgent);
+    LoginResponse login(LoginRequest request, String ipAddress, String userAgent, String requiredRole);
 
     RegisterResponse register(RegisterRequest request);
 
@@ -13,7 +13,7 @@ public interface AuthService {
 
     TokenResponse verify2fa(Verify2faRequest request, String userAgent);
 
-    LoginResponse googleLogin(GoogleLoginRequest request, String ipAddress, String userAgent);
+    LoginResponse googleLogin(GoogleLoginRequest request, String ipAddress, String userAgent, String requiredRole);
 
     void forgotPassword(ForgotPasswordRequest request);
 

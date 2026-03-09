@@ -17,7 +17,7 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([jwtInterceptor])
     ),
     provideAnimationsAsync(),
-    { provide: AUTH_API_URL, useValue: `${environment.apiUrl}/admin/auth` },
+    { provide: AUTH_API_URL, useValue: `${environment.apiUrl}/doctor/auth` },
     provideTranslateService({
       fallbackLang: 'en',
     }),

@@ -22,7 +22,7 @@ export const jwtInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, nex
   
   return next(request).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && !request.url.includes('/auth/login') && !request.url.includes('/auth/refresh')) {
+      if (error.status === 401 && !request.url.includes('/auth/login') && !request.url.includes('/auth/refresh') && !request.url.includes('/auth/logout')) {
         return handle401Error(request, next, authService);
       }
       return throwError(() => error);
