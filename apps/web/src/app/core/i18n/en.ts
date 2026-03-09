@@ -16,12 +16,16 @@ export const EN = {
     CONTACT: 'Contact',
     DROPDOWN: {
       ABOUT: {
+        TITLE: 'About Dr. Rahman',
+        DESC: 'Learn about the professional journey, academic credentials, and core values that drive our clinical excellence.',
         PROFILE: 'Doctor Profile',
         EDUCATION: 'Education & Experience',
         CERTIFICATIONS: 'Certifications & Achievements',
         AWARDS: 'Awards / Memberships'
       },
       SERVICES: {
+        TITLE: 'Specialized Treatments',
+        DESC: 'Explore our precision-driven orthopedic procedures designed for rapid recovery and long-term functional restoration.',
         SHOWCASE: 'Showcase',
         SURGERIES: 'Successful Surgeries',
         GALLERY: 'Gallery',
@@ -34,17 +38,23 @@ export const EN = {
         SPORTS: 'Sports Injuries'
       },
       APPOINTMENT: {
+        TITLE: 'Book Your Consult',
+        DESC: 'Secure your priority slot today. We offer multiple booking channels for your convenience including direct clinic and WhatsApp.',
         FORM: 'Book Appointment Form',
         WHATSAPP: 'WhatsApp Booking',
         INSTRUCTIONS: 'Appointment Instructions'
       },
       BLOG: {
+        TITLE: 'Medical Intelligence',
+        DESC: 'Stay informed with the latest insights, research findings, and post-operative recovery protocols.',
         TIPS: 'Health Tips',
         ARTICLES: 'Articles',
         NEWS: 'News',
         CASES: 'Case Studies'
       },
       CONTACT: {
+        TITLE: 'Connect with Us',
+        DESC: 'Reach out for emergency support, clinical inquiries, or visit our primary hub in Uttara.',
         ADDRESS: 'Clinic Address',
         MAP: 'Google Map',
         COMMUNICATION: 'Phone / Email / WhatsApp',

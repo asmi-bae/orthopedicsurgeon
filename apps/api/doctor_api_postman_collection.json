@@ -1,0 +1,307 @@
+{
+	"info": {
+		"_postman_id": "doctor-api-collection",
+		"name": "Orthopedic Surgeon - Doctor API",
+		"description": "API collection for Doctor role in the Orthopedic Surgeon Platform. Base URL: http://localhost:8080/api/v1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🔐 Auth",
+			"item": [
+				{
+					"name": "Login (Doctor)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var json = pm.response.json();",
+									"if (json.data && json.data.accessToken) {",
+									"  pm.collectionVariables.set('access_token', json.data.accessToken);",
+									"  pm.collectionVariables.set('refresh_token', json.data.refreshToken);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/public/auth/login",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"doctor@example.com\",\n  \"password\": \"password123\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/public/auth/refresh",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📊 Dashboard",
+			"item": [
+				{
+					"name": "Get Dashboard Data",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/dashboard"
+					}
+				},
+				{
+					"name": "Get Stats",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/dashboard/stats"
+					}
+				},
+				{
+					"name": "Get Live Appointments",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/dashboard/live-appointments"
+					}
+				},
+				{
+					"name": "Get Quick Stats",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/dashboard/quick-stats"
+					}
+				}
+			]
+		},
+		{
+			"name": "📝 Prescriptions",
+			"item": [
+				{
+					"name": "Create Prescription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/doctor/prescriptions",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"patientId\": \"{{patient_id}}\",\n  \"appointmentId\": \"{{appointment_id}}\",\n  \"diagnosis\": \"Muscle Strain\",\n  \"medications\": [\n    {\n      \"name\": \"Ibuprofen\",\n      \"dosage\": \"400mg\",\n      \"frequency\": \"Twice daily\",\n      \"duration\": \"5 days\"\n    }\n  ],\n  \"notes\": \"Rest and ice pack\"\n}"
+						}
+					}
+				},
+				{
+					"name": "Get Prescriptions by Patient",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/prescriptions/patient/{{patient_id}}"
+					}
+				},
+				{
+					"name": "Get Prescription Detail",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/prescriptions/{{prescription_id}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "👥 Patients",
+			"item": [
+				{
+					"name": "List Patients",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/patients"
+					}
+				},
+				{
+					"name": "Get Patient Detail",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/patients/{{patient_id}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "🧪 Lab Reports",
+			"item": [
+				{
+					"name": "List Lab Reports",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/lab-reports"
+					}
+				},
+				{
+					"name": "Get Lab Report Detail",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/lab-reports/{{report_id}}"
+					}
+				},
+				{
+					"name": "Update Lab Report Result",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/doctor/lab-reports/{{report_id}}/result",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"result\": \"Positive for X\",\n  \"comments\": \"Follow up required\",\n  \"status\": \"COMPLETED\"\n}"
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📰 Blog",
+			"item": [
+				{
+					"name": "Get My Posts",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/blog/posts"
+					}
+				},
+				{
+					"name": "Create Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/doctor/blog/posts",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Post Title\",\n  \"content\": \"Post content...\",\n  \"summary\": \"Short summary\"\n}"
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "⭐ Reviews",
+			"item": [
+				{
+					"name": "List Reviews",
+					"request": {
+						"method": "GET",
+						"url": "{{base_url}}/doctor/reviews"
+					}
+				},
+				{
+					"name": "Approve Review",
+					"request": {
+						"method": "POST",
+						"url": "{{base_url}}/doctor/reviews/{{review_id}}/approve"
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "patient_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "appointment_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "prescription_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "report_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "review_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
