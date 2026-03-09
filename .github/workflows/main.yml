@@ -1,10 +1,10 @@
-name: ortho-sync-pipline
+name: ortho-sync-pipeline
 
 on:
   push:
     branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 jobs:
   backend-test:
@@ -18,7 +18,7 @@ jobs:
           distribution: "temurin"
           cache: maven
       - name: Build and Test API
-        run: cd apps/api && mvn test
+        run: cd apps/api && mvn clean test
 
   frontend-test:
     runs-on: ubuntu-latest
@@ -34,13 +34,17 @@ jobs:
           cache: "pnpm"
       - name: Install dependencies
         run: pnpm install
-      - name: Test Admin
-        run: pnpm --filter admin test --watch=false --browsers=ChromeHeadless
+      - name: Lint and Test All Frontends
+        # Using turbo to run test and lint for all apps
+        run: pnpm exec turbo run lint test
 
   docker-build:
     needs: [backend-test, frontend-test]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    strategy:
+      matrix:
+        app: [api, admin, doctor, web]
     steps:
       - uses: actions/checkout@v4
       - name: Login to Docker Hub
@@ -48,17 +52,13 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and Push Backend
+      - name: Extract Branch Name
+        id: extract_branch
+        run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+      - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: apps/api/Dockerfile
+          file: apps/${{ matrix.app }}/Dockerfile
           push: true
-          tags: ortho/api:latest
-      - name: Build and Push Admin
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: apps/admin/Dockerfile
-          push: true
-          tags: ortho/admin:latest
+          tags: ortho/${{ matrix.app }}:${{ steps.extract_branch.outputs.branch }}-latest
