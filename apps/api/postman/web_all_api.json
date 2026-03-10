@@ -183,6 +183,18 @@
             },
             "description": "ID: B-06"
           }
+        },
+        {
+          "name": "GET /content/translations/{lang}",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/content/translations/EN",
+              "host": ["{{base_url}}"],
+              "path": ["content", "translations", "EN"]
+            },
+            "description": "ID: B-07\nFetches all dynamic translations for a specific language."
+          }
         }
       ]
     },

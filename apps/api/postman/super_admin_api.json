@@ -5086,6 +5086,54 @@
           }
         },
         {
+          "name": "Get Settings by Language",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/doctor/website/settings?lang=EN",
+              "host": ["{{base_url}}"],
+              "path": ["doctor", "website", "settings"],
+              "query": [
+                {
+                  "key": "lang",
+                  "value": "EN"
+                }
+              ]
+            },
+            "description": "ID: AK-41\nFetches all site settings for a specific language."
+          }
+        },
+        {
+          "name": "Update Setting by Key/Lang",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/doctor/website/settings/key/COMMON.SIGN_IN/EN",
+              "host": ["{{base_url}}"],
+              "path": ["doctor", "website", "settings", "key", "COMMON.SIGN_IN", "EN"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"value\": \"Sign In Now\"\n}"
+            },
+            "description": "ID: AK-42\nUpdates a specific site setting/translation by its key and language."
+          }
+        },
+        {
           "name": "GET /admin/website/preview",
           "request": {
             "method": "GET",

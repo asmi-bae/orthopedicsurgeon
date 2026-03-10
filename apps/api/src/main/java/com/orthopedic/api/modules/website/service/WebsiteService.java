@@ -62,4 +62,6 @@ public interface WebsiteService {
     void submitContactForm(ContactRequest request);
 
     void submitLead(ContactRequest request);
+
+    java.util.Map<String, String> getTranslations(String lang);
 }

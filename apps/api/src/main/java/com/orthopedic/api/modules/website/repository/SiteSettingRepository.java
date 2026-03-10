@@ -9,9 +9,10 @@ import java.util.UUID;
 
 @Repository
 public interface SiteSettingRepository extends JpaRepository<SiteSetting, UUID> {
-    Optional<SiteSetting> findByKey(String key);
-
+    Optional<SiteSetting> findByKeyAndLang(String key, String lang);
+    List<SiteSetting> findByLang(String lang);
     List<SiteSetting> findByIsPublicTrue();
+    List<SiteSetting> findByIsPublicTrueAndLang(String lang);
 
     List<SiteSetting> findByCategory(String category);
 }

@@ -162,7 +162,7 @@ export const routes: Routes = [
       },
       { 
         path: 'settings/language', 
-        loadComponent: () => import('@features/system/settings/system-settings.component').then(m => m.SystemSettingsComponent),
+        loadComponent: () => import('@features/system/settings/language-management.component').then(m => m.LanguageManagementComponent),
         data: { breadcrumb: 'Language Management' }
       },
       { 

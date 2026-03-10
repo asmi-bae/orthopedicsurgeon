@@ -13,6 +13,7 @@ public class SiteSettingResponse {
     private UUID id;
     private String key;
     private String value;
+    private String lang;
     private String category;
     private Boolean isPublic;
     private LocalDateTime createdAt;

@@ -1040,6 +1040,67 @@
                             }
                         ]
                     }
+                },
+                {
+                    "name": "Get Settings by Language",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{base_url}}/doctor/website/settings?lang=EN",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "doctor",
+                                "website",
+                                "settings"
+                            ],
+                            "query": [
+                                {
+                                    "key": "lang",
+                                    "value": "EN"
+                                }
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "name": "Update Setting by Key/Lang",
+                    "request": {
+                        "method": "PUT",
+                        "url": {
+                            "raw": "{{base_url}}/doctor/website/settings/key/COMMON.SIGN_IN/EN",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "doctor",
+                                "website",
+                                "settings",
+                                "key",
+                                "COMMON.SIGN_IN",
+                                "EN"
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{access_token}}",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"value\": \"Sign In Now\"\n}"
+                        }
+                    }
                 }
             ]
         },

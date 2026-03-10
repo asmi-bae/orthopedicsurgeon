@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/admin/website/settings")
+@RequestMapping({"/api/v1/admin/website/settings", "/api/v1/doctor/website/settings"})
 @RequiredArgsConstructor
 @Tag(name = "Admin Site Settings", description = "Admin endpoints for managing website configurations")
 @PreAuthorize("hasAnyRole('DOCTOR_ADMIN', 'SUPER_ADMIN')")
@@ -27,14 +27,17 @@ public class AdminSiteSettingController extends BaseController {
 
     @GetMapping
     @Operation(summary = "Get all site settings")
-    public ResponseEntity<ApiResponse<List<SiteSettingResponse>>> getAll() {
+    public ResponseEntity<ApiResponse<List<SiteSettingResponse>>> getAll(@RequestParam(required = false) String lang) {
+        if (lang != null && !lang.isEmpty()) {
+            return ok(siteSettingService.getSettingsByLang(lang));
+        }
         return ok(siteSettingService.getAllSettings());
     }
 
-    @GetMapping("/{key}")
-    @Operation(summary = "Get site setting by key")
-    public ResponseEntity<ApiResponse<SiteSettingResponse>> getByKey(@PathVariable String key) {
-        return ok(siteSettingService.getSettingByKey(key));
+    @GetMapping("/{key}/{lang}")
+    @Operation(summary = "Get site setting by key and lang")
+    public ResponseEntity<ApiResponse<SiteSettingResponse>> getByKeyAndLang(@PathVariable String key, @PathVariable String lang) {
+        return ok(siteSettingService.getSettingByKeyAndLang(key, lang));
     }
 
     @PutMapping("/{id}")
@@ -44,10 +47,10 @@ public class AdminSiteSettingController extends BaseController {
         return ok(siteSettingService.updateSetting(id, request));
     }
 
-    @PutMapping("/key/{key}")
-    @Operation(summary = "Update site setting by key")
-    public ResponseEntity<ApiResponse<SiteSettingResponse>> updateByKey(@PathVariable String key,
+    @PutMapping("/key/{key}/{lang}")
+    @Operation(summary = "Update site setting by key and lang")
+    public ResponseEntity<ApiResponse<SiteSettingResponse>> updateByKeyAndLang(@PathVariable String key, @PathVariable String lang,
             @Valid @RequestBody UpdateSiteSettingRequest request) {
-        return ok(siteSettingService.updateSettingByKey(key, request));
+        return ok(siteSettingService.updateSettingByKeyAndLang(key, lang, request));
     }
 }

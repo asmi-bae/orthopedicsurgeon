@@ -1,4 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import { EN } from '../i18n/en';
 import { BN } from '../i18n/bn';
 
@@ -23,8 +26,28 @@ export class TranslationService {
   translate(key: string): import('@angular/core').Signal<any> {
     return computed(() => {
       const keys = key.split('.');
-      let result = this.translations[this.currentLanguage()];
+      const currentLang = this.currentLanguage();
+      const staticTranslations = this.translations[currentLang];
+      const dynamicTranslations = this.dynamicTranslations()[currentLang] || {};
       
+      let result: any = dynamicTranslations;
+      let found = false;
+
+      // Try dynamic first
+      for (const k of keys) {
+        if (result && result[k]) {
+          result = result[k];
+          found = true;
+        } else {
+          found = false;
+          break;
+        }
+      }
+
+      if (found) return result;
+
+      // Fallback to static
+      result = staticTranslations;
       for (const k of keys) {
         if (result && result[k]) {
           result = result[k];
@@ -35,6 +58,46 @@ export class TranslationService {
       
       return result;
     });
+  }
+
+  private dynamicTranslations = signal<Record<Language, any>>({
+    EN: {},
+    BN: {}
+  });
+
+  async init(http: HttpClient) {
+    const lang = this.currentLanguage();
+    await this.loadTranslations(http, lang);
+  }
+
+  async loadTranslations(http: HttpClient, lang: Language) {
+    try {
+      const apiUrl = `${environment.apiUrl}/content/translations/${lang}`;
+      const data = await firstValueFrom(http.get<Record<string, string>>(apiUrl));
+      
+      // Convert flat "KEY.SUBKEY" to nested object
+      const nested: any = {};
+      Object.keys(data).forEach(key => {
+        const parts = key.split('.');
+        let current = nested;
+        for (let i = 0; i < parts.length; i++) {
+          const part = parts[i];
+          if (i === parts.length - 1) {
+            current[part] = data[key];
+          } else {
+            current[part] = current[part] || {};
+            current = current[part];
+          }
+        }
+      });
+
+      this.dynamicTranslations.update(prev => ({
+        ...prev,
+        [lang]: nested
+      }));
+    } catch (error) {
+      console.error('Failed to load dynamic translations', error);
+    }
   }
 
   setLanguage(lang: Language) {

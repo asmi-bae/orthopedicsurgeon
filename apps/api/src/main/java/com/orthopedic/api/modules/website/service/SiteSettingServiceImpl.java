@@ -33,7 +33,14 @@ public class SiteSettingServiceImpl implements SiteSettingService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = "site_settings_public")
+    public List<SiteSettingResponse> getSettingsByLang(String lang) {
+        return repository.findByLang(lang).stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<SiteSettingResponse> getPublicSettings() {
         return repository.findByIsPublicTrue().stream()
                 .map(this::mapToResponse)
@@ -42,14 +49,31 @@ public class SiteSettingServiceImpl implements SiteSettingService {
 
     @Override
     @Transactional(readOnly = true)
-    public SiteSettingResponse getSettingByKey(String key) {
-        return repository.findByKey(key)
+    @Cacheable(value = "site_settings_public", key = "#lang")
+    public List<SiteSettingResponse> getPublicSettingsByLang(String lang) {
+        return repository.findByIsPublicTrueAndLang(lang).stream()
                 .map(this::mapToResponse)
-                .orElseThrow(() -> new ResourceNotFoundException("Setting not found with key: " + key));
+                .collect(Collectors.toList());
     }
 
     @Override
-    @CacheEvict(value = "site_settings_public", allEntries = true)
+    @Transactional(readOnly = true)
+    public SiteSettingResponse getSettingByKeyAndLang(String key, String lang) {
+        return repository.findByKeyAndLang(key, lang)
+                .map(this::mapToResponse)
+                .orElseThrow(() -> new ResourceNotFoundException("Setting not found with key: " + key + " and lang: " + lang));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "website_translations", key = "#lang")
+    public java.util.Map<String, String> getTranslations(String lang) {
+        return repository.findByLang(lang).stream()
+                .collect(Collectors.toMap(SiteSetting::getKey, SiteSetting::getValue));
+    }
+
+    @Override
+    @CacheEvict(value = {"site_settings_public", "website_translations"}, allEntries = true)
     @LogMutation(action = "UPDATE_SITE_SETTING", entityName = "SITE_SETTING")
     public SiteSettingResponse updateSetting(UUID id, UpdateSiteSettingRequest request) {
         SiteSetting setting = repository.findById(id)
@@ -59,11 +83,11 @@ public class SiteSettingServiceImpl implements SiteSettingService {
     }
 
     @Override
-    @CacheEvict(value = "site_settings_public", allEntries = true)
+    @CacheEvict(value = {"site_settings_public", "website_translations"}, allEntries = true)
     @LogMutation(action = "UPDATE_SITE_SETTING", entityName = "SITE_SETTING")
-    public SiteSettingResponse updateSettingByKey(String key, UpdateSiteSettingRequest request) {
-        SiteSetting setting = repository.findByKey(key)
-                .orElseThrow(() -> new ResourceNotFoundException("Setting not found with key: " + key));
+    public SiteSettingResponse updateSettingByKeyAndLang(String key, String lang, UpdateSiteSettingRequest request) {
+        SiteSetting setting = repository.findByKeyAndLang(key, lang)
+                .orElseThrow(() -> new ResourceNotFoundException("Setting not found with key: " + key + " and lang: " + lang));
         setting.setValue(request.getValue());
         return mapToResponse(repository.save(setting));
     }
@@ -73,6 +97,7 @@ public class SiteSettingServiceImpl implements SiteSettingService {
                 .id(setting.getId())
                 .key(setting.getKey())
                 .value(setting.getValue())
+                .lang(setting.getLang())
                 .category(setting.getCategory())
                 .isPublic(setting.getIsPublic())
                 .createdAt(setting.getCreatedAt())

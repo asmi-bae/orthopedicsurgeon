@@ -8,7 +8,7 @@ import { environment } from '@env/environment';
 })
 export class DoctorWebsiteService {
   private http = inject(HttpClient);
-  private baseUrl = `${environment.apiUrl || 'http://localhost:8080/api/v1'}/doctor/website`;
+  private baseUrl = `${environment.apiUrl}/doctor/website`;
 
   getSettings(): Observable<any> {
     return this.http.get(`${this.baseUrl}/settings`);
@@ -16,5 +16,13 @@ export class DoctorWebsiteService {
 
   updateSettings(payload: any): Observable<any> {
     return this.http.put(`${this.baseUrl}/settings`, payload);
+  }
+
+  getTranslations(lang: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/settings?lang=${lang}`);
+  }
+
+  updateTranslation(key: string, lang: string, value: string): Observable<any> {
+    return this.http.put(`${this.baseUrl}/settings/key/${key}/${lang}`, { value });
   }
 }

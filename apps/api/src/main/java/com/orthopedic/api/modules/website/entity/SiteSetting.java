@@ -19,11 +19,15 @@ public class SiteSetting {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "key", length = 100, nullable = false, unique = true)
+    @Column(name = "key", length = 100, nullable = false)
     private String key;
 
     @Column(name = "value", columnDefinition = "TEXT")
     private String value;
+
+    @Column(name = "lang", length = 10, nullable = false)
+    @Builder.Default
+    private String lang = "EN";
 
     @Column(name = "category", length = 50, nullable = false)
     private String category;

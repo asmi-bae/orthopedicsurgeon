@@ -498,4 +498,10 @@ public class WebsiteServiceImpl implements WebsiteService {
                                 .canonicalUrl(seo.getCanonicalUrl())
                                 .build();
         }
+
+        @Override
+        public java.util.Map<String, String> getTranslations(String lang) {
+                return siteSettingRepository.findByLang(lang).stream()
+                                .collect(Collectors.toMap(SiteSetting::getKey, SiteSetting::getValue, (v1, v2) -> v1));
+        }
 }

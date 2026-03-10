@@ -7,12 +7,17 @@ import java.util.UUID;
 
 public interface SiteSettingService {
     List<SiteSettingResponse> getAllSettings();
+    List<SiteSettingResponse> getSettingsByLang(String lang);
 
     List<SiteSettingResponse> getPublicSettings();
 
-    SiteSettingResponse getSettingByKey(String key);
+    List<SiteSettingResponse> getPublicSettingsByLang(String lang);
+
+    SiteSettingResponse getSettingByKeyAndLang(String key, String lang);
+
+    java.util.Map<String, String> getTranslations(String lang);
 
     SiteSettingResponse updateSetting(UUID id, UpdateSiteSettingRequest request);
 
-    SiteSettingResponse updateSettingByKey(String key, UpdateSiteSettingRequest request);
+    SiteSettingResponse updateSettingByKeyAndLang(String key, String lang, UpdateSiteSettingRequest request);
 }

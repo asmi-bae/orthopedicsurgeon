@@ -28,6 +28,11 @@ public class WebsiteController {
         return ResponseEntity.ok(websiteService.getPublicConfig());
     }
 
+    @GetMapping("/translations/{lang}")
+    public ResponseEntity<Map<String, String>> getTranslations(@PathVariable String lang) {
+        return ResponseEntity.ok(websiteService.getTranslations(lang));
+    }
+
     @GetMapping("/meta")
     public ResponseEntity<SeoResponse> getSiteMeta() {
         return ResponseEntity.ok(websiteService.getSeoMetadata("home"));
