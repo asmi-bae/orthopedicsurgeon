@@ -100,7 +100,7 @@ export class BlogListComponent {
       excerptKey: 'BLOG.POSTS.HIP_REPLACEMENT.EXCERPT',
       dateKey: 'BLOG.NEWS1.DATE',
       categoryKey: 'BLOG.POSTS.HIP_REPLACEMENT.CATEGORY',
-      author: 'Dr. Rahman',
+      author: 'Dr. Ab Rahman',
       image: 'https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=800'
     },
     {
@@ -109,7 +109,7 @@ export class BlogListComponent {
       excerptKey: 'BLOG.POSTS.RECOVERY.EXCERPT',
       dateKey: 'BLOG.NEWS2.DATE',
       categoryKey: 'BLOG.POSTS.RECOVERY.CATEGORY',
-      author: 'Dr. Rahman',
+      author: 'Dr. Ab Rahman',
       image: 'https://images.unsplash.com/photo-1571019623518-e71de96e28da?auto=format&fit=crop&q=80&w=800'
     },
     {
@@ -118,7 +118,7 @@ export class BlogListComponent {
       excerptKey: 'BLOG.POSTS.REGENERATIVE.EXCERPT',
       dateKey: 'BLOG.NEWS3.DATE',
       categoryKey: 'BLOG.POSTS.REGENERATIVE.CATEGORY',
-      author: 'Dr. Rahman',
+      author: 'Dr. Ab Rahman',
       image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=800'
     }
   ];

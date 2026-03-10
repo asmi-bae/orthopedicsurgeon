@@ -62,7 +62,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
           <!-- Profile Image & Info Card -->
           <div class="relative animate-in fade-in duration-1000 order-1 lg:order-2 mb-12 lg:mb-0 lg:-mt-20">
              <div class="relative z-10 overflow-hidden aspect-[4/5] max-w-[320px] sm:max-w-md lg:max-w-xl mx-auto group">
-                <img src="assets/images/Dr. Rahman.svg" [alt]="'HOME.HERO.DOCTOR.NAME' | translate" 
+                <img src="assets/images/Dr. Ab Rahman.svg" [alt]="'HOME.HERO.DOCTOR.NAME' | translate" 
                      class="w-full h-full object-cover" />
                 
                 <!-- Blurry Fade Transition at bottom - smoothed with mask -->

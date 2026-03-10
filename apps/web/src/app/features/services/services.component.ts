@@ -109,7 +109,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
             <div class="bg-primary rounded-[60px] p-16 md:p-24 relative overflow-hidden text-center text-white shadow-2xl shadow-primary/40">
                <div class="relative z-10 max-w-3xl mx-auto">
                   <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-8 leading-[0.9]">Start your journey to recovery today</h2>
-                  <p class="text-white/70 text-xl font-medium mb-12">Consult with Dr. Rahman for specialized musculoskeletal care.</p>
+                  <p class="text-white/70 text-xl font-medium mb-12">Consult with Dr. Ab Rahman for specialized musculoskeletal care.</p>
                   <a mat-flat-button class="h-20 px-12 rounded-3xl text-xl font-black uppercase bg-white !text-primary shadow-xl hover:scale-105 transition-transform duration-300">
                     Book Appointment
                   </a>

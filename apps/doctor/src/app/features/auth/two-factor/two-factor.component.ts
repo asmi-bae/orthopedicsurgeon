@@ -26,7 +26,7 @@ import { AuthService } from '@repo/auth';
     MatProgressSpinnerModule
   ],
   template: `
-    <mat-card class="w-full max-w-[450px] mx-auto bg-slate-50 border border-slate-100 shadow-xl shadow-slate-200/50 rounded-2xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div class="w-full max-w-[450px] mx-auto bg-slate-50">
       <div class="flex flex-col items-center pt-10 pb-6">
         <div class="w-16 h-16 rounded-full bg-primary-50/20 flex items-center justify-center mb-6">
           <mat-icon class="text-primary-600 !w-8 !h-8 !text-[32px] leading-none">lock</mat-icon>
@@ -73,7 +73,7 @@ import { AuthService } from '@repo/auth';
       <mat-card-footer class="py-4 text-center">
         <span class="text-xs text-slate-500">All Rights Reserved by Doctor Portal &copy; 2026</span>
       </mat-card-footer>
-    </mat-card>
+    </div>
   `,
   styles: [`:host { display: block; }`]
 })

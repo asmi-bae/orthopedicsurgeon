@@ -17,7 +17,7 @@ export const EN = {
     CONTACT: 'Contact',
     DROPDOWN: {
       ABOUT: {
-        TITLE: 'About Dr. Rahman',
+        TITLE: 'About Dr. Ab Rahman',
         DESC: 'Learn about the professional journey, academic credentials, and core values that drive our clinical excellence.',
         PROFILE: 'Doctor Profile',
         EDUCATION: 'Education',
@@ -68,7 +68,7 @@ export const EN = {
       SUBTITLE: 'Expert care for bones, joints, and spine health',
       DESCRIPTION: 'Trusted orthopedic care focused on your recovery and pain-free mobility.',
       DOCTOR: {
-        NAME: 'Dr. Rahman',
+        NAME: 'Dr. Ab Rahman',
         TITLE: 'Orthopedic Surgeon',
         EXP: '15+ Years',
         LOC: 'Dhaka, Bangladesh',
@@ -142,7 +142,7 @@ export const EN = {
     },
     QUICK_APPOINTMENT: {
       TITLE: 'Ready to start your recovery?',
-      DESC: 'Book your consultation with Dr. Rahman today and take the first step towards pain-free mobility.'
+      DESC: 'Book your consultation with Dr. Ab Rahman today and take the first step towards pain-free mobility.'
     },
     PARTNERS: {
       SUBTITLE: 'Strategic Network',
@@ -172,7 +172,7 @@ export const EN = {
           SUBTITLE: 'Health Insights',
           TITLE_PART1: 'Orthopedic Care',
           TITLE_PART2: '& Recovery Guide',
-          DESCRIPTION: 'Expert advice, surgical insights, and recovery tips from Dr. Rahman to help you maintain bone and joint health.'
+          DESCRIPTION: 'Expert advice, surgical insights, and recovery tips from Dr. Ab Rahman to help you maintain bone and joint health.'
         },
         CARD: {
           READ_PROTOCOL: 'Read Article'
@@ -213,9 +213,9 @@ export const EN = {
           TITLE: 'Expert Tip',
           TEXT: 'Early intervention and physical therapy are crucial for optimal recovery after any orthopedic procedure.'
         },
-        COMMITMENT: 'Dr. Rahman is committed to providing the highest standard of care using the latest medical evidence and technologies.',
+        COMMITMENT: 'Dr. Ab Rahman is committed to providing the highest standard of care using the latest medical evidence and technologies.',
         AUTHOR_CERT: 'Orthopedic Surgeon',
-        AUTHOR_BIO: 'Dr. Rahman has years of experience in joint replacements, trauma surgery, and sports medicine.',
+        AUTHOR_BIO: 'Dr. Ab Rahman has years of experience in joint replacements, trauma surgery, and sports medicine.',
         BOOK: 'Book Consult'
       }
     },
@@ -573,7 +573,7 @@ export const EN = {
         NAME: 'Sarah Johnson',
         TYPE: 'Athlete Recovery',
         PROCEDURE: 'ACL Reconstruction',
-        QUOTE: 'I never thought I would run again. Dr. Rahman gave me back my career.',
+        QUOTE: 'I never thought I would run again. Dr. Ab Rahman gave me back my career.',
         DESC: 'After a severe knee injury during a professional match, Sarah underwent advanced robotic-assisted ACL reconstruction. Her dedication to the rehabilitation protocol led to a full return to professional sports in record time.'
       },
       JOHN: {
@@ -586,7 +586,7 @@ export const EN = {
     },
     CTA: {
       TITLE: 'Start Your Recovery Journey Today',
-      DESCRIPTION: 'Every patient is unique. Schedule a consultation with Dr. Rahman to discuss your personalized treatment plan.',
+      DESCRIPTION: 'Every patient is unique. Schedule a consultation with Dr. Ab Rahman to discuss your personalized treatment plan.',
       ACTION: 'Book Your Consultation'
     }
   },
@@ -611,7 +611,7 @@ export const EN = {
       SECTION2: 'Medical Disclaimer',
       TEXT2: 'The information on this website is for educational purposes and does not substitute professional medical advice.',
       SECTION3: 'Liability',
-      TEXT3: 'Dr. Rahman is not liable for any actions taken based on online information without a direct consultation.'
+      TEXT3: 'Dr. Ab Rahman is not liable for any actions taken based on online information without a direct consultation.'
     }
   }
 };

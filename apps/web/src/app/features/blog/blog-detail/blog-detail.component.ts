@@ -31,7 +31,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
                   <img src="https://i.pravatar.cc/150?u=drrahman" class="w-full h-full object-cover" />
                 </div>
                 <div>
-                  <p class="text-[10px] font-black uppercase tracking-widest">DR. RAHMAN</p>
+                  <p class="text-[10px] font-black uppercase tracking-widest">Dr. Ab Rahman</p>
                   <p class="text-[8px] font-bold text-primary uppercase tracking-[0.2em]">{{ 'BLOG.DETAIL.AUTHOR_CERT' | translate }}</p>
                 </div>
               </div>
@@ -91,7 +91,7 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
               <img src="https://i.pravatar.cc/300?u=drrahman" class="w-full h-full object-cover" />
             </div>
             <div class="flex-1">
-              <h4 class="text-2xl font-black uppercase tracking-tight mb-2">DR. RAHMAN</h4>
+              <h4 class="text-2xl font-black uppercase tracking-tight mb-2">Dr. Ab Rahman</h4>
               <p class="text-primary font-black uppercase tracking-widest text-xs mb-4">{{ 'BLOG.DETAIL.AUTHOR_CERT' | translate }}</p>
               <p class="text-white/60 text-sm leading-relaxed font-medium">{{ 'BLOG.DETAIL.AUTHOR_BIO' | translate }}</p>
             </div>
