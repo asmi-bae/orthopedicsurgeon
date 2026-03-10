@@ -33,6 +33,7 @@ public class CorsConfig {
         publicConfig.setMaxAge(3600L);
 
         source.registerCorsConfiguration("/api/v1/auth/**", publicConfig);
+        source.registerCorsConfiguration("/api/v1/content/**", publicConfig);
         source.registerCorsConfiguration("/api/v1/public/**", publicConfig);
         source.registerCorsConfiguration("/api/v1/portal/**", publicConfig);
         source.registerCorsConfiguration("/api/v1/booking/**", publicConfig);

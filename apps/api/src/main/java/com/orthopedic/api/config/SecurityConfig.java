@@ -39,6 +39,7 @@ public class SecurityConfig {
                         "/api/v1/public/booking/check-slot",
                         "/v3/api-docs/**",
                         "/swagger-ui/**",
+                        "/api/v1/content/**",
                         "/oauth2/**",
                         "/actuator/**",
                         "/ws/**"
@@ -63,7 +64,10 @@ public class SecurityConfig {
                         "/api/v1/admin/auth/login/mfa",
                         "/api/v1/admin/auth/refresh",
                         "/api/v1/admin/auth/forgot-password",
-                        "/api/v1/admin/auth/reset-password/**"
+                        "/api/v1/admin/auth/reset-password/**",
+                        "/api/v1/content/contact",
+                        "/api/v1/content/newsletter/subscribe",
+                        "/api/v1/content/leads"
         };
 
         private final JwtAuthenticationFilter jwtAuthenticationFilter;

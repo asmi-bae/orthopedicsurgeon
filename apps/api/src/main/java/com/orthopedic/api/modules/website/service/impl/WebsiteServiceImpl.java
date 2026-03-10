@@ -24,6 +24,7 @@ import com.orthopedic.api.modules.website.entity.SeoMetadata;
 import com.orthopedic.api.modules.website.entity.SiteSetting;
 import com.orthopedic.api.modules.website.repository.*;
 import com.orthopedic.api.modules.website.service.WebsiteService;
+import com.orthopedic.api.modules.website.service.SiteSettingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -41,6 +42,7 @@ import java.util.stream.Collectors;
 public class WebsiteServiceImpl implements WebsiteService {
 
         private final SiteSettingRepository siteSettingRepository;
+        private final SiteSettingService siteSettingService;
         private final MenuRepository menuRepository;
         private final SeoMetadataRepository seoMetadataRepository;
         private final DoctorRepository doctorRepository;
@@ -135,6 +137,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'announcements'")
         public AnnouncementResponse getAnnouncements() {
                 Map<String, String> config = getPublicConfig();
                 boolean isActive = Boolean.parseBoolean(config.getOrDefault("announcement.active", "false"));
@@ -186,6 +189,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'active-partners'")
         public List<PartnerResponse> getActivePartners() {
                 return partnerRepository.findByIsActiveTrueOrderByDisplayOrderAsc().stream()
                                 .map(p -> PartnerResponse.builder()
@@ -199,6 +203,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'active-awards'")
         public List<AwardResponse> getActiveAwards() {
                 return awardRepository.findByIsActiveTrueOrderByAwardYearDescDisplayOrderAsc().stream()
                                 .map(a -> AwardResponse.builder()
@@ -233,6 +238,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'featured-services'")
         public List<ServiceResponse> getFeaturedServices() {
                 return serviceRepository.findByIsFeaturedTrueAndStatus(ServiceEntity.ServiceStatus.ACTIVE).stream()
                                 .map(s -> ServiceResponse.builder()
@@ -501,7 +507,6 @@ public class WebsiteServiceImpl implements WebsiteService {
 
         @Override
         public java.util.Map<String, String> getTranslations(String lang) {
-                return siteSettingRepository.findByLang(lang).stream()
-                                .collect(Collectors.toMap(SiteSetting::getKey, SiteSetting::getValue, (v1, v2) -> v1));
+                return siteSettingService.getTranslations(lang);
         }
 }
