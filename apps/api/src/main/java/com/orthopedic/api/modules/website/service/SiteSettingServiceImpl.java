@@ -69,7 +69,11 @@ public class SiteSettingServiceImpl implements SiteSettingService {
     @Cacheable(value = "website_translations", key = "#lang")
     public java.util.Map<String, String> getTranslations(String lang) {
         return repository.findByLang(lang).stream()
-                .collect(Collectors.toMap(SiteSetting::getKey, SiteSetting::getValue));
+                .collect(Collectors.toMap(
+                    SiteSetting::getKey, 
+                    SiteSetting::getValue,
+                    (existing, replacement) -> replacement
+                ));
     }
 
     @Override

@@ -64,7 +64,11 @@ public class WebsiteServiceImpl implements WebsiteService {
         @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'public-config'")
         public Map<String, String> getPublicConfig() {
                 return siteSettingRepository.findByIsPublicTrue().stream()
-                                .collect(Collectors.toMap(SiteSetting::getKey, SiteSetting::getValue));
+                                .collect(Collectors.toMap(
+                                                SiteSetting::getKey,
+                                                SiteSetting::getValue,
+                                                (existing, replacement) -> replacement
+                                ));
         }
 
         @Override
