@@ -15,6 +15,8 @@ import java.util.List;
         @Index(name = "idx_doctors_status", columnList = "status"),
         @Index(name = "idx_doctors_specialization", columnList = "specialization"),
         @Index(name = "idx_doctors_deleted", columnList = "deleted")
+}, uniqueConstraints = {
+        @UniqueConstraint(name = "unique_single_doctor", columnNames = { "single_doctor_key" })
 })
 public class Doctor extends BaseEntity {
 
@@ -53,6 +55,17 @@ public class Doctor extends BaseEntity {
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DoctorAvailability> availabilities = new ArrayList<>();
+
+    @Column(name = "single_doctor_key", nullable = false, updatable = false)
+    private Integer singleDoctorKey = 1;
+
+    public Integer getSingleDoctorKey() {
+        return singleDoctorKey;
+    }
+
+    public void setSingleDoctorKey(Integer singleDoctorKey) {
+        this.singleDoctorKey = singleDoctorKey;
+    }
 
     public User getUser() {
         return user;

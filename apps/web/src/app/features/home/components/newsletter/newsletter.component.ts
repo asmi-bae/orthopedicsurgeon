@@ -1,16 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslatePipe } from '@core/pipes/translate.pipe';
+import { FormsModule } from '@angular/forms';
+import { PublicApiService } from '@core/services/public-api.service';
+import { ToastService } from '@core/services/toast.service';
 
 @Component({
   selector: 'app-home-newsletter',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
@@ -28,14 +32,15 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
           <h2 class="text-xs font-black uppercase tracking-[0.4em] mb-4 text-white/60">{{ 'HOME.NEWSLETTER.SUBTITLE' | translate }}</h2>
           <h3 class="text-5xl font-black tracking-tighter uppercase mb-10">{{ 'HOME.NEWSLETTER.TITLE' | translate }}</h3>
           
-          <form class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+          <form (ngSubmit)="subscribe()" #newsletterForm="ngForm" class="flex flex-col sm:flex-row gap-4 items-center justify-center">
             <mat-form-field appearance="outline" class="w-full sm:w-96 premium-form-field no-subscript-wrapper">
               <mat-label class="hidden">Email Address</mat-label>
-              <input matInput [placeholder]="'HOME.NEWSLETTER.PLACEHOLDER' | translate" class="uppercase tracking-widest font-black text-[10px]">
+              <input matInput type="email" name="email" [(ngModel)]="email" required email [placeholder]="'HOME.NEWSLETTER.PLACEHOLDER' | translate" class="uppercase tracking-widest font-black text-[10px]">
               <mat-icon matSuffix class="text-white/40">mail</mat-icon>
             </mat-form-field>
-            <button mat-flat-button class="h-[56px] px-10 rounded-xl bg-white text-primary font-bold uppercase text-lg shadow-2xl">
-              {{ 'HOME.NEWSLETTER.ACTION' | translate }}
+            <button mat-flat-button [disabled]="newsletterForm.invalid || loading" class="h-[56px] px-10 rounded-xl bg-white text-primary font-bold uppercase text-lg shadow-2xl">
+              <span *ngIf="!loading">{{ 'HOME.NEWSLETTER.ACTION' | translate }}</span>
+              <span *ngIf="loading">Processing...</span>
             </button>
           </form>
           <p class="mt-6 text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">{{ 'HOME.NEWSLETTER.SECURED' | translate }}</p>
@@ -53,4 +58,26 @@ import { TranslatePipe } from '@core/pipes/translate.pipe';
     .no-subscript-wrapper ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
   `]
 })
-export class NewsletterComponent {}
+export class NewsletterComponent {
+  private api = inject(PublicApiService);
+  private toast = inject(ToastService);
+  
+  email = '';
+  loading = false;
+
+  subscribe() {
+    if (!this.email) return;
+    this.loading = true;
+    this.api.subscribeNewsletter(this.email).subscribe({
+      next: () => {
+        this.toast.success('Successfully subscribed to newsletter!');
+        this.email = '';
+        this.loading = false;
+      },
+      error: () => {
+        this.toast.error('Subscription failed. Please try again.');
+        this.loading = false;
+      }
+    });
+  }
+}

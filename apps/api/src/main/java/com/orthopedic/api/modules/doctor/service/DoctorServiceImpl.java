@@ -1,5 +1,6 @@
 package com.orthopedic.api.modules.doctor.service;
 
+import com.orthopedic.api.auth.entity.User;
 import com.orthopedic.api.auth.repository.UserRepository;
 import com.orthopedic.api.modules.doctor.dto.request.CreateDoctorRequest;
 import com.orthopedic.api.modules.doctor.dto.request.DoctorFilterRequest;
@@ -83,13 +84,26 @@ public class DoctorServiceImpl implements DoctorService {
     @CacheEvict(value = "doctors", allEntries = true)
     @LogMutation(action = "CREATE_DOCTOR", entityName = "DOCTOR")
     public DoctorResponse createDoctor(CreateDoctorRequest request) {
+        if (doctorRepository.count() > 0) {
+            throw new BusinessException("Only one doctor profile is allowed in this system");
+        }
+
         if (doctorRepository.existsByLicenseNumber(request.getLicenseNumber())) {
             throw new BusinessException("License number already exists");
         }
 
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        boolean isDoctorAdmin = user.getRoles().stream()
+                .anyMatch(role -> role.getName().equals("DOCTOR_ADMIN"));
+        
+        if (!isDoctorAdmin) {
+            throw new BusinessException("Selected user must have the DOCTOR_ADMIN role");
+        }
+
         Doctor doctor = doctorMapper.toEntity(request);
-        doctor.setUser(userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found")));
+        doctor.setUser(user);
         doctor.setHospital(hospitalRepository.findById(request.getHospitalId())
                 .orElseThrow(() -> new ResourceNotFoundException("Hospital not found")));
         doctor.setIsFeatured(request.getIsFeatured());

@@ -14,6 +14,8 @@ public interface HospitalRepository extends JpaRepository<Hospital, UUID> {
 
     Page<Hospital> findAllByStatus(Hospital.HospitalStatus status, Pageable pageable);
 
+    java.util.List<Hospital> findAllByStatus(Hospital.HospitalStatus status);
+
     Page<Hospital> findAllByCity(String city, Pageable pageable);
 
     Hospital findByLicenseNumber(String licenseNumber);

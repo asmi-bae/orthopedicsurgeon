@@ -23,7 +23,7 @@ export class PublicApiService {
   }
 
   getHospitals(): Observable<ApiResponse<HospitalSummary[]>> {
-    return this.http.get<ApiResponse<HospitalSummary[]>>(`${(`${this.apiUrl}/hospitals/summary`)}`);
+    return this.http.get<ApiResponse<HospitalSummary[]>>(`${this.apiUrl}/hospitals/summary`);
   }
 
   bookAppointment(data: any): Observable<ApiResponse<any>> {
@@ -50,8 +50,8 @@ export class PublicApiService {
     return this.http.get<ApiResponse<PageResponse<any>>>(`${this.apiUrl}/payments/patient/${patientId}`);
   }
 
-  getPatientDashboard(): Observable<ApiResponse<any>> {
-    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/patient/health/dashboard`);
+  getPatientDashboard(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/patient/dashboard`);
   }
 
   getMyInvoices(): Observable<ApiResponse<any[]>> {
@@ -64,6 +64,62 @@ export class PublicApiService {
 
   updateMyProfile(data: any): Observable<ApiResponse<any>> {
     return this.http.put<ApiResponse<any>>(`${this.apiUrl}/patient/profile`, data);
+  }
+
+  subscribeNewsletter(email: string): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.apiUrl}/content/newsletter/subscribe`, { email });
+  }
+
+  getBlogBySlug(slug: string): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/content/blog/${slug}`);
+  }
+
+  getBlogPosts(params?: any): Observable<ApiResponse<PageResponse<any>>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      Object.keys(params).forEach(key => {
+        if (params[key]) httpParams = httpParams.append(key, params[key]);
+      });
+    }
+    return this.http.get<ApiResponse<PageResponse<any>>>(`${this.apiUrl}/content/blog`, { params: httpParams });
+  }
+
+  getBlogCategories(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/content/blog/categories`);
+  }
+
+  getBlogTags(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/content/blog/tags`);
+  }
+
+  getServices(params?: any): Observable<ApiResponse<PageResponse<any>>> {
+    let httpParams = new HttpParams();
+    if (params) {
+      Object.keys(params).forEach(key => {
+        if (params[key]) httpParams = httpParams.append(key, params[key]);
+      });
+    }
+    return this.http.get<ApiResponse<PageResponse<any>>>(`${this.apiUrl}/hospitals/services`, { params: httpParams });
+  }
+
+  getServiceById(id: string): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.apiUrl}/hospitals/services/${id}`);
+  }
+
+  getStats(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/content/stats`);
+  }
+
+  getTestimonials(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.apiUrl}/content/testimonials`);
+  }
+
+  downloadReport(id: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/patient/lab-reports/${id}/download`, { responseType: 'blob' });
+  }
+
+  downloadPrescription(id: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/patient/prescriptions/${id}/download`, { responseType: 'blob' });
   }
 }
 

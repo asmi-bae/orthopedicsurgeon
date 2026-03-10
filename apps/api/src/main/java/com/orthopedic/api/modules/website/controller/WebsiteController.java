@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/website")
+@RequestMapping("/api/v1/content")
 @RequiredArgsConstructor
 public class WebsiteController {
 
@@ -26,6 +26,11 @@ public class WebsiteController {
     @GetMapping("/config")
     public ResponseEntity<Map<String, String>> getPublicConfig() {
         return ResponseEntity.ok(websiteService.getPublicConfig());
+    }
+
+    @GetMapping("/meta")
+    public ResponseEntity<SeoResponse> getSiteMeta() {
+        return ResponseEntity.ok(websiteService.getSeoMetadata("home"));
     }
 
     @GetMapping("/menus")

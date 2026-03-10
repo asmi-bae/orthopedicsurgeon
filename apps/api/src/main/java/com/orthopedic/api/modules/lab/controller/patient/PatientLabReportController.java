@@ -60,4 +60,16 @@ public class PatientLabReportController extends BaseController {
             @CurrentUser User currentUser) {
         return ok(labReportService.getReportById(id, currentUser));
     }
+
+    @GetMapping("/{id}/download")
+    @Operation(summary = "Download lab report file")
+    public ResponseEntity<byte[]> download(
+            @PathVariable UUID id,
+            @CurrentUser User currentUser) {
+        byte[] content = labReportService.downloadReport(id, currentUser);
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition", "attachment; filename=\"lab_report_" + id + ".pdf\"")
+                .body(content);
+    }
 }

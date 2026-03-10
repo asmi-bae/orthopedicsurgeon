@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { PublicApiService } from '@core/services/public-api.service';
+import { ApiResponse } from '@repo/types';
 
 // Sub-components
 import { HeroComponent } from './components/hero/hero.component';
@@ -43,7 +45,7 @@ import { PartnersComponent, Hospital } from './components/partners/partners.comp
       <app-home-hero></app-home-hero>
 
       <!-- Stats Section -->
-      <app-home-stats id="discover" [stats]="stats"></app-home-stats>
+      <app-home-stats id="discover" [stats]="stats()"></app-home-stats>
 
       <!-- Services Section -->
       <app-home-services [services]="services"></app-home-services>
@@ -64,7 +66,7 @@ import { PartnersComponent, Hospital } from './components/partners/partners.comp
       <app-home-quick-appointment></app-home-quick-appointment>
 
       <!-- Testimonials -->
-      <app-home-testimonials [testimonials]="testimonials"></app-home-testimonials>
+      <app-home-testimonials [testimonials]="testimonials()"></app-home-testimonials>
 
       <!-- FAQ Section -->
       <app-home-faq [faqs]="faqs"></app-home-faq>
@@ -84,13 +86,15 @@ import { PartnersComponent, Hospital } from './components/partners/partners.comp
     .no-subscript-wrapper ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
   `]
 })
-export class HomeComponent {
-  stats = [
+export class HomeComponent implements OnInit {
+  private api = inject(PublicApiService);
+
+  stats = signal<any[]>([
     { label: 'HOME.STATS.EXPERIENCE', value: 'HOME.STATS.DATA.VAL1', description: 'HOME.STATS.DATA.DESC1', icon: 'history' },
     { label: 'HOME.STATS.SUCCESSFUL_TREATMENTS', value: 'HOME.STATS.DATA.VAL2', description: 'HOME.STATS.DATA.DESC3', icon: 'task_alt' },
     { label: 'HOME.STATS.SPECIALIZATION', value: 'HOME.STATS.DATA.VAL3', description: 'HOME.STATS.DATA.DESC4', icon: 'accessibility_new' },
     { label: 'HOME.STATS.PRECISION', value: 'HOME.STATS.DATA.VAL4', description: 'HOME.STATS.DATA.DESC1', icon: 'biotech' },
-  ];
+  ]);
 
   services = [
     { title: 'HOME.SERVICES.KNEE', description: 'HOME.SERVICES.KNEE_DESC', icon: 'rebase_edit', image: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118' },
@@ -108,11 +112,11 @@ export class HomeComponent {
     { name: 'HOME.PARTNERS.CI4.NAME', city: 'HOME.PARTNERS.CI4.CITY', image: 'https://images.unsplash.com/photo-1512678080530-7760d81faba6' }
   ];
 
-  testimonials = [
+  testimonials = signal<any[]>([
     { name: 'HOME.TESTIMONIALS.SARAH_NAME', role: 'HOME.TESTIMONIALS.SARAH_ROLE', content: 'HOME.TESTIMONIALS.SARAH_CONTENT', avatar: 'https://i.pravatar.cc/150?img=32' },
     { name: 'HOME.TESTIMONIALS.MICHAEL_NAME', role: 'HOME.TESTIMONIALS.MICHAEL_ROLE', content: 'HOME.TESTIMONIALS.MICHAEL_CONTENT', avatar: 'https://i.pravatar.cc/150?img=52' },
     { name: 'HOME.TESTIMONIALS.EMMA_NAME', role: 'HOME.TESTIMONIALS.EMMA_ROLE', content: 'HOME.TESTIMONIALS.EMMA_CONTENT', avatar: 'https://i.pravatar.cc/150?img=45' },
-  ];
+  ]);
 
    faqs = [
      { qKey: 'HOME.FAQ.Q1', aKey: 'HOME.FAQ.A1' },
@@ -125,4 +129,21 @@ export class HomeComponent {
      { title: 'HOME.BLOG.NEWS2.TITLE', date: 'HOME.BLOG.NEWS2.DATE', slug: 'post-surgery-recovery-biometrics', image: 'https://images.unsplash.com/photo-1571019623518-e71de96e28da' },
      { title: 'HOME.BLOG.NEWS3.TITLE', date: 'HOME.BLOG.NEWS3.DATE', slug: 'future-regenerative-bone-therapy', image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514' },
    ];
+
+   ngOnInit() {
+     this.fetchStats();
+     this.fetchTestimonials();
+   }
+
+   fetchStats() {
+     this.api.getStats().subscribe({
+       next: (res: ApiResponse<any[]>) => this.stats.set(res.data)
+     });
+   }
+
+   fetchTestimonials() {
+     this.api.getTestimonials().subscribe({
+       next: (res: ApiResponse<any[]>) => this.testimonials.set(res.data)
+     });
+   }
 }

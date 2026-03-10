@@ -10,6 +10,7 @@ import com.orthopedic.api.modules.lab.mapper.LabReportMapper;
 import com.orthopedic.api.modules.lab.repository.LabReportRepository;
 import com.orthopedic.api.modules.patient.entity.Patient;
 import com.orthopedic.api.modules.patient.repository.PatientRepository;
+import com.orthopedic.api.shared.service.storage.FileStorageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +36,8 @@ class LabReportServiceTest {
     private LabReportMapper labReportMapper;
     @Mock
     private PatientRepository patientRepository;
+    @Mock
+    private FileStorageService fileStorageService;
 
     @InjectMocks
     private LabReportServiceImpl labReportService;

@@ -16,4 +16,5 @@ public interface LabReportService {
     PageResponse<LabReportResponse> getPatientReports(UUID patientId, Pageable pageable, User currentUser);
     PageResponse<LabReportResponse> getDoctorReports(UUID doctorId, Pageable pageable, User currentUser);
     PageResponse<LabReportResponse> getAllReports(Pageable pageable);
+    byte[] downloadReport(UUID id, User currentUser);
 }

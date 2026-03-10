@@ -49,7 +49,7 @@ public class ScheduledEmailService {
                 emailService.sendHtmlEmail(
                         appointment.getPatient().getUser().getEmail(),
                         "Appointment Reminder - Tomorrow",
-                        "appointment-reminder.html",
+                        "appointment-reminder",
                         vars);
             } catch (Exception e) {
                 log.error("Failed to send reminder for appointment ID: {}", appointment.getId(), e);

@@ -59,12 +59,14 @@ public class WebsiteServiceImpl implements WebsiteService {
         private final AwardRepository awardRepository;
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'public-config'")
         public Map<String, String> getPublicConfig() {
                 return siteSettingRepository.findByIsPublicTrue().stream()
                                 .collect(Collectors.toMap(SiteSetting::getKey, SiteSetting::getValue));
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'menus-' + #type")
         public List<MenuResponse> getMenus(String type) {
                 List<Menu> rootMenus = menuRepository.findByTypeAndParentIsNullAndIsActiveTrueOrderByOrderAsc(type);
                 return rootMenus.stream()
@@ -73,6 +75,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'seo-' + #slug")
         public SeoResponse getSeoMetadata(String slug) {
                 return seoMetadataRepository.findBySlug(slug)
                                 .map(this::mapToSeoResponse)
@@ -80,6 +83,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'working-hours'")
         public List<WorkingHourResponse> getWorkingHours() {
                 Map<String, String> config = getPublicConfig();
                 List<String> days = Arrays.asList("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
@@ -91,15 +95,16 @@ public class WebsiteServiceImpl implements WebsiteService {
                                         String hours = config.getOrDefault(key, "09:00 AM - 05:00 PM");
                                         boolean isClosed = hours.equalsIgnoreCase("CLOSED");
                                         return WorkingHourResponse.builder()
-                                                        .day(day)
-                                                        .hours(hours)
-                                                        .isClosed(isClosed)
-                                                        .build();
+                                                         .day(day)
+                                                         .hours(hours)
+                                                         .isClosed(isClosed)
+                                                         .build();
                                 })
                                 .collect(Collectors.toList());
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "hero-slides", key = "'active'")
         public List<HeroSlideResponse> getHeroSlides() {
                 return heroSlideRepository.findByIsActiveTrueOrderByDisplayOrderAsc().stream()
                                 .map(slide -> HeroSlideResponse.builder()
@@ -117,6 +122,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'identity'")
         public IdentityResponse getIdentity() {
                 Map<String, String> config = getPublicConfig();
                 return IdentityResponse.builder()
@@ -144,6 +150,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "testimonials", key = "'featured'")
         public List<TestimonialResponse> getFeaturedTestimonials() {
                 return testimonialRepository.findByIsFeaturedTrueAndIsVerifiedTrueOrderByCreatedAtDesc().stream()
                                 .limit(10)
@@ -157,7 +164,7 @@ public class WebsiteServiceImpl implements WebsiteService {
                                                 .isFeatured(t.getIsFeatured())
                                                 .doctorName(t.getDoctor() != null
                                                                 ? t.getDoctor().getUser().getFirstName() + " "
-                                                                                + t.getDoctor().getUser().getLastName()
+                                                                                 + t.getDoctor().getUser().getLastName()
                                                                 : null)
                                                 .createdAt(t.getCreatedAt())
                                                 .build())
@@ -165,6 +172,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "home-stats", key = "'all'")
         public HomeStatsResponse getHomeStats() {
                 Map<String, String> config = getPublicConfig();
                 return HomeStatsResponse.builder()
@@ -206,6 +214,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "featured-doctors", key = "'all'")
         public List<DoctorPublicResponse> getFeaturedDoctors() {
                 return doctorRepository.findByIsFeaturedTrueAndStatus(Doctor.DoctorStatus.ACTIVE).stream()
                                 .map(d -> DoctorPublicResponse.builder()
@@ -242,13 +251,14 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'team'")
         public List<TeamMemberResponse> getTeamMembers() {
                 return teamMemberRepository.findByShowOnWebsiteTrueOrderByDisplayOrderAsc().stream()
                                 .map(t -> TeamMemberResponse.builder()
                                                 .id(t.getId())
                                                 .name(t.getUser() != null
                                                                 ? t.getUser().getFirstName() + " "
-                                                                                + t.getUser().getLastName()
+                                                                                 + t.getUser().getLastName()
                                                                 : t.getTitle())
                                                 .role(t.getTitle())
                                                 .specialization(t.getSpecialization())
@@ -269,6 +279,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'faqs-' + (#category != null ? #category : 'all')")
         public List<FaqResponse> getFaqs(String category) {
                 if (category != null) {
                         return faqRepository.findByIsActiveTrueAndCategory(category, PageRequest.of(0, 100))
@@ -294,6 +305,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "website-content", key = "'gallery-' + (#category != null ? #category : 'all')")
         public List<GalleryItemResponse> getGalleryItems(String category) {
                 if (category != null) {
                         return galleryItemRepository.findByIsActiveTrueAndCategory(category, PageRequest.of(0, 100))
@@ -321,6 +333,7 @@ public class WebsiteServiceImpl implements WebsiteService {
         }
 
         @Override
+        @org.springframework.cache.annotation.Cacheable(value = "blog-posts", key = "'latest-' + #limit")
         public List<BlogPostSummaryResponse> getLatestBlogPosts(int limit) {
                 return blogPostRepository.findByStatus(BlogPost.BlogPostStatus.PUBLISHED,
                                 PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "createdAt"))).getContent()

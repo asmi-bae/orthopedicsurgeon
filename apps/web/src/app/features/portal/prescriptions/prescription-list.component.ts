@@ -13,7 +13,7 @@ import { PublicApiService } from '../../../core/services/public-api.service';
     <div class="space-y-6">
        <zrd-table [columns]="columns" [data]="prescriptions()" [loading]="loading()">
           <ng-template #actionTemplate let-row>
-             <button zrdButton variant="outline" size="sm">
+             <button zrdButton variant="outline" size="sm" (click)="viewPrescription(row)">
                 <i class="pi pi-download mr-1"></i> PDF
              </button>
           </ng-template>
@@ -52,6 +52,17 @@ export class PrescriptionListComponent implements OnInit {
       error: () => {
         this.loading.set(false);
       }
+    });
+  }
+
+  viewPrescription(prescription: any) {
+    this.apiService.downloadPrescription(prescription.id).subscribe((blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `prescription-${prescription.id}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
     });
   }
 }

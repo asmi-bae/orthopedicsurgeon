@@ -60,4 +60,16 @@ public class PatientPrescriptionController extends BaseController {
             @CurrentUser User currentUser) {
         return ok(prescriptionService.getPrescriptionById(id, currentUser));
     }
+
+    @GetMapping("/{id}/download")
+    @Operation(summary = "Download prescription PDF")
+    public ResponseEntity<byte[]> download(
+            @PathVariable UUID id,
+            @CurrentUser User currentUser) {
+        byte[] content = prescriptionService.downloadPrescription(id, currentUser);
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition", "attachment; filename=\"prescription_" + id + ".pdf\"")
+                .body(content);
+    }
 }

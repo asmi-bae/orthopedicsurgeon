@@ -11,6 +11,8 @@ import com.orthopedic.api.modules.hospital.entity.ServiceEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.orthopedic.api.modules.hospital.dto.response.HospitalSummaryResponse;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +20,8 @@ public interface HospitalService {
     Page<HospitalResponse> getAllHospitals(Hospital.HospitalStatus status, String city, Pageable pageable);
 
     HospitalResponse getHospitalById(UUID id);
+
+    List<HospitalSummaryResponse> getHospitalSummary();
 
     HospitalResponse createHospital(CreateHospitalRequest request);
 

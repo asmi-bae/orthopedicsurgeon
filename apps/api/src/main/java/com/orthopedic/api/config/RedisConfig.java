@@ -86,6 +86,10 @@ public class RedisConfig {
                                 .withCacheConfiguration("hospitals", config.entryTtl(Duration.ofMinutes(30)))
                                 .withCacheConfiguration("doctors", config.entryTtl(Duration.ofMinutes(15)))
                                 .withCacheConfiguration("doctor_slots", config.entryTtl(Duration.ofMinutes(5)))
+                                .withCacheConfiguration("blog-posts", config.entryTtl(Duration.ofHours(2)))
+                                .withCacheConfiguration("blog-categories", config.entryTtl(Duration.ofHours(12)))
+                                .withCacheConfiguration("blog-tags", config.entryTtl(Duration.ofHours(12)))
+                                .withCacheConfiguration("website-content", config.entryTtl(Duration.ofHours(6)))
                                 .build();
         }
 }

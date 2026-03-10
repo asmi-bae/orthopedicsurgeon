@@ -11,6 +11,8 @@ import java.util.List;
         @Index(name = "idx_hospitals_status", columnList = "status"),
         @Index(name = "idx_hospitals_city", columnList = "city"),
         @Index(name = "idx_hospitals_deleted", columnList = "deleted")
+}, uniqueConstraints = {
+        @UniqueConstraint(name = "unique_single_hospital", columnNames = { "single_hospital_key" })
 })
 public class Hospital extends BaseEntity {
 
@@ -37,6 +39,17 @@ public class Hospital extends BaseEntity {
 
     @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ServiceEntity> services = new ArrayList<>();
+
+    @Column(name = "single_hospital_key", nullable = false, updatable = false)
+    private Integer singleHospitalKey = 1;
+
+    public Integer getSingleHospitalKey() {
+        return singleHospitalKey;
+    }
+
+    public void setSingleHospitalKey(Integer singleHospitalKey) {
+        this.singleHospitalKey = singleHospitalKey;
+    }
 
     public String getName() {
         return name;

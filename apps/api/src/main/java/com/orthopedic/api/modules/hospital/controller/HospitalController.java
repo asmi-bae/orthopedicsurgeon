@@ -5,8 +5,10 @@ import com.orthopedic.api.modules.hospital.dto.request.CreateServiceRequest;
 import com.orthopedic.api.modules.hospital.dto.request.UpdateHospitalRequest;
 import com.orthopedic.api.modules.hospital.dto.request.UpdateServiceRequest;
 import com.orthopedic.api.modules.hospital.dto.response.HospitalResponse;
+import com.orthopedic.api.modules.hospital.dto.response.HospitalSummaryResponse;
 import com.orthopedic.api.modules.hospital.dto.response.ServiceResponse;
 import com.orthopedic.api.modules.hospital.entity.Hospital;
+import com.orthopedic.api.modules.hospital.entity.ServiceEntity;
 import com.orthopedic.api.modules.hospital.service.HospitalService;
 import com.orthopedic.api.shared.base.BaseController;
 import com.orthopedic.api.shared.dto.ApiResponse;
@@ -33,6 +35,12 @@ public class HospitalController extends BaseController {
 
     public HospitalController(HospitalService hospitalService) {
         this.hospitalService = hospitalService;
+    }
+
+    @GetMapping("/summary")
+    @Operation(summary = "Get lightweight hospital summary for public listing")
+    public ResponseEntity<ApiResponse<List<HospitalSummaryResponse>>> getSummary() {
+        return ok(hospitalService.getHospitalSummary());
     }
 
     @GetMapping
@@ -69,6 +77,20 @@ public class HospitalController extends BaseController {
     public ResponseEntity<ApiResponse<HospitalResponse>> update(@PathVariable UUID id,
             @Valid @RequestBody UpdateHospitalRequest request) {
         return ok(hospitalService.updateHospital(id, request));
+    }
+    @GetMapping("/services")
+    @Operation(summary = "Get all services across all hospitals")
+    public ResponseEntity<ApiResponse<PageResponse<ServiceResponse>>> getAllServices(
+            @RequestParam(required = false) ServiceEntity.ServiceStatus status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "DESC") String direction) {
+
+        Pageable pageable = PageableUtils.createPageable(page, size, sort, direction,
+                Arrays.asList("name", "category", "status", "createdAt"));
+
+        return ok(hospitalService.getAllServices(status, pageable));
     }
 
     @DeleteMapping("/{id}")

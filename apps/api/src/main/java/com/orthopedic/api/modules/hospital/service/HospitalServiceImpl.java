@@ -5,6 +5,7 @@ import com.orthopedic.api.modules.hospital.dto.request.CreateServiceRequest;
 import com.orthopedic.api.modules.hospital.dto.request.UpdateHospitalRequest;
 import com.orthopedic.api.modules.hospital.dto.request.UpdateServiceRequest;
 import com.orthopedic.api.modules.hospital.dto.response.HospitalResponse;
+import com.orthopedic.api.modules.hospital.dto.response.HospitalSummaryResponse;
 import com.orthopedic.api.modules.hospital.dto.response.ServiceResponse;
 import com.orthopedic.api.modules.hospital.entity.Hospital;
 import com.orthopedic.api.modules.hospital.entity.ServiceEntity;
@@ -86,6 +87,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "hospital_services", key = "{#status, #pageable.pageNumber}")
     public Page<ServiceResponse> getAllServices(ServiceEntity.ServiceStatus status, Pageable pageable) {
         Page<ServiceEntity> services;
         if (status != null) {
@@ -103,6 +105,15 @@ public class HospitalServiceImpl implements HospitalService {
         return hospitalRepository.findById(id)
                 .map(this::mapToResponse)
                 .orElseThrow(() -> new ResourceNotFoundException("Hospital not found"));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "hospitals", key = "'summary'")
+    public List<HospitalSummaryResponse> getHospitalSummary() {
+        return hospitalRepository.findAllByStatus(Hospital.HospitalStatus.ACTIVE).stream()
+                .map(hospitalMapper::toSummaryResponse)
+                .collect(Collectors.toList());
     }
 
     @Override

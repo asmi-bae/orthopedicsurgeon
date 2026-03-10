@@ -17,7 +17,7 @@ import { PublicApiService } from '../../../core/services/public-api.service';
           </ng-template>
 
           <ng-template #actionTemplate let-row>
-             <button zrdButton variant="outline" size="sm" [disabled]="row.status !== 'COMPLETED'">
+             <button zrdButton variant="outline" size="sm" [disabled]="row.status !== 'COMPLETED'" (click)="viewReport(row)">
                 <i class="pi pi-file-pdf mr-1"></i> View Report
              </button>
           </ng-template>
@@ -60,6 +60,17 @@ export class ReportListComponent implements OnInit {
       error: () => {
         this.loading.set(false);
       }
+    });
+  }
+
+  viewReport(report: any) {
+    this.apiService.downloadReport(report.id).subscribe((blob: Blob) => {
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${report.reportName || 'report'}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
     });
   }
 }

@@ -14,6 +14,8 @@ import com.orthopedic.api.modules.patient.entity.Patient;
 import com.orthopedic.api.modules.patient.repository.PatientRepository;
 import com.orthopedic.api.shared.dto.PageResponse;
 import com.orthopedic.api.shared.exception.ResourceNotFoundException;
+import com.orthopedic.api.shared.service.storage.FileStorageService;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,17 +35,20 @@ public class LabReportServiceImpl implements LabReportService {
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
     private final LabReportMapper labReportMapper;
+    private final FileStorageService fileStorageService;
 
     public LabReportServiceImpl(LabReportRepository labReportRepository,
             AppointmentRepository appointmentRepository,
             PatientRepository patientRepository,
             DoctorRepository doctorRepository,
-            LabReportMapper labReportMapper) {
+            LabReportMapper labReportMapper,
+            FileStorageService fileStorageService) {
         this.labReportRepository = labReportRepository;
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
         this.labReportMapper = labReportMapper;
+        this.fileStorageService = fileStorageService;
     }
 
     @Override
@@ -116,6 +120,26 @@ public class LabReportServiceImpl implements LabReportService {
     public PageResponse<LabReportResponse> getAllReports(Pageable pageable) {
         Page<LabReport> page = labReportRepository.findAll(pageable);
         return PageResponse.fromPage(page.map(labReportMapper::toResponse));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] downloadReport(UUID id, User currentUser) {
+        LabReport report = labReportRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Lab report not found"));
+
+        validateOwnership(report, currentUser);
+
+        if (report.getFilePath() == null || report.getFilePath().isEmpty()) {
+            throw new ResourceNotFoundException("No file attached to this lab report");
+        }
+
+        try {
+            Resource resource = fileStorageService.downloadFile(report.getFilePath());
+            return resource.getInputStream().readAllBytes();
+        } catch (Exception e) {
+            throw new RuntimeException("Error downloading lab report file", e);
+        }
     }
 
     private void validatePatientAccess(UUID patientId, User currentUser) {

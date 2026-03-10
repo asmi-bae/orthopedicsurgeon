@@ -114,6 +114,19 @@ public class PrescriptionServiceImpl implements PrescriptionService {
         return PageResponse.fromPage(page.map(prescriptionMapper::toResponse));
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] downloadPrescription(UUID id, User currentUser) {
+        Prescription prescription = prescriptionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Prescription not found"));
+
+        validateOwnership(prescription, currentUser);
+
+        // Placeholder for PDF generation
+        // In a real implementation, we would use an IText or JasperReports service to generate the PDF
+        return "Dummy Prescription PDF Content".getBytes();
+    }
+
     private void validatePatientAccess(UUID patientId, User currentUser) {
         if (hasAnyRole(currentUser, "ADMIN", "STAFF", "SUPER_ADMIN")) {
             return;

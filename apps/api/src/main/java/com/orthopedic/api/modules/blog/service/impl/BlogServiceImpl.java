@@ -3,6 +3,7 @@ package com.orthopedic.api.modules.blog.service.impl;
 import com.github.slugify.Slugify;
 import com.orthopedic.api.auth.repository.UserRepository;
 import com.orthopedic.api.modules.blog.dto.request.CreateBlogPostRequest;
+import com.orthopedic.api.modules.blog.dto.response.BlogCategoryResponse;
 import com.orthopedic.api.modules.blog.dto.response.BlogPostResponse;
 import com.orthopedic.api.modules.blog.dto.response.BlogPostSummaryResponse;
 import com.orthopedic.api.modules.blog.dto.response.BlogTagResponse;
@@ -108,6 +109,7 @@ public class BlogServiceImpl {
         }
 
         @Transactional
+        @org.springframework.cache.annotation.CacheEvict(value = {"blog-posts", "blog-categories", "blog-tags"}, allEntries = true)
         public BlogPostResponse createPost(CreateBlogPostRequest req, UUID authorId) {
                 String slug = (req.slug() != null && !req.slug().trim().isEmpty())
                                 ? req.slug()
@@ -187,7 +189,58 @@ public class BlogServiceImpl {
                                 .collect(Collectors.toList());
         }
 
+        @Transactional(readOnly = true)
+        @org.springframework.cache.annotation.Cacheable(value = "blog-posts", key = "{#categorySlug, #tagSlug, #search, #page, #size}")
+        public List<BlogPostSummaryResponse> getPublishedPosts(String categorySlug, String tagSlug, String search,
+                        int page, int size) {
+                if (search != null && !search.trim().isEmpty()) {
+                        return blogPostRepository.searchPosts(search).stream()
+                                        .map(this::toSummaryResponse)
+                                        .collect(Collectors.toList());
+                }
+
+                if (categorySlug != null) {
+                        return blogPostRepository
+                                        .findByCategorySlugAndStatus(categorySlug, BlogPost.BlogPostStatus.PUBLISHED,
+                                                        PageRequest.of(page, size))
+                                        .getContent().stream()
+                                        .map(this::toSummaryResponse)
+                                        .collect(Collectors.toList());
+                }
+
+                if (tagSlug != null) {
+                        return blogPostRepository
+                                        .findByTagSlug(tagSlug, PageRequest.of(page, size))
+                                        .getContent().stream()
+                                        .map(this::toSummaryResponse)
+                                        .collect(Collectors.toList());
+                }
+
+                return blogPostRepository.findByStatus(BlogPost.BlogPostStatus.PUBLISHED, PageRequest.of(page, size))
+                                .getContent().stream()
+                                .map(this::toSummaryResponse)
+                                .collect(Collectors.toList());
+        }
+
+        @Transactional(readOnly = true)
+        @org.springframework.cache.annotation.Cacheable(value = "blog-categories", key = "'all'")
+        public List<BlogCategoryResponse> getAllCategories() {
+                return blogCategoryRepository.findAll().stream()
+                                .map(c -> new BlogCategoryResponse(c.getId(), c.getName(), c.getSlug(),
+                                                c.getDescription(), c.getImageUrl()))
+                                .collect(Collectors.toList());
+        }
+
+        @Transactional(readOnly = true)
+        @org.springframework.cache.annotation.Cacheable(value = "blog-tags", key = "'all'")
+        public List<BlogTagResponse> getAllTags() {
+                return blogTagRepository.findAll().stream()
+                                .map(t -> new BlogTagResponse(t.getId(), t.getName(), t.getSlug()))
+                                .collect(Collectors.toList());
+        }
+
         @Transactional
+        @org.springframework.cache.annotation.CacheEvict(value = {"blog-posts", "blog-categories", "blog-tags"}, allEntries = true)
         public void deletePost(UUID id) {
                 if (!blogPostRepository.existsById(id)) {
                         throw new ResourceNotFoundException("Blog post not found");

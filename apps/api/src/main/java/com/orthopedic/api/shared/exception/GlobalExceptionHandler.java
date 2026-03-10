@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.dao.DataIntegrityViolationException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -109,6 +114,60 @@ public class GlobalExceptionHandler {
                         .build());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
+            HttpServletRequest request) {
+        String name = ex.getName();
+        String type = ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "unknown";
+        Object value = ex.getValue();
+        String message = String.format("Invalid format for parameter '%s'. Value '%s' is not valid for type %s",
+                name, value, type);
+
+        if (type.equals("UUID")) {
+            message = String.format("Invalid UUID format for parameter '%s'. Received: '%s'", name, value);
+        }
+
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, message, request);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Object>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+            HttpServletRequest request) {
+        log.error("JSON parse error: {}", ex.getMessage());
+        String message = "Malformed JSON request";
+
+        Throwable cause = ex.getCause();
+        if (cause instanceof InvalidFormatException) {
+            InvalidFormatException ife = (InvalidFormatException) cause;
+            String fieldName = ife.getPath().stream()
+                    .map(JsonMappingException.Reference::getFieldName)
+                    .collect(Collectors.joining("."));
+            message = String.format("Invalid format for field '%s'. Value '%s' is not valid for type %s",
+                    fieldName, ife.getValue(), ife.getTargetType().getSimpleName());
+        } else if (ex.getMessage() != null && ex.getMessage().contains("java.time.LocalDate")) {
+             message = "Invalid date format. Expected format: yyyy-MM-dd";
+        }
+
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, message, request);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiResponse<Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex,
+            HttpServletRequest request) {
+        log.error("Database integrity violation: {}", ex.getMessage());
+        String message = "A database constraint violation occurred";
+
+        if (ex.getMessage() != null) {
+            if (ex.getMessage().contains("users_email_key") || ex.getMessage().contains("duplicate key value violates unique constraint")) {
+                message = "An account with this email already exists";
+            } else if (ex.getMessage().contains("phone")) {
+                message = "This phone number is already registered";
+            }
+        }
+
+        return buildErrorResponse(HttpStatus.CONFLICT, message, request);
     }
 
     @ExceptionHandler(Exception.class)

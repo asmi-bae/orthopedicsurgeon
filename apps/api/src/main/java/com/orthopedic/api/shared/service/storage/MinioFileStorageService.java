@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
-@Profile("dev")
+@Profile({"dev", "local"})
 public class MinioFileStorageService implements FileStorageService {
     private static final Logger log = LoggerFactory.getLogger(MinioFileStorageService.class);
 

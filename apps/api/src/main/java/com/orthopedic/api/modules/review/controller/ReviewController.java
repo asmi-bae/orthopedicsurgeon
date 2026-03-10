@@ -53,7 +53,7 @@ public class ReviewController extends BaseController {
         return ok(reviewService.getPatientReviews(patient.getId(), pageable));
     }
 
-    @GetMapping("/public/doctors/{doctorId}/reviews")
+    @GetMapping("/doctors/{doctorId}/reviews")
     @Operation(summary = "Get reviews for a doctor")
     public ResponseEntity<ApiResponse<PageResponse<ReviewResponse>>> getDoctorReviews(@PathVariable UUID doctorId,
             Pageable pageable) {
