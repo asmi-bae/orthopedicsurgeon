@@ -13,7 +13,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { AuthService } from '@repo/auth';
 
 @Component({
-  selector: 'app-admin-user-menu',
+  selector: 'app-doctor-user-menu',
   standalone: true,
   imports: [
     CommonModule,
@@ -134,7 +134,7 @@ import { AuthService } from '@repo/auth';
     :host { position: relative; display: inline-block; }
   `]
 })
-export class AdminUserMenuComponent {
+export class DoctorUserMenuComponent {
   auth = inject(AuthService);
   private elRef = inject(ElementRef);
 

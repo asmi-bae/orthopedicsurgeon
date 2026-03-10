@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { AdminLayoutComponent } from '@core/layouts/layout.component';
+import { DoctorLayoutComponent } from '@core/layouts/layout.component';
 import { authGuard, guestGuard } from '@repo/auth';
 
 export const routes: Routes = [
@@ -13,7 +13,7 @@ export const routes: Routes = [
 
   {
     path: '',
-    component: AdminLayoutComponent,
+    component: DoctorLayoutComponent,
     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -22,70 +22,168 @@ export const routes: Routes = [
         loadComponent: () => import('@features/dashboard/admin.component').then(m => m.AdminComponent),
         data: { breadcrumb: 'Dashboard' }
       },
+      // Appointments
       { 
-        path: 'users', 
-        loadComponent: () => import('@features/users/user-management.component').then(m => m.UserManagementComponent),
-        data: { breadcrumb: 'Users' }
-      },
-      { 
-        path: 'doctors', 
-        loadComponent: () => import('@features/doctors/doctor-management.component').then(m => m.DoctorManagementComponent),
-        data: { breadcrumb: 'Doctors' }
-      },
-      { 
-        path: 'patients', 
-        loadComponent: () => import('@features/patients/patient-management.component').then(m => m.PatientManagementComponent),
-        data: { breadcrumb: 'Patients' }
-      },
-      {
-        path: 'patients/:id/health',
-        loadComponent: () => import('@features/health/patient-health-detail/patient-health-detail.component').then(m => m.PatientHealthDetailComponent),
-        data: { breadcrumb: 'Health Detail' }
-      },
-      { 
-        path: 'appointments', 
+        path: 'appointments/all', 
         loadComponent: () => import('@features/appointments/appointment-management.component').then(m => m.AppointmentManagementComponent),
-        data: { breadcrumb: 'Appointments' }
+        data: { breadcrumb: 'All Appointments' }
       },
       { 
-        path: 'records/prescriptions', 
-        loadComponent: () => import('@features/records/prescription-management.component').then(m => m.PrescriptionManagementComponent),
-        data: { breadcrumb: 'Prescriptions' }
+        path: 'appointments/calendar', 
+        loadComponent: () => import('@features/appointments/appointment-management.component').then(m => m.AppointmentManagementComponent),
+        data: { breadcrumb: 'Calendar View' }
       },
       { 
-        path: 'records/reports', 
+        path: 'appointments/add', 
+        loadComponent: () => import('@features/appointments/appointment-management.component').then(m => m.AppointmentManagementComponent),
+        data: { breadcrumb: 'Add Appointment' }
+      },
+      { 
+        path: 'appointments/slots', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Time Slots' }
+      },
+      { 
+        path: 'appointments/blocked', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Blocked Dates' }
+      },
+      // Patients
+      { 
+        path: 'patients/all', 
+        loadComponent: () => import('@features/patients/patient-management.component').then(m => m.PatientManagementComponent),
+        data: { breadcrumb: 'All Patients' }
+      },
+      { 
+        path: 'patients/add', 
+        loadComponent: () => import('@features/patients/patient-management.component').then(m => m.PatientManagementComponent),
+        data: { breadcrumb: 'Add Patient' }
+      },
+      { 
+        path: 'patients/history', 
+        loadComponent: () => import('@features/patients/patient-management.component').then(m => m.PatientManagementComponent),
+        data: { breadcrumb: 'Patient History' }
+      },
+      // Website Content
+      { 
+        path: 'website/home', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Home Page' }
+      },
+      { 
+        path: 'website/about', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'About Page' }
+      },
+      { 
+        path: 'website/services', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Services' }
+      },
+      { 
+        path: 'website/cases', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Successful Cases' }
+      },
+      { 
+        path: 'website/gallery', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Gallery' }
+      },
+      { 
+        path: 'website/faq', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'FAQ Page' }
+      },
+      { 
+        path: 'website/legal', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Legal Pages' }
+      },
+      // Blog
+      { 
+        path: 'blog/posts', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'All Posts' }
+      },
+      { 
+        path: 'blog/add', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Add New Post' }
+      },
+      { 
+        path: 'blog/categories', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Categories' }
+      },
+      // Media
+      { 
+        path: 'media', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Media Library' }
+      },
+      // Messages
+      { 
+        path: 'messages/contact', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Contact Messages' }
+      },
+      { 
+        path: 'messages/submissions', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Form Submissions' }
+      },
+      // Reports
+      { 
+        path: 'reports/appointments', 
         loadComponent: () => import('@features/records/report-management.component').then(m => m.ReportManagementComponent),
-        data: { breadcrumb: 'Reports' }
+        data: { breadcrumb: 'Appointment Reports' }
       },
       { 
-        path: 'hospitals', 
-        loadComponent: () => import('@features/hospitals/hospital-management.component').then(m => m.HospitalManagementComponent),
-        data: { breadcrumb: 'Hospitals' }
+        path: 'reports/patients', 
+        loadComponent: () => import('@features/records/report-management.component').then(m => m.ReportManagementComponent),
+        data: { breadcrumb: 'Patient Reports' }
       },
-      {
-        path: 'account',
-        loadComponent: () => import('@features/account/account.component').then(m => m.AccountComponent),
-        data: { breadcrumb: 'Account Settings' }
+      { 
+        path: 'reports/blog', 
+        loadComponent: () => import('@features/records/report-management.component').then(m => m.ReportManagementComponent),
+        data: { breadcrumb: 'Blog View Reports' }
       },
-      {
-        path: 'system/api-control',
-        loadComponent: () => import('@features/system/api-control/api-control.component').then(m => m.ApiControlComponent),
-        data: { breadcrumb: 'API Control' }
-      },
-      {
-        path: 'system/audit-logs',
-        loadComponent: () => import('@features/system/audit-logs/audit-logs.component').then(m => m.AuditLogsComponent),
-        data: { breadcrumb: 'Audit Logs' }
-      },
-      {
-        path: 'system/health',
-        loadComponent: () => import('@features/system/health/system-health.component').then(m => m.SystemHealthComponent),
-        data: { breadcrumb: 'System Health' }
-      },
-      {
-        path: 'system/settings',
+      // Settings
+      { 
+        path: 'settings/general', 
         loadComponent: () => import('@features/system/settings/system-settings.component').then(m => m.SystemSettingsComponent),
-        data: { breadcrumb: 'System Settings' }
+        data: { breadcrumb: 'General Settings' }
+      },
+      { 
+        path: 'settings/contact', 
+        loadComponent: () => import('@features/system/settings/system-settings.component').then(m => m.SystemSettingsComponent),
+        data: { breadcrumb: 'Contact Info' }
+      },
+      { 
+        path: 'settings/language', 
+        loadComponent: () => import('@features/system/settings/system-settings.component').then(m => m.SystemSettingsComponent),
+        data: { breadcrumb: 'Language Management' }
+      },
+      { 
+        path: 'settings/theme', 
+        loadComponent: () => import('@features/system/settings/system-settings.component').then(m => m.SystemSettingsComponent),
+        data: { breadcrumb: 'Theme & Colors' }
+      },
+      { 
+        path: 'settings/notifications', 
+        loadComponent: () => import('@features/system/settings/system-settings.component').then(m => m.SystemSettingsComponent),
+        data: { breadcrumb: 'Notifications' }
+      },
+      { 
+        path: 'settings/users', 
+        loadComponent: () => import('@features/users/user-management.component').then(m => m.UserManagementComponent),
+        data: { breadcrumb: 'Users & Roles' }
+      },
+      { 
+        path: 'settings/backup', 
+        loadComponent: () => import('@features/shared/feature-placeholder.component').then(m => m.FeaturePlaceholderComponent),
+        data: { breadcrumb: 'Backup & Restore' }
       }
     ]
   },

@@ -5,11 +5,11 @@ import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { AdminHeaderComponent } from '@core/components/admin-header/admin-header.component';
+import { DoctorHeaderComponent } from '@core/components/doctor-header/doctor-header.component';
 import { ThemeService } from '@core/services/theme.service';
 
 @Component({
-  selector: 'app-admin-layout',
+  selector: 'app-doctor-layout',
   standalone: true,
   imports: [
     CommonModule,
@@ -17,12 +17,12 @@ import { ThemeService } from '@core/services/theme.service';
     MatIconModule,
     MatTooltipModule,
     ZrdSidebarComponent,
-    AdminHeaderComponent
+    DoctorHeaderComponent
   ],
   template: `
     <div class="flex h-screen overflow-hidden bg-google-gray-50 dark:bg-google-gray-900">
       
-      <!-- Spartan Sidebar -->
+      <!-- Doctor Sidebar -->
       <zrd-sidebar 
         [items]="navItems" 
         [collapsed]="collapsed()"
@@ -31,8 +31,8 @@ import { ThemeService } from '@core/services/theme.service';
       ></zrd-sidebar>
 
       <div class="flex-1 flex flex-col min-w-0">
-        <!-- Spartan Header -->
-        <app-admin-header (toggleSidebar)="toggleCollapsed()"></app-admin-header>
+        <!-- Doctor Header -->
+        <app-doctor-header (toggleSidebar)="toggleCollapsed()"></app-doctor-header>
 
         <!-- Main Content -->
         <main class="flex-1 overflow-y-auto custom-scrollbar">
@@ -50,46 +50,68 @@ import { ThemeService } from '@core/services/theme.service';
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
   `]
 })
-export class AdminLayoutComponent implements OnInit {
+export class DoctorLayoutComponent implements OnInit {
   isMobile = signal(typeof window !== 'undefined' ? window.innerWidth < 1024 : false);
   collapsed = signal(typeof window !== 'undefined' ? window.innerWidth < 1024 : false);
 
   navItems: ZrdNavItem[] = [
-    { label: 'Main', isHeader: true },
-    { label: 'Dashboard', icon: 'mat-icon:home', route: '/dashboard' },
-    { label: 'Appointments', icon: 'mat-icon:calendar_today', route: '/appointments' },
-    { label: 'Doctors', icon: 'mat-icon:medical_services', route: '/doctors' },
-    { label: 'Patients', icon: 'mat-icon:people', route: '/patients' },
+    { label: 'Dr. Rahman Portal', isHeader: true },
+    { label: 'Dashboard', icon: 'mat-icon:dashboard', route: '/dashboard' },
     
-    { label: 'Operations', isHeader: true },
-    { 
-      label: 'Medical Records', 
-      icon: 'mat-icon:description',
-      children: [
-        { label: 'Prescriptions', route: '/records/prescriptions', icon: 'mat-icon:history_edu' },
-        { label: 'Lab Reports', route: '/records/reports', icon: 'mat-icon:assessment' }
-      ]
-    },
-    { 
-      label: 'Infrastructure', 
-      icon: 'mat-icon:account_balance',
-      children: [
-        { label: 'Hospitals', route: '/hospitals', icon: 'mat-icon:local_hospital' }
-      ]
-    },
+    { label: 'Appointments', icon: 'mat-icon:calendar_today', children: [
+        { label: 'All Appointments', route: '/appointments/all', icon: 'mat-icon:list' },
+        { label: 'Calendar View', route: '/appointments/calendar', icon: 'mat-icon:calendar_month' },
+        { label: 'Add Appointment', route: '/appointments/add', icon: 'mat-icon:add_circle_outline' },
+        { label: 'Time Slots', route: '/appointments/slots', icon: 'mat-icon:schedule' },
+        { label: 'Blocked Dates', route: '/appointments/blocked', icon: 'mat-icon:block' }
+    ]},
 
-    { label: 'Administration', isHeader: true },
-    { 
-      label: 'System Admin', 
-      icon: 'mat-icon:settings_suggest',
-      children: [
-        { label: 'API Control', route: '/system/api-control', icon: 'mat-icon:settings_input_component' },
-        { label: 'Audit Logs', route: '/system/audit-logs', icon: 'mat-icon:history' },
-        { label: 'System Health', route: '/system/health', icon: 'mat-icon:health_and_safety' },
-        { label: 'User Management', route: '/users', icon: 'mat-icon:admin_panel_settings' },
-        { label: 'Global Settings', route: '/system/settings', icon: 'mat-icon:settings' }
-      ]
-    }
+    { label: 'Patients', icon: 'mat-icon:people', children: [
+        { label: 'All Patients', route: '/patients/all', icon: 'mat-icon:groups' },
+        { label: 'Add Patient', route: '/patients/add', icon: 'mat-icon:person_add' },
+        { label: 'Patient History', route: '/patients/history', icon: 'mat-icon:history' }
+    ]},
+
+    { label: 'Website Content', icon: 'mat-icon:language', children: [
+        { label: 'Home Page', route: '/website/home', icon: 'mat-icon:home' },
+        { label: 'About Page', route: '/website/about', icon: 'mat-icon:info' },
+        { label: 'Services', route: '/website/services', icon: 'mat-icon:medical_services' },
+        { label: 'Successful Cases', route: '/website/cases', icon: 'mat-icon:assignment_turned_in' },
+        { label: 'Gallery', route: '/website/gallery', icon: 'mat-icon:photo_library' },
+        { label: 'FAQ Page', route: '/website/faq', icon: 'mat-icon:quiz' },
+        { label: 'Legal Pages', route: '/website/legal', icon: 'mat-icon:gavel' }
+    ]},
+
+    { label: 'Blog', icon: 'mat-icon:edit_note', children: [
+        { label: 'All Posts', route: '/blog/posts', icon: 'mat-icon:article' },
+        { label: 'Add New Post', route: '/blog/add', icon: 'mat-icon:add_box' },
+        { label: 'Categories', route: '/blog/categories', icon: 'mat-icon:category' }
+    ]},
+
+    { label: 'Media Library', icon: 'mat-icon:folder_open', route: '/media' },
+
+    { label: 'Messages', icon: 'mat-icon:chat', children: [
+        { label: 'Contact Messages', route: '/messages/contact', icon: 'mat-icon:mail' },
+        { label: 'Form Submissions', route: '/messages/submissions', icon: 'mat-icon:assignment' }
+    ]},
+
+    { label: 'Reports', icon: 'mat-icon:bar_chart', children: [
+        { label: 'Appointments', route: '/reports/appointments', icon: 'mat-icon:event' },
+        { label: 'Patients', route: '/reports/patients', icon: 'mat-icon:person' },
+        { label: 'Blog Views', route: '/reports/blog', icon: 'mat-icon:visibility' }
+    ]},
+
+    { label: 'Settings', icon: 'mat-icon:settings', children: [
+        { label: 'General', route: '/settings/general', icon: 'mat-icon:tune' },
+        { label: 'Contact Info', route: '/settings/contact', icon: 'mat-icon:contact_support' },
+        { label: 'Language (EN/BN)', route: '/settings/language', icon: 'mat-icon:translate' },
+        { label: 'Theme & Colors', route: '/settings/theme', icon: 'mat-icon:palette' },
+        { label: 'Notifications', route: '/settings/notifications', icon: 'mat-icon:notifications' },
+        { label: 'Users & Roles', route: '/settings/users', icon: 'mat-icon:admin_panel_settings' },
+        { label: 'Backup & Restore', route: '/settings/backup', icon: 'mat-icon:backup' }
+    ]},
+
+    { label: 'Logout', icon: 'mat-icon:logout', route: '/logout' }
   ];
 
   ngOnInit() { 

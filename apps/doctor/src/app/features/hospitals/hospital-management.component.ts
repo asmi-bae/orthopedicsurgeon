@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { AdminApiService } from '@core/services/admin-api.service';
+import { DoctorApiService } from '@core/services/doctor-api.service';
 import { Hospital } from '@repo/types';
 
 @Component({
@@ -154,7 +154,7 @@ import { Hospital } from '@repo/types';
   styles: [`:host { display: block; }`]
 })
 export class HospitalManagementComponent implements OnInit {
-  private api = inject(AdminApiService);
+  private api = inject(DoctorApiService);
   hospitals = signal<Hospital[]>([]);
   loading = signal(false);
   displayedColumns = ['name', 'city', 'phone', 'status', 'actions'];

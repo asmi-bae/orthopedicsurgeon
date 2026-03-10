@@ -5,7 +5,7 @@ import { ApiResponse, PageResponse, Doctor, Hospital } from '@repo/types';
 import { environment } from '@env/environment';
 
 @Injectable({ providedIn: 'root' })
-export class AdminApiService {
+export class DoctorApiService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/admin`;
 

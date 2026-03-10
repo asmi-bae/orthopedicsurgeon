@@ -10,12 +10,12 @@ interface Breadcrumb {
 }
 
 @Component({
-  selector: 'app-admin-breadcrumb',
+  selector: 'app-doctor-breadcrumb',
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule],
   template: `
     <div class="flex items-center gap-1 text-sm">
-      <span class="text-google-gray-400">Admin</span>
+      <span class="text-google-gray-400">Doctor</span>
       
       @for (breadcrumb of breadcrumbs; track breadcrumb.url; let last = $last) {
         <mat-icon class="!w-4 !h-4 !text-[16px] text-google-gray-500 flex items-center justify-center">chevron_right</mat-icon>
@@ -34,7 +34,7 @@ interface Breadcrumb {
     </div>
   `
 })
-export class AdminBreadcrumbComponent implements OnInit {
+export class DoctorBreadcrumbComponent implements OnInit {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 

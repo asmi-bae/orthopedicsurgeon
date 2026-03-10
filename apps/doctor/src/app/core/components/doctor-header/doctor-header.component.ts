@@ -3,20 +3,20 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ThemeService } from '@core/services/theme.service';
-import { AdminUserMenuComponent } from './user-menu.component';
+import { DoctorUserMenuComponent } from './user-menu.component';
 import { NotificationMenuComponent } from './notification-menu.component';
-import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
+import { DoctorBreadcrumbComponent } from './doctor-breadcrumb.component';
 
 @Component({
-  selector: 'app-admin-header',
+  selector: 'app-doctor-header',
   standalone: true,
   imports: [
     CommonModule,
     MatIconModule,
     MatTooltipModule,
-    AdminUserMenuComponent,
+    DoctorUserMenuComponent,
     NotificationMenuComponent,
-    AdminBreadcrumbComponent
+    DoctorBreadcrumbComponent
   ],
   template: `
     <header class="h-16 flex items-center justify-between px-6 shrink-0 z-20 bg-google-gray-50 dark:bg-sidebar-dark sticky top-0 border-0 border-google-gray-200 dark:border-white/5">
@@ -29,7 +29,7 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
            <mat-icon class="text-google-gray-600 dark:text-google-gray-400">menu</mat-icon>
          </button>
          
-         <app-admin-breadcrumb class="hidden md:block"></app-admin-breadcrumb>
+         <app-doctor-breadcrumb class="hidden md:block"></app-doctor-breadcrumb>
       </div>
 
       <!-- Actions -->
@@ -101,14 +101,14 @@ import { AdminBreadcrumbComponent } from './admin-breadcrumb.component';
           <div class="w-px h-6 bg-google-gray-200 dark:bg-white/10 mx-2"></div>
 
           <div class="flex items-center gap-2">
-            <app-admin-user-menu></app-admin-user-menu>
+            <app-doctor-user-menu></app-doctor-user-menu>
           </div>
         </div>
       </div>
     </header>
   `
 })
-export class AdminHeaderComponent {
+export class DoctorHeaderComponent {
   @Output() toggleSidebar = new EventEmitter<void>();
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
   
